@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+build/
+dist/
+
+# uv / virtualenv (uv.lock is committed for reproducibility)
+.venv/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+
+# SQLite cache
+*.db
+*.db-wal
+*.db-shm
+
+# Logs
+*.log
+
+# Environment variables (but keep the committed template)
+.env
+.env.*
+!.env.example
+
+# Jupyter
+.ipynb_checkpoints/
+smoke_test.ipynb
+
+# Internal planning docs (not useful to contributors)
+plan.md
+TODO.md
+phase6_transport_amendment.md
+
+# Personal local MCP client config (README documents it inline)
+claude_desktop_config.json
+
+# macOS
+.DS_Store
+.DS_Store?
