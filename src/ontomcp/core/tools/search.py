@@ -98,23 +98,25 @@ async def search_terms(
     resolved = _resolved()
     explicit_scope = onts is not None
     if not explicit_scope:
-        if resolved and not resolved.all_members and resolved.warnings:
-            # A genuinely broken registry (unreadable index, or a profile with
-            # zero resolvable members), not a legitimately empty scope. Without
-            # this check the search below goes out unscoped (widens to all of
-            # OLS4) and the minting-prefix filter then drops every row against
-            # an empty `wanted` set — a real failure returned as a
-            # success-shaped empty answer. Refuse instead of guessing.
-            logger.error("search_terms: registry unresolvable, refusing: %s", resolved.warnings)
+        if resolved is None or (not resolved.all_members and resolved.warnings):
+            # A genuinely broken registry (unreadable index, `_resolved()` itself
+            # raising, or a profile with zero resolvable members), not a
+            # legitimately empty scope. Without this check the search below goes
+            # out unscoped (widens to all of OLS4) and the minting-prefix filter
+            # then drops every row against an empty `wanted` set — a real
+            # failure returned as a success-shaped empty answer. Refuse instead
+            # of guessing.
+            detail = "; ".join(resolved.warnings) if resolved else "registry unreadable"
+            logger.error("search_terms: registry unresolvable, refusing: %s", detail)
             return {
                 "error": "registry_unavailable",
-                "detail": "; ".join(resolved.warnings),
+                "detail": detail,
                 "remediation": "Run: python scripts/refresh_index.py, or ask me to check your profile.",
             }, False
         # F2 — an unfiltered search must go out scoped to the resolved default.
         # The ontology param used to be set only when the list was truthy, so
         # "search my ontologies" actually hit all ~286 of OLS4.
-        onts = list(resolved.default_scope) if resolved else []
+        onts = list(resolved.default_scope)
 
     limit = max(1, min(limit, SEARCH_LIMIT_MAX))
     query_norm = " ".join(query.lower().split())
@@ -202,22 +204,23 @@ async def _offer_a_way_out(query, envelope, resolved, explicit_scope, client) ->
     default_scope = set(resolved.default_scope)
     notices: list[str] = []
 
-    # Stage 1: re-run over default ∪ named_only and partition locally. One extra
-    # call only when the profile actually holds something back.
-    if resolved.named_only:
-        async with ols_client(client) as cli:
-            widened = await cli.search(query, list(resolved.all_members), 20)
-        if not is_error(widened):
-            _, held = escape_hatch.partition(
-                _collapse(widened), default_scope, set(resolved.named_only)
-            )
-            if held:
-                notices.append(escape_hatch.stage_one(query, held, list(resolved.default_scope)))
-                envelope["meta"]["notice"] = list(envelope["meta"].get("notice", [])) + notices
-                return  # Stage 1 answered; Stage 2 never speaks.
-
-    # Stage 2: one call, exact per-ontology counts, no terms.
     async with ols_client(client) as cli:
+        # Stage 1: re-run over default ∪ named_only and partition locally. One
+        # extra call only when the profile actually holds something back.
+        if resolved.named_only:
+            widened = await cli.search(query, list(resolved.all_members), 20)
+            if not is_error(widened):
+                _, held = escape_hatch.partition(
+                    _collapse(widened), default_scope, set(resolved.named_only)
+                )
+                if held:
+                    notices.append(
+                        escape_hatch.stage_one(query, held, list(resolved.default_scope))
+                    )
+                    envelope["meta"]["notice"] = list(envelope["meta"].get("notice", [])) + notices
+                    return  # Stage 1 answered; Stage 2 never speaks.
+
+        # Stage 2: one call, exact per-ontology counts, no terms.
         counts = await cli.search_facets(query)
     if not counts:
         logger.info("escape hatch: no facet coverage anywhere for %r", query)
