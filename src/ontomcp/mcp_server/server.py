@@ -1,4 +1,4 @@
-"""FastMCP server exposing the 12 OntoMCP tools to any MCP client.
+"""FastMCP server exposing the 13 OntoMCP tools to any MCP client.
 
 Transport is client-agnostic: stdio (default — Claude Desktop / Claude Code) or
 SSE (GPT, Codex CLI, remote clients), selected at startup by ``ONTOMCP_TRANSPORT``.
