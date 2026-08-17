@@ -1,0 +1,82 @@
+{
+  "_derived": {
+    "aliases": {},
+    "frozen_at": null,
+    "index_version": "2026.08+5453a1b2",
+    "members": {
+      "CHEBI": {
+        "base_uri": null,
+        "curie_prefix": "CHEBI",
+        "slug": "chebi",
+        "terms": 237842,
+        "title": "Chemical Entities of Biological Interest",
+        "verified": false,
+        "version": null
+      },
+      "CL": {
+        "base_uri": null,
+        "curie_prefix": "CL",
+        "slug": "cl",
+        "terms": 19167,
+        "title": "Cell Ontology",
+        "verified": false,
+        "version": null
+      },
+      "CLO": {
+        "base_uri": null,
+        "curie_prefix": "CLO",
+        "slug": "clo",
+        "terms": 40851,
+        "title": "Cell Line Ontology",
+        "verified": false,
+        "version": null
+      },
+      "GO": {
+        "base_uri": null,
+        "curie_prefix": "GO",
+        "slug": "go",
+        "terms": 85169,
+        "title": "Gene Ontology",
+        "verified": false,
+        "version": null
+      },
+      "SO": {
+        "base_uri": null,
+        "curie_prefix": "SO",
+        "slug": "so",
+        "terms": 2752,
+        "title": "Sequence types and features ontology",
+        "verified": false,
+        "version": null
+      },
+      "UBERON": {
+        "base_uri": null,
+        "curie_prefix": "UBERON",
+        "slug": "uberon",
+        "terms": 26624,
+        "title": "Uber-anatomy ontology",
+        "verified": false,
+        "version": null
+      }
+    },
+    "quarantine": {},
+    "warnings": [
+      "Shipped starter: run 'ontomcp profile check' to record live versions."
+    ]
+  },
+  "created_at": "2026-08-15",
+  "description": "Molecular and cell biology: gene function, sequence features, cell types and lines.",
+  "force_default": [],
+  "locked": false,
+  "name": "biotech-molecular",
+  "notes": "",
+  "ontologies": [
+    "GO",
+    "SO",
+    "CL",
+    "UBERON",
+    "CLO",
+    "CHEBI"
+  ],
+  "schema": 1
+}

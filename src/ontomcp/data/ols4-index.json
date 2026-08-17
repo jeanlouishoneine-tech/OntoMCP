@@ -1,0 +1,2728 @@
+{
+  "backend": "ols4",
+  "generated_at": "2026-08-15",
+  "index_version": "2026.08+5453a1b2",
+  "ontologies": {
+    "ADDICTO": {
+      "base_uris": [
+        "http://addictovocab.org/ADDICTO_"
+      ],
+      "curie_prefix": "ADDICTO",
+      "properties": 113,
+      "searchable": true,
+      "slug": "addicto",
+      "terms": 1364,
+      "title": "Addiction Ontology"
+    },
+    "ADO": {
+      "base_uris": [],
+      "curie_prefix": "ADO",
+      "properties": 186,
+      "searchable": true,
+      "slug": "ado",
+      "terms": 1963,
+      "title": "Alzheimer's Disease Ontology (ADO)"
+    },
+    "AEO": {
+      "base_uris": [],
+      "curie_prefix": "AEO",
+      "properties": 28,
+      "searchable": true,
+      "slug": "aeo",
+      "terms": 430,
+      "title": "Anatomical Entity Ontology"
+    },
+    "AFO": {
+      "base_uris": [
+        "http://purl.allotrope.org/ontologies"
+      ],
+      "curie_prefix": "AFO",
+      "properties": 432,
+      "searchable": true,
+      "slug": "afo",
+      "terms": 3640,
+      "title": "Allotrope Merged Ontology Suite"
+    },
+    "AFPO": {
+      "base_uris": [],
+      "curie_prefix": "AfPO",
+      "properties": 62,
+      "searchable": true,
+      "slug": "afpo",
+      "terms": 473,
+      "title": "African Population Ontology"
+    },
+    "AGRO": {
+      "base_uris": [],
+      "curie_prefix": "AGRO",
+      "properties": 293,
+      "searchable": true,
+      "slug": "agro",
+      "terms": 4162,
+      "title": "Agronomy Ontology"
+    },
+    "AIO": {
+      "base_uris": [
+        "https://w3id.org/aio/"
+      ],
+      "curie_prefix": "AIO",
+      "properties": 27,
+      "searchable": true,
+      "slug": "aio",
+      "terms": 442,
+      "title": "Artificial Intelligence Ontology (AIO)"
+    },
+    "AISM": {
+      "base_uris": [],
+      "curie_prefix": "AISM",
+      "properties": 347,
+      "searchable": true,
+      "slug": "aism",
+      "terms": 8614,
+      "title": "Ontology for the Anatomy of the Insect SkeletoMuscular system"
+    },
+    "AMPHX": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/AMPHX_"
+      ],
+      "curie_prefix": "AMPHX",
+      "properties": 10,
+      "searchable": true,
+      "slug": "amphx",
+      "terms": 403,
+      "title": "Amphioxus Development and Anatomy Ontology (AMPHX)"
+    },
+    "APO": {
+      "base_uris": [],
+      "curie_prefix": "APO",
+      "properties": 27,
+      "searchable": true,
+      "slug": "apo",
+      "terms": 619,
+      "title": "Ascomycete Phenotype Ontology (APO)"
+    },
+    "APOLLO_SV": {
+      "base_uris": [],
+      "curie_prefix": "APOLLO_SV",
+      "properties": 384,
+      "searchable": true,
+      "slug": "apollo_sv",
+      "terms": 1699,
+      "title": "Apollo Structured Vocabulary"
+    },
+    "ARO": {
+      "base_uris": [],
+      "curie_prefix": "ARO",
+      "properties": 32,
+      "searchable": true,
+      "slug": "aro",
+      "terms": 8582,
+      "title": "Antibiotic Resistance Ontology"
+    },
+    "BAO": {
+      "base_uris": [
+        "http://www.bioassayontology.org/bao#BAO_"
+      ],
+      "curie_prefix": "BAO",
+      "properties": 462,
+      "searchable": true,
+      "slug": "bao",
+      "terms": 8936,
+      "title": "BioAssay Ontology"
+    },
+    "BCGO": {
+      "base_uris": [],
+      "curie_prefix": "bcgo",
+      "properties": 171,
+      "searchable": true,
+      "slug": "bcgo",
+      "terms": 2270,
+      "title": "Beta Cell Genomics Ontology"
+    },
+    "BCIO": {
+      "base_uris": [
+        "http://humanbehaviourchange.org/ontology/BCIO_"
+      ],
+      "curie_prefix": "BCIO",
+      "properties": 108,
+      "searchable": true,
+      "slug": "bcio",
+      "terms": 2597,
+      "title": "The Behaviour Change Intervention Ontology"
+    },
+    "BCO": {
+      "base_uris": [],
+      "curie_prefix": "BCO",
+      "properties": 472,
+      "searchable": false,
+      "slug": "bco",
+      "terms": 253,
+      "title": "Biological Collections Ontology"
+    },
+    "BFO": {
+      "base_uris": [],
+      "curie_prefix": "BFO",
+      "properties": 22,
+      "searchable": true,
+      "slug": "bfo",
+      "terms": 35,
+      "title": "Basic Formal Ontology"
+    },
+    "BIOLINK": {
+      "base_uris": [],
+      "curie_prefix": "biolink",
+      "properties": 582,
+      "searchable": true,
+      "slug": "biolink",
+      "terms": 692,
+      "title": "biolink"
+    },
+    "BMONT": {
+      "base_uris": [],
+      "curie_prefix": "BMONT",
+      "properties": 171,
+      "searchable": true,
+      "slug": "bmont",
+      "terms": 640,
+      "title": "Biomarker Ontology (BMONT)"
+    },
+    "BSPO": {
+      "base_uris": [],
+      "curie_prefix": "BSPO",
+      "properties": 236,
+      "searchable": false,
+      "slug": "bspo",
+      "terms": 169,
+      "title": "Biological Spatial Ontology"
+    },
+    "BTO": {
+      "base_uris": [],
+      "curie_prefix": "BTO",
+      "properties": 37,
+      "searchable": true,
+      "slug": "bto",
+      "terms": 6569,
+      "title": "The BRENDA Tissue Ontology (BTO)"
+    },
+    "CAO": {
+      "base_uris": [
+        "http://champ-project.org/images/ontology/cao.owl#CAO_"
+      ],
+      "curie_prefix": "CAO",
+      "properties": 45,
+      "searchable": true,
+      "slug": "cao",
+      "terms": 445,
+      "title": "Chemical Analysis Metadata Platform (ChAMP) Ontology version 0.2"
+    },
+    "CARO": {
+      "base_uris": [],
+      "curie_prefix": "CARO",
+      "properties": 279,
+      "searchable": true,
+      "slug": "caro",
+      "terms": 720,
+      "title": "Common Anatomy Reference Ontology"
+    },
+    "CCF": {
+      "base_uris": [
+        "https://purl.org/ccf/"
+      ],
+      "curie_prefix": "CCF",
+      "properties": 94,
+      "searchable": false,
+      "slug": "ccf",
+      "terms": 41,
+      "title": "Human Reference Atlas Common Coordinate Framework Ontology"
+    },
+    "CCO": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/CCO_"
+      ],
+      "curie_prefix": "CCO",
+      "properties": 12,
+      "searchable": true,
+      "slug": "cco",
+      "terms": 277685,
+      "title": "Cell Cycle Ontology"
+    },
+    "CDAO": {
+      "base_uris": [],
+      "curie_prefix": "CDAO",
+      "properties": 144,
+      "searchable": true,
+      "slug": "cdao",
+      "terms": 164,
+      "title": "Comparative Data Analysis Ontology"
+    },
+    "CDNO": {
+      "base_uris": [],
+      "curie_prefix": "CDNO",
+      "properties": 247,
+      "searchable": true,
+      "slug": "cdno",
+      "terms": 2109,
+      "title": "Compositional Dietary Nutrition Ontology"
+    },
+    "CEPH": {
+      "base_uris": [],
+      "curie_prefix": "ceph",
+      "properties": 135,
+      "searchable": true,
+      "slug": "ceph",
+      "terms": 1574,
+      "title": "Cephalopod Ontology"
+    },
+    "CHEBI": {
+      "base_uris": [],
+      "curie_prefix": "CHEBI",
+      "properties": 48,
+      "searchable": true,
+      "slug": "chebi",
+      "terms": 237842,
+      "title": "Chemical Entities of Biological Interest"
+    },
+    "CHEMINF": {
+      "base_uris": [],
+      "curie_prefix": "CHEMINF",
+      "properties": 538,
+      "searchable": true,
+      "slug": "cheminf",
+      "terms": 2141,
+      "title": "chemical information ontology (cheminf) - information entities about chemical entities"
+    },
+    "CHIRO": {
+      "base_uris": [],
+      "curie_prefix": "CHIRO",
+      "properties": 59,
+      "searchable": true,
+      "slug": "chiro",
+      "terms": 13279,
+      "title": "CHEBI Integrated Role Ontology"
+    },
+    "CHMO": {
+      "base_uris": [],
+      "curie_prefix": "CHMO",
+      "properties": 175,
+      "searchable": true,
+      "slug": "chmo",
+      "terms": 3263,
+      "title": "Chemical Methods Ontology"
+    },
+    "CIDO": {
+      "base_uris": [],
+      "curie_prefix": "CIDO",
+      "properties": 574,
+      "searchable": true,
+      "slug": "cido",
+      "terms": 31924,
+      "title": "CIDO: Ontology of Coronavirus Infectious Disease"
+    },
+    "CIO": {
+      "base_uris": [],
+      "curie_prefix": "CIO",
+      "properties": 17,
+      "searchable": true,
+      "slug": "cio",
+      "terms": 44,
+      "title": "Confidence Information Ontology"
+    },
+    "CL": {
+      "base_uris": [],
+      "curie_prefix": "CL",
+      "properties": 473,
+      "searchable": true,
+      "slug": "cl",
+      "terms": 19167,
+      "title": "Cell Ontology"
+    },
+    "CLAO": {
+      "base_uris": [],
+      "curie_prefix": "CLAO",
+      "properties": 45,
+      "searchable": true,
+      "slug": "clao",
+      "terms": 1521,
+      "title": "Collembola Anatomy Ontology"
+    },
+    "CLO": {
+      "base_uris": [],
+      "curie_prefix": "CLO",
+      "properties": 239,
+      "searchable": true,
+      "slug": "clo",
+      "terms": 40851,
+      "title": "Cell Line Ontology"
+    },
+    "CLYH": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/CLYH_"
+      ],
+      "curie_prefix": "CLYH",
+      "properties": 9,
+      "searchable": true,
+      "slug": "clyh",
+      "terms": 265,
+      "title": "Clytia hemisphaerica Development and Anatomy Ontology (CLYH)"
+    },
+    "CMO": {
+      "base_uris": [],
+      "curie_prefix": "CMO",
+      "properties": 23,
+      "searchable": true,
+      "slug": "cmo",
+      "terms": 4157,
+      "title": "Clinical measurement ontology"
+    },
+    "CMPO": {
+      "base_uris": [
+        "http://www.ebi.ac.uk/cmpo/CMPO_"
+      ],
+      "curie_prefix": "CMPO",
+      "properties": 76,
+      "searchable": true,
+      "slug": "cmpo",
+      "terms": 1058,
+      "title": "Cellular Microscopy Phenotype Ontology"
+    },
+    "COB": {
+      "base_uris": [],
+      "curie_prefix": "COB",
+      "properties": 38,
+      "searchable": true,
+      "slug": "cob",
+      "terms": 69,
+      "title": "Core Ontology for Biology and Biomedicine"
+    },
+    "COHO": {
+      "base_uris": [],
+      "curie_prefix": "COHO",
+      "properties": 213,
+      "searchable": true,
+      "slug": "coho",
+      "terms": 309,
+      "title": "coho"
+    },
+    "COLAO": {
+      "base_uris": [],
+      "curie_prefix": "COLAO",
+      "properties": 58,
+      "searchable": true,
+      "slug": "colao",
+      "terms": 894,
+      "title": "Coleoptera Anatomy Ontology"
+    },
+    "COVOC": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/COVOC_"
+      ],
+      "curie_prefix": "COVOC",
+      "properties": 652,
+      "searchable": false,
+      "slug": "covoc",
+      "terms": 563,
+      "title": "CoVoc Coronavirus Vocabulary"
+    },
+    "CPONT": {
+      "base_uris": [
+        "https://w3id.org/cpont"
+      ],
+      "curie_prefix": "CPONT",
+      "properties": 126,
+      "searchable": true,
+      "slug": "cpont",
+      "terms": 9119,
+      "title": "Critical Path Ontology"
+    },
+    "CREDIT": {
+      "base_uris": [
+        "https://credit.niso.org/contributor-roles/"
+      ],
+      "curie_prefix": "credit",
+      "properties": 10,
+      "searchable": true,
+      "slug": "credit",
+      "terms": 16,
+      "title": "Contributor Roles Taxonomy"
+    },
+    "CRO": {
+      "base_uris": [],
+      "curie_prefix": "CRO",
+      "properties": 73,
+      "searchable": true,
+      "slug": "cro",
+      "terms": 145,
+      "title": "Contributor Role Ontology"
+    },
+    "CTENO": {
+      "base_uris": [],
+      "curie_prefix": "CTENO",
+      "properties": 315,
+      "searchable": true,
+      "slug": "cteno",
+      "terms": 709,
+      "title": "Ctenophore Ontology"
+    },
+    "CVDO": {
+      "base_uris": [],
+      "curie_prefix": "CVDO",
+      "properties": 118,
+      "searchable": true,
+      "slug": "cvdo",
+      "terms": 720,
+      "title": "Cardiovascular Disease Ontology"
+    },
+    "DC": {
+      "base_uris": [
+        "http://purl.org/dc/elements/1.1/"
+      ],
+      "curie_prefix": "dc",
+      "properties": 15,
+      "searchable": false,
+      "slug": "dc",
+      "terms": 0,
+      "title": "dc"
+    },
+    "DCAT": {
+      "base_uris": [],
+      "curie_prefix": "dcat",
+      "properties": 259,
+      "searchable": false,
+      "slug": "dcat",
+      "terms": 77,
+      "title": "dcat"
+    },
+    "DCTERMS": {
+      "base_uris": [
+        "http://purl.org/dc/terms/"
+      ],
+      "curie_prefix": "dcterms",
+      "properties": 55,
+      "searchable": false,
+      "slug": "dcterms",
+      "terms": 22,
+      "title": "dcterms"
+    },
+    "DDANAT": {
+      "base_uris": [],
+      "curie_prefix": "DDANAT",
+      "properties": 26,
+      "searchable": true,
+      "slug": "ddanat",
+      "terms": 135,
+      "title": "Dicty Anatomy Ontology (DDANAT)"
+    },
+    "DDPHENO": {
+      "base_uris": [],
+      "curie_prefix": "DDPHENO",
+      "properties": 24,
+      "searchable": true,
+      "slug": "ddpheno",
+      "terms": 1373,
+      "title": "Dicty Phenotype Ontology (DDPHENO)"
+    },
+    "DHBA": {
+      "base_uris": [
+        "https://purl.brain-bican.org/ontology/dhbao/DHBA_"
+      ],
+      "curie_prefix": "DHBA",
+      "properties": 255,
+      "searchable": true,
+      "slug": "dhba",
+      "terms": 6843,
+      "title": "Developing Human Brain Atlas Ontology"
+    },
+    "DIDEO": {
+      "base_uris": [],
+      "curie_prefix": "DIDEO",
+      "properties": 305,
+      "searchable": true,
+      "slug": "dideo",
+      "terms": 684,
+      "title": "Drug-drug Interaction and Drug-drug Interaction Evidence Ontology"
+    },
+    "DISDRIV": {
+      "base_uris": [],
+      "curie_prefix": "DISDRIV",
+      "properties": 13,
+      "searchable": true,
+      "slug": "disdriv",
+      "terms": 84,
+      "title": "Disease Drivers"
+    },
+    "DMBA": {
+      "base_uris": [
+        "https://purl.brain-bican.org/ontology/dmbao/DMBA_"
+      ],
+      "curie_prefix": "DMBA",
+      "properties": 280,
+      "searchable": true,
+      "slug": "dmba",
+      "terms": 4238,
+      "title": "Developing Mouse Brain Atlas Ontology"
+    },
+    "DOID": {
+      "base_uris": [],
+      "curie_prefix": "DOID",
+      "properties": 107,
+      "searchable": true,
+      "slug": "doid",
+      "terms": 19612,
+      "title": "Human Disease Ontology"
+    },
+    "DPO": {
+      "base_uris": [],
+      "curie_prefix": "FBcv",
+      "properties": 231,
+      "searchable": true,
+      "slug": "dpo",
+      "terms": 1555,
+      "title": "Drosophila Phenotype Ontology"
+    },
+    "DRON": {
+      "base_uris": [],
+      "curie_prefix": "DRON",
+      "properties": 247,
+      "searchable": true,
+      "slug": "dron",
+      "terms": 784921,
+      "title": "The Drug Ontology"
+    },
+    "DUO": {
+      "base_uris": [],
+      "curie_prefix": "DUO",
+      "properties": 157,
+      "searchable": true,
+      "slug": "duo",
+      "terms": 311,
+      "title": "Data Use Ontology"
+    },
+    "EC": {
+      "base_uris": [
+        "https://www.enzyme-database.org/query.php?ec="
+      ],
+      "curie_prefix": "EC",
+      "properties": 14,
+      "searchable": true,
+      "slug": "ec",
+      "terms": 13179,
+      "title": "Enzyme Nomenclature"
+    },
+    "ECAO": {
+      "base_uris": [],
+      "curie_prefix": "ECAO",
+      "properties": 454,
+      "searchable": true,
+      "slug": "ecao",
+      "terms": 7309,
+      "title": "Echinoderm Anatomy and Development Ontology"
+    },
+    "ECO": {
+      "base_uris": [],
+      "curie_prefix": "ECO",
+      "properties": 91,
+      "searchable": true,
+      "slug": "eco",
+      "terms": 3358,
+      "title": "Evidence & Conclusion Ontology (ECO)"
+    },
+    "ECOCORE": {
+      "base_uris": [],
+      "curie_prefix": "ECOCORE",
+      "properties": 433,
+      "searchable": true,
+      "slug": "ecocore",
+      "terms": 5752,
+      "title": "An ontology of core ecological entities"
+    },
+    "ECTO": {
+      "base_uris": [],
+      "curie_prefix": "ECTO",
+      "properties": 235,
+      "searchable": true,
+      "slug": "ecto",
+      "terms": 19657,
+      "title": "Environment Exposure Ontology"
+    },
+    "EDAM": {
+      "base_uris": [
+        "http://edamontology.org/data_",
+        "http://edamontology.org/identifier_",
+        "http://edamontology.org/topic_",
+        "http://edamontology.org/format_"
+      ],
+      "curie_prefix": "EDAM",
+      "properties": 75,
+      "searchable": true,
+      "slug": "edam",
+      "terms": 3539,
+      "title": "EDAM - The ontology of data analysis and management"
+    },
+    "EFO": {
+      "base_uris": [
+        "http://www.ebi.ac.uk/efo/EFO_"
+      ],
+      "curie_prefix": "EFO",
+      "properties": 330,
+      "searchable": true,
+      "slug": "efo",
+      "terms": 94125,
+      "title": "Experimental Factor Ontology"
+    },
+    "EHDAA2": {
+      "base_uris": [],
+      "curie_prefix": "ehdaa2",
+      "properties": 30,
+      "searchable": true,
+      "slug": "ehdaa2",
+      "terms": 2743,
+      "title": "Human developmental anatomy, abstract"
+    },
+    "EMAP": {
+      "base_uris": [],
+      "curie_prefix": "emap",
+      "properties": 13,
+      "searchable": true,
+      "slug": "emap",
+      "terms": 19444,
+      "title": "Mouse gross anatomy and development, timed"
+    },
+    "EMAPA": {
+      "base_uris": [],
+      "curie_prefix": "EMAPA",
+      "properties": 31,
+      "searchable": true,
+      "slug": "emapa",
+      "terms": 8882,
+      "title": "Mouse Developmental Anatomy Ontology"
+    },
+    "EMI": {
+      "base_uris": [
+        "https://w3id.org/emi#"
+      ],
+      "curie_prefix": "EMI",
+      "properties": 407,
+      "searchable": false,
+      "slug": "emi",
+      "terms": 161,
+      "title": "The Earth Metabolome Initiative (EMI) ontology"
+    },
+    "EMRO": {
+      "base_uris": [],
+      "curie_prefix": "EMRO",
+      "properties": 124,
+      "searchable": false,
+      "slug": "emro",
+      "terms": 94,
+      "title": "Emotion Response Ontology"
+    },
+    "ENM": {
+      "base_uris": [
+        "http://purl.enanomapper.org/onto/ENM_"
+      ],
+      "curie_prefix": "ENM",
+      "properties": 2384,
+      "searchable": true,
+      "slug": "enm",
+      "terms": 25918,
+      "title": "eNanoMapper ontology"
+    },
+    "ENSGLOSS": {
+      "base_uris": [
+        "http://ensembl.org/glossary/ENSGLOSS_"
+      ],
+      "curie_prefix": "ENSGLOSS",
+      "properties": 5,
+      "searchable": true,
+      "slug": "ensemblglossary",
+      "terms": 381,
+      "title": "Ensembl Glossary"
+    },
+    "ENVO": {
+      "base_uris": [],
+      "curie_prefix": "ENVO",
+      "properties": 272,
+      "searchable": true,
+      "slug": "envo",
+      "terms": 6936,
+      "title": "The Environment Ontology"
+    },
+    "EPIO": {
+      "base_uris": [],
+      "curie_prefix": "EPIO",
+      "properties": 133,
+      "searchable": true,
+      "slug": "epio",
+      "terms": 1916,
+      "title": "Epilepsy Ontology (EPIO)"
+    },
+    "EUPATH": {
+      "base_uris": [],
+      "curie_prefix": "EUPATH",
+      "properties": 205,
+      "searchable": true,
+      "slug": "eupath",
+      "terms": 5109,
+      "title": "VEuPathDB Ontology"
+    },
+    "EVORAO": {
+      "base_uris": [
+        "https://w3id.org/evorao/"
+      ],
+      "curie_prefix": "evorao",
+      "properties": 209,
+      "searchable": false,
+      "slug": "evorao",
+      "terms": 79,
+      "title": "evorao"
+    },
+    "EXMO": {
+      "base_uris": [],
+      "curie_prefix": "EXMO",
+      "properties": 857,
+      "searchable": false,
+      "slug": "exmo",
+      "terms": 449,
+      "title": "EXMO"
+    },
+    "EXO": {
+      "base_uris": [],
+      "curie_prefix": "ExO",
+      "properties": 27,
+      "searchable": true,
+      "slug": "exo",
+      "terms": 168,
+      "title": "Exposure ontology (ExO)"
+    },
+    "FAO": {
+      "base_uris": [],
+      "curie_prefix": "FAO",
+      "properties": 36,
+      "searchable": true,
+      "slug": "fao",
+      "terms": 122,
+      "title": "Fungal gross anatomy"
+    },
+    "FBBI": {
+      "base_uris": [],
+      "curie_prefix": "FBbi",
+      "properties": 155,
+      "searchable": true,
+      "slug": "fbbi",
+      "terms": 688,
+      "title": "Biological Imaging Methods Ontology"
+    },
+    "FBBT": {
+      "base_uris": [],
+      "curie_prefix": "FBbt",
+      "properties": 258,
+      "searchable": true,
+      "slug": "fbbt",
+      "terms": 29753,
+      "title": "Drosophila gross anatomy"
+    },
+    "FBCV": {
+      "base_uris": [],
+      "curie_prefix": "FBcv",
+      "properties": 117,
+      "searchable": true,
+      "slug": "fbcv",
+      "terms": 2338,
+      "title": "FlyBase Controlled Vocabulary"
+    },
+    "FBDV": {
+      "base_uris": [],
+      "curie_prefix": "FBdv",
+      "properties": 72,
+      "searchable": true,
+      "slug": "fbdv",
+      "terms": 251,
+      "title": "Drosophila development"
+    },
+    "FIDEO": {
+      "base_uris": [],
+      "curie_prefix": "FIDEO",
+      "properties": 19,
+      "searchable": true,
+      "slug": "fideo",
+      "terms": 3543,
+      "title": "Food Interactions with Drugs Evidence Ontology"
+    },
+    "FLOPO": {
+      "base_uris": [],
+      "curie_prefix": "FLOPO",
+      "properties": 581,
+      "searchable": true,
+      "slug": "flopo",
+      "terms": 35440,
+      "title": "Flora Phenotype Ontology"
+    },
+    "FMA": {
+      "base_uris": [],
+      "curie_prefix": "FMA",
+      "properties": 216,
+      "searchable": true,
+      "slug": "fma",
+      "terms": 104721,
+      "title": "Foundational Model of Anatomy Ontology (subset)"
+    },
+    "FOBI": {
+      "base_uris": [],
+      "curie_prefix": "FOBI",
+      "properties": 29,
+      "searchable": true,
+      "slug": "fobi",
+      "terms": 1799,
+      "title": "Food-Biomarker Ontology"
+    },
+    "FOODON": {
+      "base_uris": [],
+      "curie_prefix": "FOODON",
+      "properties": 125,
+      "searchable": true,
+      "slug": "foodon",
+      "terms": 39682,
+      "title": "Food Ontology"
+    },
+    "FOVT": {
+      "base_uris": [],
+      "curie_prefix": "FOVT",
+      "properties": 581,
+      "searchable": true,
+      "slug": "fovt",
+      "terms": 11980,
+      "title": "FuTRES Ontology of Vertebrate Traits"
+    },
+    "FYPO": {
+      "base_uris": [],
+      "curie_prefix": "FYPO",
+      "properties": 58,
+      "searchable": true,
+      "slug": "fypo",
+      "terms": 10556,
+      "title": "Fission Yeast Phenotype Ontology (FYPO)"
+    },
+    "GALLONT": {
+      "base_uris": [],
+      "curie_prefix": "GALLONT",
+      "properties": 259,
+      "searchable": true,
+      "slug": "gallont",
+      "terms": 394,
+      "title": "Plant Gall Ontology"
+    },
+    "GAZ": {
+      "base_uris": [],
+      "curie_prefix": "GAZ",
+      "properties": 48,
+      "searchable": true,
+      "slug": "gaz",
+      "terms": 668838,
+      "title": "Gazetteer"
+    },
+    "GECKO": {
+      "base_uris": [],
+      "curie_prefix": "GECKO",
+      "properties": 17,
+      "searchable": true,
+      "slug": "gecko",
+      "terms": 154,
+      "title": "Genomics Cohorts Knowledge Ontology"
+    },
+    "GENEPIO": {
+      "base_uris": [],
+      "curie_prefix": "GENEPIO",
+      "properties": 128,
+      "searchable": true,
+      "slug": "genepio",
+      "terms": 9159,
+      "title": "Genomic Epidemiology Ontology"
+    },
+    "GENO": {
+      "base_uris": [],
+      "curie_prefix": "GENO",
+      "properties": 344,
+      "searchable": true,
+      "slug": "geno",
+      "terms": 589,
+      "title": "GENO ontology"
+    },
+    "GEO": {
+      "base_uris": [],
+      "curie_prefix": "GEO",
+      "properties": 112,
+      "searchable": false,
+      "slug": "geo",
+      "terms": 108,
+      "title": "Geographical Entity Ontology"
+    },
+    "GEXO": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/GeXO_"
+      ],
+      "curie_prefix": "GeXO",
+      "properties": 12,
+      "searchable": true,
+      "slug": "gexo",
+      "terms": 166254,
+      "title": "Gene Expression Ontology"
+    },
+    "GMHO": {
+      "base_uris": [
+        "https://galenos.org.uk/ontologies/GMHO_"
+      ],
+      "curie_prefix": "gmho",
+      "properties": 75,
+      "searchable": true,
+      "slug": "gmho",
+      "terms": 212,
+      "title": "GALENOS Mental Health Ontology"
+    },
+    "GNO": {
+      "base_uris": [],
+      "curie_prefix": "GNO",
+      "properties": 17,
+      "searchable": true,
+      "slug": "gno",
+      "terms": 199334,
+      "title": "Glycan Naming Ontology"
+    },
+    "GO": {
+      "base_uris": [],
+      "curie_prefix": "GO",
+      "properties": 484,
+      "searchable": true,
+      "slug": "go",
+      "terms": 85169,
+      "title": "Gene Ontology"
+    },
+    "GOLD": {
+      "base_uris": [],
+      "curie_prefix": "gold",
+      "properties": 20,
+      "searchable": true,
+      "slug": "gold",
+      "terms": 1824,
+      "title": "gold"
+    },
+    "GSSO": {
+      "base_uris": [],
+      "curie_prefix": "GSSO",
+      "properties": 292,
+      "searchable": true,
+      "slug": "gsso",
+      "terms": 13192,
+      "title": "GSSO - the Gender, Sex, and Sexual Orientation ontology"
+    },
+    "HANCESTRO": {
+      "base_uris": [],
+      "curie_prefix": "HANCESTRO",
+      "properties": 123,
+      "searchable": true,
+      "slug": "hancestro",
+      "terms": 1310,
+      "title": "Human Ancestry Ontology"
+    },
+    "HAO": {
+      "base_uris": [],
+      "curie_prefix": "HAO",
+      "properties": 21,
+      "searchable": true,
+      "slug": "hao",
+      "terms": 2597,
+      "title": "Hymenoptera Anatomy Ontology"
+    },
+    "HBA": {
+      "base_uris": [
+        "https://purl.brain-bican.org/ontology/hbao/HBA_"
+      ],
+      "curie_prefix": "HBA",
+      "properties": 254,
+      "searchable": true,
+      "slug": "hba",
+      "terms": 5172,
+      "title": "Human Brain Atlas Ontology"
+    },
+    "HCAO": {
+      "base_uris": [
+        "http://ontology.data.humancellatlas.org/ontologies/HCA_"
+      ],
+      "curie_prefix": "HCAO",
+      "properties": 711,
+      "searchable": true,
+      "slug": "hcao",
+      "terms": 22606,
+      "title": "Human Cell Atlas Ontology"
+    },
+    "HGNC": {
+      "base_uris": [
+        "https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/"
+      ],
+      "curie_prefix": "hgnc",
+      "properties": 33,
+      "searchable": true,
+      "slug": "hgnc",
+      "terms": 163229,
+      "title": "HUGO Gene Nomenclature Committee"
+    },
+    "HGNC.GENEGROUP": {
+      "base_uris": [
+        "https://www.genenames.org/data/genegroup/#!/group/"
+      ],
+      "curie_prefix": "hgnc.genegroup",
+      "properties": 18,
+      "searchable": true,
+      "slug": "hgnc.genegroup",
+      "terms": 1993,
+      "title": "HGNC Gene Group"
+    },
+    "HOM": {
+      "base_uris": [],
+      "curie_prefix": "HOM",
+      "properties": 18,
+      "searchable": true,
+      "slug": "hom",
+      "terms": 66,
+      "title": "Homology Ontology"
+    },
+    "HPO": {
+      "base_uris": [],
+      "curie_prefix": "HP",
+      "properties": 374,
+      "searchable": true,
+      "slug": "hp",
+      "terms": 32663,
+      "title": "Human Phenotype Ontology"
+    },
+    "HRA": {
+      "base_uris": [],
+      "curie_prefix": "hra",
+      "properties": 183,
+      "searchable": true,
+      "slug": "hra",
+      "terms": 10669,
+      "title": "Human Reference Atlas (HRA)"
+    },
+    "HSAPDV": {
+      "base_uris": [],
+      "curie_prefix": "HsapDv",
+      "properties": 42,
+      "searchable": true,
+      "slug": "hsapdv",
+      "terms": 260,
+      "title": "Human Developmental Stages"
+    },
+    "HSO": {
+      "base_uris": [],
+      "curie_prefix": "HSO",
+      "properties": 303,
+      "searchable": true,
+      "slug": "hso",
+      "terms": 448,
+      "title": "Health Surveillance Ontology"
+    },
+    "HTN": {
+      "base_uris": [],
+      "curie_prefix": "HTN",
+      "properties": 424,
+      "searchable": true,
+      "slug": "htn",
+      "terms": 603,
+      "title": "Hypertension Ontology For Clinical Data"
+    },
+    "IAO": {
+      "base_uris": [],
+      "curie_prefix": "IAO",
+      "properties": 150,
+      "searchable": true,
+      "slug": "iao",
+      "terms": 266,
+      "title": "Information Artifact Ontology (IAO)"
+    },
+    "ICEO": {
+      "base_uris": [],
+      "curie_prefix": "ICEO",
+      "properties": 133,
+      "searchable": true,
+      "slug": "iceo",
+      "terms": 30914,
+      "title": "ICEO: Ontology of Integrative and Conjugative Elements"
+    },
+    "ICO": {
+      "base_uris": [],
+      "curie_prefix": "ICO",
+      "properties": 176,
+      "searchable": true,
+      "slug": "ico",
+      "terms": 1197,
+      "title": "Informed Consent Ontology (ICO)"
+    },
+    "ICTV": {
+      "base_uris": [],
+      "curie_prefix": "ictv",
+      "properties": 19,
+      "searchable": true,
+      "slug": "ictv",
+      "terms": 195344,
+      "title": "ictv"
+    },
+    "IDO": {
+      "base_uris": [],
+      "curie_prefix": "IDO",
+      "properties": 104,
+      "searchable": true,
+      "slug": "ido",
+      "terms": 518,
+      "title": "Infectious Disease Ontology"
+    },
+    "IDO-COVID-19": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/IDO-COVID-19"
+      ],
+      "curie_prefix": "IDO-COVID-19",
+      "properties": 110,
+      "searchable": true,
+      "slug": "idocovid19",
+      "terms": 485,
+      "title": "The COVID-19 Infectious Disease Ontology"
+    },
+    "IDOMAL": {
+      "base_uris": [],
+      "curie_prefix": "idomal",
+      "properties": 46,
+      "searchable": true,
+      "slug": "idomal",
+      "terms": 3158,
+      "title": "Malaria Ontology"
+    },
+    "INO": {
+      "base_uris": [],
+      "curie_prefix": "INO",
+      "properties": 124,
+      "searchable": true,
+      "slug": "ino",
+      "terms": 328,
+      "title": "INO: Interaction Network Ontology"
+    },
+    "KISAO": {
+      "base_uris": [],
+      "curie_prefix": "KISAO",
+      "properties": 19,
+      "searchable": true,
+      "slug": "kisao",
+      "terms": 525,
+      "title": "Kinetic Simulation Algorithm Ontology"
+    },
+    "LABO": {
+      "base_uris": [],
+      "curie_prefix": "LABO",
+      "properties": 78,
+      "searchable": true,
+      "slug": "labo",
+      "terms": 169,
+      "title": "clinical LABoratory Ontology"
+    },
+    "LEPAO": {
+      "base_uris": [],
+      "curie_prefix": "LEPAO",
+      "properties": 84,
+      "searchable": true,
+      "slug": "lepao",
+      "terms": 822,
+      "title": "Lepidoptera Anatomy Ontology"
+    },
+    "LIFESTYLEFACTORS": {
+      "base_uris": [],
+      "curie_prefix": "LIFESTYLEFACTORS",
+      "properties": 25,
+      "searchable": true,
+      "slug": "lifestylefactors",
+      "terms": 5598,
+      "title": "Lifestyle Factors Ontology"
+    },
+    "LIPIDMAPS": {
+      "base_uris": [
+        "https://www.lipidmaps.org/rdf/"
+      ],
+      "curie_prefix": "LIPIDMAPS",
+      "properties": 0,
+      "searchable": true,
+      "slug": "lipidmaps",
+      "terms": 50561,
+      "title": "LIPID MAPS"
+    },
+    "MA": {
+      "base_uris": [],
+      "curie_prefix": "MA",
+      "properties": 15,
+      "searchable": true,
+      "slug": "ma",
+      "terms": 3390,
+      "title": "Mouse adult gross anatomy"
+    },
+    "MAMO": {
+      "base_uris": [],
+      "curie_prefix": "MAMO",
+      "properties": 9,
+      "searchable": true,
+      "slug": "mamo",
+      "terms": 106,
+      "title": "Mathematical Modelling Ontology"
+    },
+    "MAXO": {
+      "base_uris": [],
+      "curie_prefix": "MAXO",
+      "properties": 267,
+      "searchable": true,
+      "slug": "maxo",
+      "terms": 7120,
+      "title": "Medical Action Ontology"
+    },
+    "MBA": {
+      "base_uris": [
+        "https://purl.brain-bican.org/ontology/mbao/MBA_"
+      ],
+      "curie_prefix": "MBA",
+      "properties": 283,
+      "searchable": true,
+      "slug": "mba",
+      "terms": 3097,
+      "title": "Mouse Brain Atlas Ontology"
+    },
+    "MCO": {
+      "base_uris": [],
+      "curie_prefix": "MCO",
+      "properties": 108,
+      "searchable": true,
+      "slug": "mco",
+      "terms": 3383,
+      "title": "Microbial Conditions Ontology"
+    },
+    "MCRO": {
+      "base_uris": [],
+      "curie_prefix": "MCRO",
+      "properties": 361,
+      "searchable": true,
+      "slug": "mcro",
+      "terms": 969,
+      "title": "Model Card Report Ontology"
+    },
+    "MEDGEN": {
+      "base_uris": [],
+      "curie_prefix": "medgen",
+      "properties": 165,
+      "searchable": true,
+      "slug": "medgen",
+      "terms": 468657,
+      "title": "medgen"
+    },
+    "MESH": {
+      "base_uris": [
+        "http://id.nlm.nih.gov/mesh/"
+      ],
+      "curie_prefix": "mesh",
+      "properties": 8,
+      "searchable": true,
+      "slug": "mesh",
+      "terms": 355028,
+      "title": "Medical Subject Headings"
+    },
+    "METPO": {
+      "base_uris": [
+        "https://w3id.org/metpo/"
+      ],
+      "curie_prefix": "METPO",
+      "properties": 182,
+      "searchable": true,
+      "slug": "metpo",
+      "terms": 1455,
+      "title": "Microbial Ecophysiological Trait and Phenotype Ontology (METPO)"
+    },
+    "MF": {
+      "base_uris": [],
+      "curie_prefix": "MF",
+      "properties": 90,
+      "searchable": true,
+      "slug": "mf",
+      "terms": 400,
+      "title": "Mental Functioning Ontology"
+    },
+    "MFMO": {
+      "base_uris": [],
+      "curie_prefix": "MFMO",
+      "properties": 865,
+      "searchable": false,
+      "slug": "mfmo",
+      "terms": 272,
+      "title": "Mammalian Feeding Muscle Ontology"
+    },
+    "MFOEM": {
+      "base_uris": [],
+      "curie_prefix": "MFOEM",
+      "properties": 99,
+      "searchable": true,
+      "slug": "mfoem",
+      "terms": 624,
+      "title": "Emotion Ontology"
+    },
+    "MFOMD": {
+      "base_uris": [],
+      "curie_prefix": "MFOMD",
+      "properties": 378,
+      "searchable": true,
+      "slug": "mfomd",
+      "terms": 1172,
+      "title": "Mental Disease Ontology"
+    },
+    "MI": {
+      "base_uris": [],
+      "curie_prefix": "MI",
+      "properties": 45,
+      "searchable": true,
+      "slug": "mi",
+      "terms": 1656,
+      "title": "Molecular Interactions Controlled Vocabulary"
+    },
+    "MIAPA": {
+      "base_uris": [],
+      "curie_prefix": "MIAPA",
+      "properties": 234,
+      "searchable": true,
+      "slug": "miapa",
+      "terms": 238,
+      "title": "Minimum Information for A Phylogenetic Analysis (MIAPA) Ontology"
+    },
+    "MICRO": {
+      "base_uris": [],
+      "curie_prefix": "MICRO",
+      "properties": 605,
+      "searchable": true,
+      "slug": "micro",
+      "terms": 19246,
+      "title": "Ontology of Prokaryotic Phenotypic and Metabolic Characters"
+    },
+    "MIRO": {
+      "base_uris": [],
+      "curie_prefix": "miro",
+      "properties": 40,
+      "searchable": true,
+      "slug": "miro",
+      "terms": 4409,
+      "title": "Mosquito insecticide resistance"
+    },
+    "MIXS": {
+      "base_uris": [
+        "https://w3id.org/mixs/"
+      ],
+      "curie_prefix": "MIXS",
+      "properties": 834,
+      "searchable": true,
+      "slug": "gscmixs",
+      "terms": 1459,
+      "title": "Minimum Information about any (x) Sequence (MIxS) standard"
+    },
+    "MMO": {
+      "base_uris": [],
+      "curie_prefix": "MMO",
+      "properties": 26,
+      "searchable": true,
+      "slug": "mmo",
+      "terms": 869,
+      "title": "Measurement method ontology"
+    },
+    "MMUSDV": {
+      "base_uris": [],
+      "curie_prefix": "MmusDv",
+      "properties": 39,
+      "searchable": true,
+      "slug": "mmusdv",
+      "terms": 178,
+      "title": "Mouse Developmental Stages"
+    },
+    "MOD": {
+      "base_uris": [],
+      "curie_prefix": "MOD",
+      "properties": 47,
+      "searchable": true,
+      "slug": "mod",
+      "terms": 2116,
+      "title": "Protein modification"
+    },
+    "MONDO": {
+      "base_uris": [],
+      "curie_prefix": "MONDO",
+      "properties": 493,
+      "searchable": true,
+      "slug": "mondo",
+      "terms": 63449,
+      "title": "Mondo Disease Ontology"
+    },
+    "MOP": {
+      "base_uris": [],
+      "curie_prefix": "MOP",
+      "properties": 38,
+      "searchable": true,
+      "slug": "mop",
+      "terms": 3686,
+      "title": "MOP"
+    },
+    "MP": {
+      "base_uris": [],
+      "curie_prefix": "MP",
+      "properties": 446,
+      "searchable": true,
+      "slug": "mp",
+      "terms": 34864,
+      "title": "The Mammalian Phenotype Ontology"
+    },
+    "MPATH": {
+      "base_uris": [],
+      "curie_prefix": "MPATH",
+      "properties": 22,
+      "searchable": true,
+      "slug": "mpath",
+      "terms": 891,
+      "title": "Mouse pathology ontology"
+    },
+    "MPIO": {
+      "base_uris": [],
+      "curie_prefix": "MPIO",
+      "properties": 67,
+      "searchable": false,
+      "slug": "mpio",
+      "terms": 51,
+      "title": "Minimum PDDI Information Ontology"
+    },
+    "MRO": {
+      "base_uris": [],
+      "curie_prefix": "MRO",
+      "properties": 40,
+      "searchable": true,
+      "slug": "mro",
+      "terms": 51436,
+      "title": "MHC Restriction Ontology"
+    },
+    "MS": {
+      "base_uris": [],
+      "curie_prefix": "MS",
+      "properties": 39,
+      "searchable": true,
+      "slug": "ms",
+      "terms": 4136,
+      "title": "Mass spectrometry ontology"
+    },
+    "MSIO": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/MSIO_"
+      ],
+      "curie_prefix": "MSIO",
+      "properties": 133,
+      "searchable": true,
+      "slug": "msio",
+      "terms": 1294,
+      "title": "Metabolomics Standards Initiative Ontology (MSIO)"
+    },
+    "NBO": {
+      "base_uris": [],
+      "curie_prefix": "NBO",
+      "properties": 326,
+      "searchable": true,
+      "slug": "nbo",
+      "terms": 4546,
+      "title": "Neuro Behavior Ontology"
+    },
+    "NCBITAXON": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/NCBITaxon_"
+      ],
+      "curie_prefix": "NCBITaxon",
+      "properties": 32,
+      "searchable": true,
+      "slug": "ncbitaxon",
+      "terms": 2854537,
+      "title": "NCBI organismal classification"
+    },
+    "NCIT": {
+      "base_uris": [],
+      "curie_prefix": "NCIT",
+      "properties": 258,
+      "searchable": true,
+      "slug": "ncit",
+      "terms": 209910,
+      "title": "NCI Thesaurus OBO Edition"
+    },
+    "NCRO": {
+      "base_uris": [],
+      "curie_prefix": "NCRO",
+      "properties": 66,
+      "searchable": true,
+      "slug": "ncro",
+      "terms": 3078,
+      "title": "Non-Coding RNA Ontology"
+    },
+    "NGBO": {
+      "base_uris": [],
+      "curie_prefix": "NGBO",
+      "properties": 252,
+      "searchable": true,
+      "slug": "ngbo",
+      "terms": 1515,
+      "title": " Next generation biobanking ontology(NGBO)."
+    },
+    "NMR": {
+      "base_uris": [
+        "http://nmrML.org/nmrCV#NMR"
+      ],
+      "curie_prefix": "NMR",
+      "properties": 46,
+      "searchable": true,
+      "slug": "nmrcv",
+      "terms": 792,
+      "title": "nuclear magnetic resonance CV"
+    },
+    "NOMEN": {
+      "base_uris": [],
+      "curie_prefix": "NOMEN",
+      "properties": 124,
+      "searchable": true,
+      "slug": "nomen",
+      "terms": 264,
+      "title": "NOMEN - A nomenclatural ontology for biological names"
+    },
+    "OAE": {
+      "base_uris": [],
+      "curie_prefix": "OAE",
+      "properties": 232,
+      "searchable": true,
+      "slug": "oae",
+      "terms": 10595,
+      "title": "OAE: Ontology of Adverse Events"
+    },
+    "OARCS": {
+      "base_uris": [],
+      "curie_prefix": "OARCS",
+      "properties": 19,
+      "searchable": true,
+      "slug": "oarcs",
+      "terms": 308,
+      "title": "Ontology of Arthropod Circulatory Systems"
+    },
+    "OBA": {
+      "base_uris": [],
+      "curie_prefix": "OBA",
+      "properties": 419,
+      "searchable": true,
+      "slug": "oba",
+      "terms": 83515,
+      "title": "Ontology of Biological Attributes (OBA)"
+    },
+    "OBCS": {
+      "base_uris": [],
+      "curie_prefix": "OBCS",
+      "properties": 171,
+      "searchable": true,
+      "slug": "obcs",
+      "terms": 1210,
+      "title": "OBCS: Ontology of Biological and Clinical Statistics"
+    },
+    "OBI": {
+      "base_uris": [],
+      "curie_prefix": "OBI",
+      "properties": 187,
+      "searchable": true,
+      "slug": "obi",
+      "terms": 5240,
+      "title": "Ontology for Biomedical Investigations"
+    },
+    "OBIB": {
+      "base_uris": [],
+      "curie_prefix": "OBIB",
+      "properties": 172,
+      "searchable": true,
+      "slug": "obib",
+      "terms": 1803,
+      "title": "Ontology for BIoBanking (OBIB)"
+    },
+    "OCCO": {
+      "base_uris": [],
+      "curie_prefix": "OCCO",
+      "properties": 129,
+      "searchable": true,
+      "slug": "occo",
+      "terms": 1801,
+      "title": "Occupation Ontology (OccO)"
+    },
+    "OGMS": {
+      "base_uris": [],
+      "curie_prefix": "OGMS",
+      "properties": 59,
+      "searchable": true,
+      "slug": "ogms",
+      "terms": 186,
+      "title": "Ontology for General Medical Science"
+    },
+    "OGSF": {
+      "base_uris": [],
+      "curie_prefix": "OGSF",
+      "properties": 215,
+      "searchable": true,
+      "slug": "ogsf",
+      "terms": 406,
+      "title": "Ontology of Genetic Susceptibility Factor"
+    },
+    "OHD": {
+      "base_uris": [],
+      "curie_prefix": "OHD",
+      "properties": 259,
+      "searchable": true,
+      "slug": "ohd",
+      "terms": 1820,
+      "title": "Oral Health and Disease Ontology"
+    },
+    "OHMI": {
+      "base_uris": [],
+      "curie_prefix": "OHMI",
+      "properties": 277,
+      "searchable": true,
+      "slug": "ohmi",
+      "terms": 1724,
+      "title": "OHMI: Ontology of Host-Microbiome Interactions"
+    },
+    "OHPI": {
+      "base_uris": [],
+      "curie_prefix": "OHPI",
+      "properties": 516,
+      "searchable": true,
+      "slug": "ohpi",
+      "terms": 11291,
+      "title": "OHPI: Ontology of Host-Pathogen Interactions"
+    },
+    "OIO": {
+      "base_uris": [
+        "http://www.geneontology.org/formats/oboInOwl#"
+      ],
+      "curie_prefix": "oio",
+      "properties": 30,
+      "searchable": false,
+      "slug": "oio",
+      "terms": 6,
+      "title": "oio"
+    },
+    "OLATDV": {
+      "base_uris": [],
+      "curie_prefix": "OlatDv",
+      "properties": 15,
+      "searchable": true,
+      "slug": "olatdv",
+      "terms": 47,
+      "title": "Medaka Developmental Stages"
+    },
+    "OM": {
+      "base_uris": [
+        "http://www.wurvoc.org/vocabularies/om-2.0/",
+        "http://www.ontology-of-units-of-measure.org/resource/om-2/"
+      ],
+      "curie_prefix": "OM",
+      "properties": 70,
+      "searchable": true,
+      "slug": "om",
+      "terms": 2307,
+      "title": "Ontology of units of Measure (OM)"
+    },
+    "OMIABIS": {
+      "base_uris": [],
+      "curie_prefix": "omiabis",
+      "properties": 109,
+      "searchable": true,
+      "slug": "omiabis",
+      "terms": 427,
+      "title": "Ontologized MIABIS"
+    },
+    "OMIT": {
+      "base_uris": [],
+      "curie_prefix": "OMIT",
+      "properties": 188,
+      "searchable": true,
+      "slug": "omit",
+      "terms": 90928,
+      "title": "Ontology for MIRNA Target"
+    },
+    "OMO": {
+      "base_uris": [],
+      "curie_prefix": "OMO",
+      "properties": 78,
+      "searchable": false,
+      "slug": "omo",
+      "terms": 27,
+      "title": "OBO Metadata Ontology"
+    },
+    "OMP": {
+      "base_uris": [],
+      "curie_prefix": "OMP",
+      "properties": 131,
+      "searchable": true,
+      "slug": "omp",
+      "terms": 2309,
+      "title": "Ontology of Microbial Phenotypes"
+    },
+    "OMRSE": {
+      "base_uris": [],
+      "curie_prefix": "OMRSE",
+      "properties": 257,
+      "searchable": true,
+      "slug": "omrse",
+      "terms": 538,
+      "title": "Ontology for Modeling and Representation of Social Entities"
+    },
+    "ONE": {
+      "base_uris": [],
+      "curie_prefix": "ONE",
+      "properties": 318,
+      "searchable": true,
+      "slug": "one",
+      "terms": 4100,
+      "title": "Ontology for Nutritional Epidemiology"
+    },
+    "ONS": {
+      "base_uris": [],
+      "curie_prefix": "ONS",
+      "properties": 138,
+      "searchable": true,
+      "slug": "ons",
+      "terms": 4834,
+      "title": "Ontology for Nutritional Studies"
+    },
+    "ONTOAVIDA": {
+      "base_uris": [],
+      "curie_prefix": "ONTOAVIDA",
+      "properties": 58,
+      "searchable": true,
+      "slug": "ontoavida",
+      "terms": 674,
+      "title": "OntoAvida: ontology for Avida digital evolution platform."
+    },
+    "ONTONEO": {
+      "base_uris": [],
+      "curie_prefix": "ONTONEO",
+      "properties": 613,
+      "searchable": true,
+      "slug": "ontoneo",
+      "terms": 1420,
+      "title": "Obstetric and Neonatal Ontology"
+    },
+    "OOSTT": {
+      "base_uris": [],
+      "curie_prefix": "OOSTT",
+      "properties": 260,
+      "searchable": true,
+      "slug": "oostt",
+      "terms": 844,
+      "title": "Ontology of Organizational Structures of Trauma centers and Trauma Systems"
+    },
+    "OPL": {
+      "base_uris": [],
+      "curie_prefix": "OPL",
+      "properties": 121,
+      "searchable": true,
+      "slug": "opl",
+      "terms": 560,
+      "title": "Ontology for Parasite Lifecycle"
+    },
+    "OPMI": {
+      "base_uris": [],
+      "curie_prefix": "OPMI",
+      "properties": 298,
+      "searchable": true,
+      "slug": "opmi",
+      "terms": 4041,
+      "title": "OPMI: Ontology of Precision Medicine and Investigation"
+    },
+    "ORDO": {
+      "base_uris": [
+        "http://www.orpha.net/ORDO/Orphanet_"
+      ],
+      "curie_prefix": "ORDO",
+      "properties": 37,
+      "searchable": true,
+      "slug": "ordo",
+      "terms": 16296,
+      "title": "Orphanet Rare Disease Ontology"
+    },
+    "ORNASEQ": {
+      "base_uris": [],
+      "curie_prefix": "ORNASEQ",
+      "properties": 17,
+      "searchable": true,
+      "slug": "ornaseq",
+      "terms": 163,
+      "title": "Ontology for RNA sequencing (ORNASEQ)"
+    },
+    "ORTH": {
+      "base_uris": [
+        "http://purl.org/net/orth#"
+      ],
+      "curie_prefix": "ORTH",
+      "properties": 60,
+      "searchable": false,
+      "slug": "orth",
+      "terms": 34,
+      "title": "Orthology Ontology"
+    },
+    "OVAE": {
+      "base_uris": [],
+      "curie_prefix": "OVAE",
+      "properties": 247,
+      "searchable": true,
+      "slug": "ovae",
+      "terms": 1554,
+      "title": "OVAE: Ontology of Vaccine Adverse Events"
+    },
+    "OWL": {
+      "base_uris": [
+        "http://www.w3.org/2002/07/owl#"
+      ],
+      "curie_prefix": "owl",
+      "properties": 58,
+      "searchable": false,
+      "slug": "owl",
+      "terms": 32,
+      "title": "The OWL 2 Schema vocabulary (OWL 2)"
+    },
+    "PATO": {
+      "base_uris": [],
+      "curie_prefix": "PATO",
+      "properties": 356,
+      "searchable": true,
+      "slug": "pato",
+      "terms": 8625,
+      "title": "PATO - the Phenotype And Trait Ontology"
+    },
+    "PBPKO": {
+      "base_uris": [],
+      "curie_prefix": "PBPKO",
+      "properties": 151,
+      "searchable": true,
+      "slug": "pbpko",
+      "terms": 1023,
+      "title": "Physiologically-Based Pharmacokinetic Ontology"
+    },
+    "PCL": {
+      "base_uris": [],
+      "curie_prefix": "PCL",
+      "properties": 576,
+      "searchable": true,
+      "slug": "pcl",
+      "terms": 37210,
+      "title": "Provisional Cell Ontology"
+    },
+    "PCO": {
+      "base_uris": [],
+      "curie_prefix": "PCO",
+      "properties": 197,
+      "searchable": true,
+      "slug": "pco",
+      "terms": 220,
+      "title": "Population and Community Ontology"
+    },
+    "PDRO": {
+      "base_uris": [],
+      "curie_prefix": "PDRO",
+      "properties": 191,
+      "searchable": true,
+      "slug": "pdro",
+      "terms": 320,
+      "title": "The Prescription of Drugs Ontology"
+    },
+    "PDUMDV": {
+      "base_uris": [],
+      "curie_prefix": "PdumDv",
+      "properties": 17,
+      "searchable": true,
+      "slug": "pdumdv",
+      "terms": 21,
+      "title": "Platynereis Developmental Stages"
+    },
+    "PECO": {
+      "base_uris": [],
+      "curie_prefix": "PECO",
+      "properties": 124,
+      "searchable": true,
+      "slug": "peco",
+      "terms": 3657,
+      "title": "Plant Experimental Conditions Ontology"
+    },
+    "PHI": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/PHI_"
+      ],
+      "curie_prefix": "PHI",
+      "properties": 8,
+      "searchable": true,
+      "slug": "phi",
+      "terms": 42,
+      "title": "PHI-base Ontology"
+    },
+    "PHIPO": {
+      "base_uris": [],
+      "curie_prefix": "PHIPO",
+      "properties": 416,
+      "searchable": true,
+      "slug": "phipo",
+      "terms": 10727,
+      "title": "Pathogen Host Interactions Phenotype Ontology"
+    },
+    "PLANA": {
+      "base_uris": [],
+      "curie_prefix": "PLANA",
+      "properties": 291,
+      "searchable": true,
+      "slug": "plana",
+      "terms": 875,
+      "title": "Planarian Anatomy Ontology (PLANA)"
+    },
+    "PLANP": {
+      "base_uris": [],
+      "curie_prefix": "PLANP",
+      "properties": 324,
+      "searchable": true,
+      "slug": "planp",
+      "terms": 3560,
+      "title": "Planarian Phenotype Ontology (PLANP)"
+    },
+    "PO": {
+      "base_uris": [],
+      "curie_prefix": "PO",
+      "properties": 203,
+      "searchable": true,
+      "slug": "po",
+      "terms": 2029,
+      "title": "Plant Ontology"
+    },
+    "PORO": {
+      "base_uris": [],
+      "curie_prefix": "PORO",
+      "properties": 142,
+      "searchable": true,
+      "slug": "poro",
+      "terms": 932,
+      "title": "Porifera (sponge) ontology"
+    },
+    "PPO": {
+      "base_uris": [],
+      "curie_prefix": "PPO",
+      "properties": 66,
+      "searchable": true,
+      "slug": "ppo",
+      "terms": 576,
+      "title": "Plant Phenology Ontology"
+    },
+    "PREFER": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/PREFER_"
+      ],
+      "curie_prefix": "PREFER",
+      "properties": 334,
+      "searchable": true,
+      "slug": "prefer",
+      "terms": 6943,
+      "title": "PREFER Ontology"
+    },
+    "PRIDE": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/PRIDE_"
+      ],
+      "curie_prefix": "PRIDE",
+      "properties": 524,
+      "searchable": true,
+      "slug": "pride",
+      "terms": 98377,
+      "title": "Proteomics Identification Database Ontology"
+    },
+    "PROBONTO": {
+      "base_uris": [
+        "http://www.probonto.org/core"
+      ],
+      "curie_prefix": "PROBONTO",
+      "properties": 44,
+      "searchable": false,
+      "slug": "probonto",
+      "terms": 39,
+      "title": "Probability Distribution Ontology"
+    },
+    "PROCO": {
+      "base_uris": [],
+      "curie_prefix": "PROCO",
+      "properties": 149,
+      "searchable": true,
+      "slug": "proco",
+      "terms": 922,
+      "title": "PROCO: PROcess Chemistry Ontology"
+    },
+    "PROV": {
+      "base_uris": [
+        "http://www.bioassayontology.org/bao#"
+      ],
+      "curie_prefix": "PROV",
+      "properties": 72,
+      "searchable": false,
+      "slug": "prov",
+      "terms": 31,
+      "title": "Provenance Ontology (PROV-O)"
+    },
+    "PSDO": {
+      "base_uris": [],
+      "curie_prefix": "PSDO",
+      "properties": 273,
+      "searchable": true,
+      "slug": "psdo",
+      "terms": 1383,
+      "title": "Performance Summary Display Ontology"
+    },
+    "PSO": {
+      "base_uris": [],
+      "curie_prefix": "PSO",
+      "properties": 245,
+      "searchable": true,
+      "slug": "pso",
+      "terms": 4899,
+      "title": "Plant Stress Ontology"
+    },
+    "PW": {
+      "base_uris": [],
+      "curie_prefix": "PW",
+      "properties": 21,
+      "searchable": true,
+      "slug": "pw",
+      "terms": 2760,
+      "title": "Pathway ontology"
+    },
+    "RBO": {
+      "base_uris": [],
+      "curie_prefix": "RBO",
+      "properties": 575,
+      "searchable": true,
+      "slug": "rbo",
+      "terms": 9221,
+      "title": "Radiation Biology Ontology"
+    },
+    "RDFS": {
+      "base_uris": [
+        "http://www.w3.org/2000/01/rdf-schema#"
+      ],
+      "curie_prefix": "rdfs",
+      "properties": 9,
+      "searchable": false,
+      "slug": "rdfs",
+      "terms": 6,
+      "title": "The RDF Schema vocabulary (RDFS)"
+    },
+    "REHABO": {
+      "base_uris": [],
+      "curie_prefix": "rehabo",
+      "properties": 123,
+      "searchable": false,
+      "slug": "rehabo",
+      "terms": 111,
+      "title": "The Rehabilitation Ontology"
+    },
+    "REPR": {
+      "base_uris": [
+        "https://w3id.org/reproduceme#"
+      ],
+      "curie_prefix": "REPR",
+      "properties": 209,
+      "searchable": true,
+      "slug": "reproduceme",
+      "terms": 389,
+      "title": "REPRODUCE-ME Ontology"
+    },
+    "RETO": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/ReTO_"
+      ],
+      "curie_prefix": "ReTO",
+      "properties": 12,
+      "searchable": true,
+      "slug": "reto",
+      "terms": 147738,
+      "title": "Regulation of Transcription Ontology"
+    },
+    "REXO": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/ReXO_"
+      ],
+      "curie_prefix": "ReXO",
+      "properties": 12,
+      "searchable": true,
+      "slug": "rexo",
+      "terms": 158239,
+      "title": "Regulation of Gene Expression Ontology"
+    },
+    "RO": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/BFO_0000050",
+        "http://purl.obolibrary.org/obo/RO_"
+      ],
+      "curie_prefix": "RO",
+      "properties": 829,
+      "searchable": false,
+      "slug": "ro",
+      "terms": 58,
+      "title": "Relation Ontology"
+    },
+    "ROR": {
+      "base_uris": [
+        "https://ror.org/"
+      ],
+      "curie_prefix": "ror",
+      "properties": 22,
+      "searchable": false,
+      "slug": "ror",
+      "terms": 10,
+      "title": "Research Organization Registry"
+    },
+    "RS": {
+      "base_uris": [],
+      "curie_prefix": "RS",
+      "properties": 22,
+      "searchable": true,
+      "slug": "rs",
+      "terms": 5687,
+      "title": "Rat Strain Ontology"
+    },
+    "RXNO": {
+      "base_uris": [],
+      "curie_prefix": "RXNO",
+      "properties": 49,
+      "searchable": true,
+      "slug": "rxno",
+      "terms": 1019,
+      "title": "RXNO"
+    },
+    "SBO": {
+      "base_uris": [],
+      "curie_prefix": "SBO",
+      "properties": 1,
+      "searchable": true,
+      "slug": "sbo",
+      "terms": 695,
+      "title": "Systems Biology Ontology"
+    },
+    "SCDO": {
+      "base_uris": [],
+      "curie_prefix": "SCDO",
+      "properties": 145,
+      "searchable": true,
+      "slug": "scdo",
+      "terms": 2071,
+      "title": "Sickle Cell Disease Ontology"
+    },
+    "SCHEMAORG_HTTP": {
+      "base_uris": [
+        "http://schema.org/"
+      ],
+      "curie_prefix": "schemaorg_http",
+      "properties": 1684,
+      "searchable": false,
+      "slug": "schemaorg_http",
+      "terms": 1014,
+      "title": "schemaorg_http"
+    },
+    "SCHEMAORG_HTTPS": {
+      "base_uris": [
+        "https://schema.org/"
+      ],
+      "curie_prefix": "schemaorg_https",
+      "properties": 1684,
+      "searchable": false,
+      "slug": "schemaorg_https",
+      "terms": 1014,
+      "title": "schemaorg_https"
+    },
+    "SEMAPV": {
+      "base_uris": [
+        "https://w3id.org/semapv/vocab/"
+      ],
+      "curie_prefix": "semapv",
+      "properties": 23,
+      "searchable": true,
+      "slug": "semapv",
+      "terms": 57,
+      "title": "Semantic Mapping Vocabulary"
+    },
+    "SEPIO": {
+      "base_uris": [],
+      "curie_prefix": "SEPIO",
+      "properties": 313,
+      "searchable": false,
+      "slug": "sepio",
+      "terms": 125,
+      "title": "Ontology for Scientific Evidence and Provenance Information"
+    },
+    "SHARELOC": {
+      "base_uris": [],
+      "curie_prefix": "SHARELOC",
+      "properties": 0,
+      "searchable": true,
+      "slug": "shareloc",
+      "terms": 95,
+      "title": "ShareLoc"
+    },
+    "SIBO": {
+      "base_uris": [],
+      "curie_prefix": "SIBO",
+      "properties": 21,
+      "searchable": true,
+      "slug": "sibo",
+      "terms": 525,
+      "title": "Social Insect Behavior Ontology"
+    },
+    "SIO": {
+      "base_uris": [
+        "http://semanticscience.org/resource/SIO_"
+      ],
+      "curie_prefix": "SIO",
+      "properties": 238,
+      "searchable": true,
+      "slug": "sio",
+      "terms": 1585,
+      "title": "Semanticscience Integrated Ontology"
+    },
+    "SKOS": {
+      "base_uris": [
+        "http://www.w3.org/2004/02/skos/core#"
+      ],
+      "curie_prefix": "skos",
+      "properties": 56,
+      "searchable": false,
+      "slug": "skos",
+      "terms": 6,
+      "title": "skos"
+    },
+    "SLM": {
+      "base_uris": [
+        "https://swisslipids.org/rdf/SLM_"
+      ],
+      "curie_prefix": "SLM",
+      "properties": 51,
+      "searchable": true,
+      "slug": "slm",
+      "terms": 1017097,
+      "title": "SwissLipids"
+    },
+    "SLSO": {
+      "base_uris": [],
+      "curie_prefix": "SLSO",
+      "properties": 935,
+      "searchable": true,
+      "slug": "slso",
+      "terms": 3978,
+      "title": "Space Life Sciences Ontology"
+    },
+    "SNOMED": {
+      "base_uris": [
+        "http://snomed.info/id/"
+      ],
+      "curie_prefix": "SNOMED",
+      "properties": 140,
+      "searchable": true,
+      "slug": "snomed",
+      "terms": 376452,
+      "title": "SNOMED CT (International Edition)"
+    },
+    "SO": {
+      "base_uris": [],
+      "curie_prefix": "SO",
+      "properties": 92,
+      "searchable": true,
+      "slug": "so",
+      "terms": 2752,
+      "title": "Sequence types and features ontology"
+    },
+    "SPD": {
+      "base_uris": [],
+      "curie_prefix": "SPD",
+      "properties": 20,
+      "searchable": true,
+      "slug": "spd",
+      "terms": 832,
+      "title": "Spider Ontology"
+    },
+    "SRAO": {
+      "base_uris": [
+        "http://www.fairsharing.org/ontology/subject"
+      ],
+      "curie_prefix": "SRAO",
+      "properties": 44,
+      "searchable": true,
+      "slug": "srao",
+      "terms": 445,
+      "title": "FAIRsharing Subject Ontology (SRAO)"
+    },
+    "STATO": {
+      "base_uris": [],
+      "curie_prefix": "STATO",
+      "properties": 109,
+      "searchable": true,
+      "slug": "stato",
+      "terms": 1053,
+      "title": "STATO: the statistical methods ontology"
+    },
+    "SWO": {
+      "base_uris": [],
+      "curie_prefix": "SWO",
+      "properties": 240,
+      "searchable": true,
+      "slug": "swo",
+      "terms": 1971,
+      "title": "Software ontology"
+    },
+    "SYMP": {
+      "base_uris": [],
+      "curie_prefix": "SYMP",
+      "properties": 23,
+      "searchable": true,
+      "slug": "symp",
+      "terms": 1020,
+      "title": "Symptom Ontology"
+    },
+    "T4FS": {
+      "base_uris": [],
+      "curie_prefix": "T4FS",
+      "properties": 62,
+      "searchable": true,
+      "slug": "t4fs",
+      "terms": 563,
+      "title": "terms4FAIRskills"
+    },
+    "TADS": {
+      "base_uris": [],
+      "curie_prefix": "tads",
+      "properties": 17,
+      "searchable": true,
+      "slug": "tads",
+      "terms": 628,
+      "title": "Tick Anatomy Ontology"
+    },
+    "TAO": {
+      "base_uris": [],
+      "curie_prefix": "tao",
+      "properties": 49,
+      "searchable": true,
+      "slug": "tao",
+      "terms": 3372,
+      "title": "Teleost Anatomy Ontology"
+    },
+    "TAXRANK": {
+      "base_uris": [],
+      "curie_prefix": "TAXRANK",
+      "properties": 15,
+      "searchable": true,
+      "slug": "taxrank",
+      "terms": 77,
+      "title": "Taxonomic rank vocabulary"
+    },
+    "TEDDY": {
+      "base_uris": [
+        "http://identifiers.org/teddy/TEDDY_"
+      ],
+      "curie_prefix": "TEDDY",
+      "properties": 18,
+      "searchable": true,
+      "slug": "teddy",
+      "terms": 167,
+      "title": "Terminology for Description of Dynamics"
+    },
+    "TFO": {
+      "base_uris": [
+        "http://opendata.inrae.fr/PO2/Ontology/TransformON/"
+      ],
+      "curie_prefix": "TFO",
+      "properties": 99,
+      "searchable": true,
+      "slug": "tfo",
+      "terms": 10348,
+      "title": "TransformON"
+    },
+    "TGMA": {
+      "base_uris": [],
+      "curie_prefix": "tgma",
+      "properties": 25,
+      "searchable": true,
+      "slug": "tgma",
+      "terms": 1864,
+      "title": "Mosquito gross anatomy ontology"
+    },
+    "TO": {
+      "base_uris": [],
+      "curie_prefix": "TO",
+      "properties": 295,
+      "searchable": true,
+      "slug": "to",
+      "terms": 6194,
+      "title": "Plant Trait Ontology"
+    },
+    "TRANS": {
+      "base_uris": [],
+      "curie_prefix": "TRANS",
+      "properties": 16,
+      "searchable": true,
+      "slug": "trans",
+      "terms": 35,
+      "title": "Pathogen Transmission Ontology"
+    },
+    "TTO": {
+      "base_uris": [],
+      "curie_prefix": "TTO",
+      "properties": 27,
+      "searchable": true,
+      "slug": "tto",
+      "terms": 38705,
+      "title": "Teleost taxonomy ontology"
+    },
+    "TXPO": {
+      "base_uris": [],
+      "curie_prefix": "TXPO",
+      "properties": 148,
+      "searchable": true,
+      "slug": "txpo",
+      "terms": 9406,
+      "title": "TOXic Process Ontology (TXPO)"
+    },
+    "UBERON": {
+      "base_uris": [],
+      "curie_prefix": "UBERON",
+      "properties": 555,
+      "searchable": true,
+      "slug": "uberon",
+      "terms": 26624,
+      "title": "Uber-anatomy ontology"
+    },
+    "UNIMOD": {
+      "base_uris": [
+        "http://purl.obolibrary.org/obo/UNIMOD_"
+      ],
+      "curie_prefix": "UNIMOD",
+      "properties": 11,
+      "searchable": true,
+      "slug": "unimod",
+      "terms": 1523,
+      "title": "Unimod protein modification database for mass spectrometry"
+    },
+    "UNIPROTRDFS": {
+      "base_uris": [],
+      "curie_prefix": "uniprotrdfs",
+      "properties": 377,
+      "searchable": false,
+      "slug": "uniprotrdfs",
+      "terms": 240,
+      "title": "uniprotrdfs"
+    },
+    "UO": {
+      "base_uris": [],
+      "curie_prefix": "UO",
+      "properties": 11,
+      "searchable": true,
+      "slug": "uo",
+      "terms": 574,
+      "title": "Units of measurement ontology"
+    },
+    "UPA": {
+      "base_uris": [],
+      "curie_prefix": "upa",
+      "properties": 145,
+      "searchable": true,
+      "slug": "upa",
+      "terms": 4672,
+      "title": "Unipathway"
+    },
+    "UPHENO": {
+      "base_uris": [],
+      "curie_prefix": "UPHENO",
+      "properties": 502,
+      "searchable": true,
+      "slug": "upheno",
+      "terms": 193296,
+      "title": "Unified Phenotype Ontology (uPheno)"
+    },
+    "VALUESETS": {
+      "base_uris": [
+        "https://w3id.org/linkml/valuesets/"
+      ],
+      "curie_prefix": "valuesets",
+      "properties": 0,
+      "searchable": true,
+      "slug": "valuesets",
+      "terms": 8308,
+      "title": "Value Sets"
+    },
+    "VARIO": {
+      "base_uris": [],
+      "curie_prefix": "VariO",
+      "properties": 37,
+      "searchable": true,
+      "slug": "vario",
+      "terms": 618,
+      "title": "Variation Ontology"
+    },
+    "VBO": {
+      "base_uris": [],
+      "curie_prefix": "VBO",
+      "properties": 253,
+      "searchable": true,
+      "slug": "vbo",
+      "terms": 20473,
+      "title": "Vertebrate Breed Ontology"
+    },
+    "VO": {
+      "base_uris": [],
+      "curie_prefix": "VO",
+      "properties": 285,
+      "searchable": true,
+      "slug": "vo",
+      "terms": 14811,
+      "title": "Vaccine Ontology"
+    },
+    "VSAO": {
+      "base_uris": [],
+      "curie_prefix": "vsao",
+      "properties": 42,
+      "searchable": true,
+      "slug": "vsao",
+      "terms": 314,
+      "title": "Vertebrate Skeletal Anatomy Ontology-"
+    },
+    "VT": {
+      "base_uris": [],
+      "curie_prefix": "VT",
+      "properties": 25,
+      "searchable": true,
+      "slug": "vt",
+      "terms": 4088,
+      "title": "The Vertebrate Trait Ontology"
+    },
+    "VTO": {
+      "base_uris": [],
+      "curie_prefix": "VTO",
+      "properties": 27,
+      "searchable": true,
+      "slug": "vto",
+      "terms": 107254,
+      "title": "Vertebrate Taxonomy Ontology"
+    },
+    "WBBT": {
+      "base_uris": [],
+      "curie_prefix": "WBbt",
+      "properties": 188,
+      "searchable": true,
+      "slug": "wbbt",
+      "terms": 7573,
+      "title": "C. elegans Gross Anatomy Ontology"
+    },
+    "WBLS": {
+      "base_uris": [],
+      "curie_prefix": "WBls",
+      "properties": 143,
+      "searchable": true,
+      "slug": "wbls",
+      "terms": 796,
+      "title": "C. elegans Development Ontology"
+    },
+    "WBPHENOTYPE": {
+      "base_uris": [],
+      "curie_prefix": "WBPhenotype",
+      "properties": 223,
+      "searchable": true,
+      "slug": "wbphenotype",
+      "terms": 6546,
+      "title": "C elegans Phenotype Ontology"
+    },
+    "WIKIPATHWAYS": {
+      "base_uris": [
+        "http://identifiers.org/wikipathways/"
+      ],
+      "curie_prefix": "wikipathways",
+      "properties": 14,
+      "searchable": true,
+      "slug": "wikipathways",
+      "terms": 2899,
+      "title": "WikiPathways"
+    },
+    "XAO": {
+      "base_uris": [],
+      "curie_prefix": "XAO",
+      "properties": 43,
+      "searchable": true,
+      "slug": "xao",
+      "terms": 1830,
+      "title": "Xenopus Anatomy Ontology"
+    },
+    "XCO": {
+      "base_uris": [],
+      "curie_prefix": "XCO",
+      "properties": 25,
+      "searchable": true,
+      "slug": "xco",
+      "terms": 1867,
+      "title": "Experimental condition ontology"
+    },
+    "XLMOD": {
+      "base_uris": [],
+      "curie_prefix": "XLMOD",
+      "properties": 50,
+      "searchable": true,
+      "slug": "xlmod",
+      "terms": 1106,
+      "title": "HUPO-PSI cross-linking and derivatization reagents controlled vocabulary"
+    },
+    "XPO": {
+      "base_uris": [],
+      "curie_prefix": "XPO",
+      "properties": 444,
+      "searchable": true,
+      "slug": "xpo",
+      "terms": 30225,
+      "title": "Xenopus Phenotype Ontology"
+    },
+    "ZECO": {
+      "base_uris": [],
+      "curie_prefix": "ZECO",
+      "properties": 44,
+      "searchable": true,
+      "slug": "zeco",
+      "terms": 161,
+      "title": "Zebrafish Experimental Conditions Ontology"
+    },
+    "ZFA": {
+      "base_uris": [],
+      "curie_prefix": "ZFA",
+      "properties": 44,
+      "searchable": true,
+      "slug": "zfa",
+      "terms": 3293,
+      "title": "Zebrafish anatomy and development ontology"
+    },
+    "ZFS": {
+      "base_uris": [],
+      "curie_prefix": "ZFS",
+      "properties": 44,
+      "searchable": true,
+      "slug": "zfs",
+      "terms": 3293,
+      "title": "Zebrafish developmental stages ontology"
+    },
+    "ZP": {
+      "base_uris": [],
+      "curie_prefix": "ZP",
+      "properties": 180,
+      "searchable": true,
+      "slug": "zp",
+      "terms": 63809,
+      "title": "Zebrafish Phenotype Ontology (ZP)"
+    }
+  },
+  "review": [
+    "FBCV: prefix collision between 'fbcv' and 'dpo'; 'fbcv' keeps the key, 'dpo' is keyed DPO",
+    "SLM: 1,017,097 terms, not in QUARANTINE \u2014 confirm it does not flood"
+  ]
+}

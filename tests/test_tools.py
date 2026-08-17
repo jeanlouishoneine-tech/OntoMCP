@@ -6,6 +6,8 @@ exercised offline. Integration tests at the bottom hit live OLS and are skipped
 unless ``-m integration`` is selected.
 """
 
+from pathlib import Path
+
 import httpx
 import pytest
 
@@ -18,11 +20,11 @@ from ontomcp.core.tools import (
     get_children,
     get_descendants,
     get_parents,
+    get_profile_setup_guidance,
     get_term,
     get_term_graph,
     map_across_ontologies,
     search_terms,
-    suggest_ontology,
     validate_term,
 )
 
@@ -80,24 +82,62 @@ async def test_search_terms_ols_fallback_and_caches(db):
         return _search_response([_term_doc(desc="end of cell life")])
 
     async with _client(handler) as cli:
-        results, cached = await search_terms("cell death", db_path=db, client=cli)
-    assert results[0]["curie"] == "GO:0008219"
+        payload, cached = await search_terms("cell death", db_path=db, client=cli)
+    assert payload["results"][0]["curie"] == "GO:0008219"
     assert cached is False  # served from OLS, not cache
+    assert payload["meta"]["source"] == "ols"
     assert calls["n"] == 1
 
-    # Second call must hit FTS cache, not OLS.
+    # Second call must hit FTS cache, not OLS — and only because the ledger records
+    # that OLS answered this exact (query, scope). "FTS returned a row" is not proof.
     async with _client(handler) as cli:
         again, cached = await search_terms("cell death", db_path=db, client=cli)
-    assert again[0]["curie"] == "GO:0008219"
-    assert cached is True  # served from FTS cache
+    assert again["results"][0]["curie"] == "GO:0008219"
+    assert cached is True
+    assert again["meta"]["source"] == "cache"
     assert calls["n"] == 1  # no new OLS call
 
-    # Score must be on the same scale regardless of which path served it
-    # (regression: OLS used to pass through raw Solr scores >> 1).
-    assert results[0]["score"] == again[0]["score"] == 1.0
+    # rank is the ordinal position, identical regardless of which path served it.
+    assert payload["results"][0]["rank"] == again["results"][0]["rank"] == 1
 
 
-async def test_search_terms_drops_unknown_ontologies(db):
+async def test_search_terms_rejects_an_unknown_ontology_instead_of_dropping_it(db):
+    """F3: a rejected code never widens scope, and never silently narrows it either.
+
+    Dropping "bogus" and searching only GO answered a question the user did not
+    ask. The structured error is what lets the model offer a one-step fix.
+    """
+
+    def handler(request):
+        raise AssertionError("a rejected scope must not reach the network")
+
+    async with _client(handler) as cli:
+        results, hit = await search_terms("x", ontologies=["go", "bogus"], db_path=db, client=cli)
+    assert results[0]["error"] == "unknown_ontology"
+    assert results[0]["ontology"] == "BOGUS"
+    assert hit is False
+
+
+async def test_search_terms_distinguishes_a_real_ontology_from_a_typo(db):
+    """FOODON is real but out of profile; MOONDO is a mistake. Different errors."""
+
+    def handler(request):
+        raise AssertionError("a rejected scope must not reach the network")
+
+    async with _client(handler) as cli:
+        out_of_profile, _ = await search_terms("x", ontologies=["FOODON"], db_path=db, client=cli)
+        unknown, _ = await search_terms("x", ontologies=["MOONDO"], db_path=db, client=cli)
+
+    assert out_of_profile[0]["error"] == "out_of_profile"
+    assert out_of_profile[0]["title"] == "Food Ontology"
+    assert "add FOODON" in out_of_profile[0]["remediation"]
+
+    assert unknown[0]["error"] == "unknown_ontology"
+    assert "MONDO" in unknown[0]["did_you_mean"]
+
+
+async def test_search_terms_aliases_hp_to_hpo_before_the_membership_test(db):
+    """A12: aliases apply first, so ["HP"] resolves rather than being rejected."""
     seen = {}
 
     def handler(request):
@@ -105,8 +145,77 @@ async def test_search_terms_drops_unknown_ontologies(db):
         return _search_response([_term_doc()])
 
     async with _client(handler) as cli:
-        await search_terms("x", ontologies=["go", "bogus"], db_path=db, client=cli)
-    assert seen["params"].get("ontology") == "go"  # bogus dropped
+        await search_terms("x", ontologies=["HP"], db_path=db, client=cli)
+    assert seen["params"].get("ontology") == "hp"
+
+
+async def test_unfiltered_search_is_scoped_to_the_resolved_default(db):
+    """F2: an unfiltered search used to hit all of OLS4, not "all of my ontologies"."""
+    seen = {}
+
+    def handler(request):
+        seen["params"] = dict(request.url.params)
+        return _search_response([_term_doc()])
+
+    async with _client(handler) as cli:
+        await search_terms("x", db_path=db, client=cli)
+    slugs = set(seen["params"]["ontology"].split(","))
+    assert "go" in slugs and "mondo" in slugs
+    assert len(slugs) == len(config.ONTOLOGIES)
+
+
+def _empty_broken_registry():
+    """A ``registry.current()`` result shaped like a genuinely unresolvable
+    registry (unreadable index) — post-fix, ``current()`` never raises, it
+    degrades to this instead."""
+    from ontomcp.core.registry import ResolvedRegistry
+
+    return ResolvedRegistry(
+        profile="default",
+        default_scope=(),
+        named_only=(),
+        members={},
+        index_version="",
+        warnings=("Ontology index not found. Run: python scripts/refresh_index.py",),
+    )
+
+
+async def test_unfiltered_search_refuses_rather_than_returning_a_false_empty(db, monkeypatch):
+    """An unresolvable registry must not widen to all of OLS4 and then filter to
+    nothing — that is a real failure dressed up as a zero-hit success."""
+    from ontomcp.core import registry
+
+    monkeypatch.setattr(registry, "current", _empty_broken_registry)
+
+    called = False
+
+    def handler(request):
+        nonlocal called
+        called = True
+        return _search_response([_term_doc()])
+
+    async with _client(handler) as cli:
+        result, cache_hit = await search_terms("x", db_path=db, client=cli)
+    assert result["error"] == "registry_unavailable"
+    assert cache_hit is False
+    assert not called  # never even reaches OLS
+
+
+async def test_explicit_scope_search_still_works_when_the_registry_is_unresolvable(db, monkeypatch):
+    """An explicitly named ontology must still search fail-open, unlike the
+    unfiltered case above — the user told us exactly what they want."""
+    from ontomcp.core import registry
+
+    monkeypatch.setattr(registry, "current", _empty_broken_registry)
+
+    def handler(request):
+        return _search_response([_term_doc(obo_id="GO:0008219")])
+
+    async with _client(handler) as cli:
+        result, _ = await search_terms("x", ontologies=["GO"], db_path=db, client=cli)
+    assert "error" not in result
+    assert any(r["curie"] == "GO:0008219" for r in result["results"])
+    assert result["meta"]["notice"] == list(_empty_broken_registry().warnings)
 
 
 # (helper) every tool now returns (result, cache_hit); tests unpack accordingly.
@@ -130,7 +239,47 @@ async def test_search_terms_propagates_error(db):
 
     async with _client(handler) as cli:
         results, _ = await search_terms("x", db_path=db, client=cli)
-    assert results[0]["error"] == "search_failed"
+    assert results[0]["error"] == "search_failed"  # errors stay a bare list
+
+
+async def test_search_terms_rejects_an_empty_query_without_calling_ols(db):
+    calls = {"n": 0}
+
+    def handler(request):
+        calls["n"] += 1
+        return _search_response([_term_doc()])
+
+    async with _client(handler) as cli:
+        result, cached = await search_terms("   ", db_path=db, client=cli)
+    assert result["error"] == "bad_query"
+    assert cached is False
+    assert calls["n"] == 0  # never reached OLS
+
+
+async def test_search_terms_multi_row_cache_hit_preserves_ols_order(db):
+    """A covered cache hit must return the same #1 result OLS originally gave.
+
+    Local bm25 and OLS relevance are different algorithms; the docs are chosen so
+    naive bm25 would rank them differently than OLS's own order below.
+    """
+
+    def handler(request):
+        return _search_response(
+            [
+                _term_doc(obo_id="GO:3", label="third", desc="cell death regulation"),
+                _term_doc(obo_id="GO:1", label="first", desc="cell death"),
+                _term_doc(obo_id="GO:2", label="second", desc="the process of cell death"),
+            ]
+        )
+
+    async with _client(handler) as cli:
+        fresh, _ = await search_terms("cell death", db_path=db, client=cli)
+    assert [r["curie"] for r in fresh["results"]] == ["GO:3", "GO:1", "GO:2"]
+
+    async with _client(handler) as cli:
+        hit, cached = await search_terms("cell death", db_path=db, client=cli)
+    assert cached is True
+    assert [r["curie"] for r in hit["results"]] == ["GO:3", "GO:1", "GO:2"]
 
 
 async def test_search_terms_flags_obsolete_hits(db):
@@ -142,8 +291,8 @@ async def test_search_terms_flags_obsolete_hits(db):
         return _search_response([live, dead])
 
     async with _client(handler) as cli:
-        results, _ = await search_terms("apoptosis", db_path=db, client=cli)
-    flags = {r["curie"]: r["is_obsolete"] for r in results}
+        payload, _ = await search_terms("apoptosis", db_path=db, client=cli)
+    flags = {r["curie"]: r["is_obsolete"] for r in payload["results"]}
     assert flags["GO:0008219"] is False
     assert flags["GO:0006917"] is True
 
@@ -360,35 +509,63 @@ async def test_get_descendants_caps_at_50_and_writes_no_edges(db):
     assert n_rels == 0  # transitive results never become direct edges
 
 
-# --- suggest_ontology (pure logic) -----------------------------------------
+# --- get_profile_setup_guidance (pure logic, zero arguments) ---------------
 
 
-def test_suggest_ontology_matches_keywords():
-    out, cached = suggest_ontology("looking at single cell RNA data")
-    codes = [e["ontology"] for e in out]
-    assert codes[0] == "CL"
-    assert all("ols_url" in e for e in out)
+def test_guidance_takes_no_arguments():
+    # The objective's one prohibited behaviour is inferring ontologies from a
+    # research description. No code path may accept one.
+    import inspect
+
+    assert inspect.signature(get_profile_setup_guidance).parameters == {}
+
+
+def test_guidance_flags_policy_unavailable_instead_of_hiding_it(monkeypatch):
+    """An unreadable policy.md must not look like an intentionally short/empty
+    policy — the payload must say so, not just return "" silently."""
+    from ontomcp.core.tools import suggest as suggest_module
+
+    monkeypatch.setattr(suggest_module, "POLICY_PATH", Path("/nowhere/policy.md"))
+
+    result, _ = get_profile_setup_guidance()
+    assert result["policy"] == ""
+    assert result["policy_unavailable"] is True
+
+
+def test_guidance_returns_policy_rules_and_grounding():
+    out, cached = get_profile_setup_guidance()
     assert cached is False  # pure logic, no cache
+    assert set(out) >= {"policy", "grounding_list", "rules", "next_step", "index_version"}
+    assert out["rules"]["max_ontologies"] == 12
 
 
-def test_suggest_ontology_default_when_no_match():
-    out, _ = suggest_ontology("completely unrelated text")
-    assert [e["ontology"] for e in out] == ["GO", "MONDO"]
+def test_guidance_grounding_list_carries_titles_not_just_prefixes():
+    # An existence check proves "PO" is a real prefix, not that the user meant
+    # Plant Ontology rather than Population and Community Ontology.
+    out, _ = get_profile_setup_guidance()
+    assert out["grounding_list"]["GO"] == "Gene Ontology"
+    assert all(isinstance(v, str) and v for v in out["grounding_list"].values())
 
 
-def test_suggest_ontology_recommends_pharma_ontologies():
-    out, _ = suggest_ontology("oncology drug target safety profiling")
-    codes = [e["ontology"] for e in out]
-    assert "NCIT" in codes  # cancer/drug context
-    assert "PR" in codes  # target/protein context
+def test_guidance_omits_non_searchable_ontologies():
+    # RO is property-dominant (58 terms, 829 properties), so proposing it would
+    # waste a profile slot on an ontology that returns almost nothing.
+    out, _ = get_profile_setup_guidance()
+    assert "RO" not in out["grounding_list"]
+    assert "GO" in out["grounding_list"]
 
 
-def test_suggest_ontology_examples_cover_full_registry():
-    # Every registered ontology must have illustrative example terms, so a
-    # suggestion never returns an empty examples list.
-    from ontomcp.core.tools.suggest import _EXAMPLE_TERMS
+def test_guidance_names_quarantined_ontologies_with_reasons():
+    out, _ = get_profile_setup_guidance()
+    assert set(out["rules"]["quarantined"]) == {"NCBITAXON", "PATO"}
+    assert all(reason for reason in out["rules"]["quarantined"].values())
 
-    assert set(config.ONTOLOGIES) <= set(_EXAMPLE_TERMS)
+
+def test_keyword_matcher_is_gone():
+    from ontomcp.core.tools import suggest
+
+    assert not hasattr(suggest, "_KEYWORD_RULES")
+    assert not hasattr(suggest, "_EXAMPLE_TERMS")
 
 
 # --- map_across_ontologies -------------------------------------------------
@@ -465,6 +642,24 @@ async def test_map_label_match_confidence_below_xref(db):
     assert 0.0 < out[0]["confidence"] < 0.7  # below a perfect/corroborated match
 
 
+async def test_map_orphanet_xref_resolves_to_ordo(db, monkeypatch):
+    # OLS's own xref annotations spell the ORDO cross-reference "Orphanet:NNN",
+    # not "ORDO:NNN" (the CURIE prefix ORDO's own obo_id mints with). Without the
+    # alias, a curated exact match here is silently dropped. ORDO is not one of
+    # the ten built-in default ontologies, so lock scope to include it.
+    monkeypatch.setenv("ONTOMCP_ONTOLOGIES", "ORDO,MONDO")
+
+    def handler(request):
+        doc = _term_doc(obo_id="MONDO:0007739", label="Huntington disease")
+        doc["annotation"] = {"database_cross_reference": ["Orphanet:399"]}
+        return _terms_response([doc])
+
+    async with _client(handler) as cli:
+        out, _ = await map_across_ontologies("MONDO:0007739", "ORDO", db_path=db, client=cli)
+    assert out[0]["curie"] == "ORDO:399"
+    assert out[0]["match_type"] == "exact_xref"
+
+
 async def test_map_unknown_target(db):
     async with _client(lambda r: httpx.Response(200)) as cli:
         out, _ = await map_across_ontologies("GO:0008219", "BOGUS", db_path=db, client=cli)
@@ -491,6 +686,27 @@ async def test_bulk_annotate_matches(db):
         out, _ = await bulk_annotate(["B cell", "T cell"], db_path=db, client=cli)
     assert len(out["results"]) == 2
     assert out["results"][0]["best_match"]["curie"] == "CL:0000236"
+
+
+async def test_bulk_annotate_surfaces_a_search_failure_instead_of_no_match(db):
+    """A failed OLS search must not read the same as a genuine zero-hit search."""
+    async with _client(lambda r: httpx.Response(500)) as cli:
+        out, _ = await bulk_annotate(["B cell"], db_path=db, client=cli)
+    row = out["results"][0]
+    assert row["best_match"] is None
+    assert row["error"] == "search_failed"
+
+
+async def test_bulk_annotate_rejected_ontology_hint_matches_search_terms_shape(db):
+    # Same error taxonomy as search_terms's rejected-scope return (a list), not a
+    # bare dict — the envelope shape must not diverge between the two tools.
+    async with _client(lambda r: httpx.Response(200)) as cli:
+        out, cached = await bulk_annotate(
+            ["x"], ontology_hint="NOTAREALONTOLOGY", db_path=db, client=cli
+        )
+    assert isinstance(out, list)
+    assert out[0]["error"] == "unknown_ontology"
+    assert cached is False
 
 
 async def test_bulk_annotate_dedupes_inputs(db):
@@ -523,6 +739,29 @@ async def test_bulk_annotate_warns_over_soft_cap(db):
         out, _ = await bulk_annotate(["x"] * (config.BULK_WARN + 1), db_path=db, client=cli)
     assert "warning" in out
     assert out["results"][0]["best_match"] is None
+
+
+async def test_bulk_annotate_hint_fails_open_when_registry_is_unreadable(db, monkeypatch):
+    """A broken/missing index must not turn ontology_hint into a hard rejection.
+
+    The no-hint path already degrades gracefully on this failure; the hinted path
+    must match it instead of rejecting every hint as out_of_profile.
+    """
+    from ontomcp.core.tools import bulk as bulk_module
+
+    def broken_current():
+        raise RuntimeError("index unreadable")
+
+    monkeypatch.setattr(bulk_module.registry, "current", broken_current)
+
+    def handler(request):
+        return _search_response([_term_doc(obo_id="GO:0008150", label="biological_process")])
+
+    async with _client(handler) as cli:
+        out, _ = await bulk_annotate(["biological_process"], ontology_hint="GO", db_path=db, client=cli)
+
+    assert "error" not in out
+    assert out["results"][0]["best_match"]["curie"] == "GO:0008150"
 
 
 # --- get_term_graph --------------------------------------------------------
@@ -571,13 +810,37 @@ async def test_get_term_graph_caps_nodes(db):
     assert any(n["role"] == "focus" for n in graph["nodes"])
 
 
+async def test_get_term_graph_reports_a_degraded_parent_fetch_instead_of_hiding_it(db):
+    # A hierarchy fetch failure must not look like "this term has no parents" —
+    # the graph should still render (children succeed) but must name the failure.
+    def handler(request):
+        url = str(request.url)
+        if url.endswith("/parents"):
+            return httpx.Response(403, text="boom")  # not a retry status, not a 404
+        if url.endswith("/children"):
+            return _hier_response(["GO:0070997"])
+        return _terms_response([_term_doc()])
+
+    async with _client(handler) as cli:
+        graph, _ = await get_term_graph(
+            "GO:0008219", include_siblings=False, db_path=db, client=cli
+        )
+    roles = {n["curie"]: n["role"] for n in graph["nodes"]}
+    assert roles["GO:0070997"] == "descendant"
+    assert not any(n["role"] == "ancestor" for n in graph["nodes"])
+    assert graph["degraded"] == [
+        {"edge": "parents", "error": "fetch_failed", "detail": graph["degraded"][0]["detail"], "curie": "GO:0008219"}
+    ]
+
+
 # --- integration (live OLS, skipped offline) -------------------------------
 
 
 @pytest.mark.integration
 async def test_search_terms_live(db):
-    results, _ = await search_terms("cell death", ontologies=["GO"], db_path=db)
-    assert any(r["curie"] == "GO:0008219" for r in results)
+    payload, _ = await search_terms("cell death", ontologies=["GO"], db_path=db)
+    assert any(r["curie"] == "GO:0008219" for r in payload["results"])
+    assert payload["meta"]["scope"] == ["GO"]
 
 
 @pytest.mark.integration

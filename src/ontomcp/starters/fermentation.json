@@ -1,0 +1,106 @@
+{
+  "_derived": {
+    "aliases": {},
+    "frozen_at": null,
+    "index_version": "2026.08+5453a1b2",
+    "members": {
+      "CHEBI": {
+        "base_uri": null,
+        "curie_prefix": "CHEBI",
+        "slug": "chebi",
+        "terms": 237842,
+        "title": "Chemical Entities of Biological Interest",
+        "verified": false,
+        "version": null
+      },
+      "CHMO": {
+        "base_uri": null,
+        "curie_prefix": "CHMO",
+        "slug": "chmo",
+        "terms": 3263,
+        "title": "Chemical Methods Ontology",
+        "verified": false,
+        "version": null
+      },
+      "ENVO": {
+        "base_uri": null,
+        "curie_prefix": "ENVO",
+        "slug": "envo",
+        "terms": 6936,
+        "title": "The Environment Ontology",
+        "verified": false,
+        "version": null
+      },
+      "FOODON": {
+        "base_uri": null,
+        "curie_prefix": "FOODON",
+        "slug": "foodon",
+        "terms": 39682,
+        "title": "Food Ontology",
+        "verified": false,
+        "version": null
+      },
+      "GO": {
+        "base_uri": null,
+        "curie_prefix": "GO",
+        "slug": "go",
+        "terms": 85169,
+        "title": "Gene Ontology",
+        "verified": false,
+        "version": null
+      },
+      "NCBITAXON": {
+        "base_uri": "http://purl.obolibrary.org/obo/NCBITaxon_",
+        "curie_prefix": "NCBITaxon",
+        "slug": "ncbitaxon",
+        "terms": 2854537,
+        "title": "NCBI organismal classification",
+        "verified": false,
+        "version": null
+      },
+      "OMP": {
+        "base_uri": null,
+        "curie_prefix": "OMP",
+        "slug": "omp",
+        "terms": 2309,
+        "title": "Ontology of Microbial Phenotypes",
+        "verified": false,
+        "version": null
+      },
+      "UO": {
+        "base_uri": null,
+        "curie_prefix": "UO",
+        "slug": "uo",
+        "terms": 574,
+        "title": "Units of measurement ontology",
+        "verified": false,
+        "version": null
+      }
+    },
+    "quarantine": {
+      "NCBITAXON": "2.5M taxa; genus/species tokens collide with ordinary query words"
+    },
+    "warnings": [
+      "Shipped starter: run 'ontomcp profile check' to record live versions."
+    ]
+  },
+  "created_at": "2026-08-15",
+  "description": "Industrial fermentation and strain development. Bioprocess unit operations are only partly covered by OLS4 - see the coverage note in the README.",
+  "force_default": [
+    "NCBITAXON"
+  ],
+  "locked": false,
+  "name": "fermentation",
+  "notes": "",
+  "ontologies": [
+    "NCBITAXON",
+    "CHEBI",
+    "GO",
+    "ENVO",
+    "OMP",
+    "FOODON",
+    "UO",
+    "CHMO"
+  ],
+  "schema": 1
+}

@@ -1,74 +1,99 @@
-"""suggest_ontology: pure keyword logic mapping a research context to ontologies.
+"""get_profile_setup_guidance: hand the client's model what it needs to propose a profile.
 
-No OLS call and no cache — deterministic local reasoning only.
+This tool takes **no arguments** and performs **no matching**.
+
+It used to take a research description and run it through a keyword table. That is
+the one behaviour the objective prohibits: it made the scientist re-describe their
+research, and it capped reach at whatever the table happened to list. The keyword
+table and the example-term dictionary are deleted, not rebound.
+
+The division of labour, which is the whole design in three lines:
+
+- the **index** says what is *valid* — ~286 prefixes and titles, generated from OLS4;
+- **policy.md** says what a person had to *decide* — semantic calls only, ~10 lines;
+- the **client's frontier model** supplies domain -> ontology mapping, which it
+  already knows better than any table we could write and keep current.
+
+So this returns the policy text, the grounding list, and the rules. The model does
+the proposing; the human approves; ``save_profile`` validates and freezes.
 """
 
-from ontomcp.core.config import ONTOLOGIES
-from ontomcp.core.ols_client import _ONTOLOGY_SLUGS
+import logging
+from pathlib import Path
 
-# Ordered (keywords, ontology codes). First match wins ordering; codes are
-# collected in first-seen order across all matching rules.
-_KEYWORD_RULES: list[tuple[tuple[str, ...], list[str]]] = [
-    (("single cell", "cell type", "single-cell"), ["CL", "GO"]),
-    (("drug", "compound", "chemical", "molecule"), ["CHEBI", "NCIT", "MESH"]),
-    (("target", "receptor", "kinase", "antibody"), ["PR", "CHEBI"]),
-    (("cancer", "tumor", "tumour", "oncology", "carcinoma", "neoplasm"), ["NCIT", "MONDO", "DOID"]),
-    (("adverse event", "safety", "toxicity"), ["MESH", "NCIT"]),
-    (("patient", "phenotype", "clinic"), ["HPO", "MONDO"]),
-    (("disease", "disorder", "syndrome"), ["MONDO", "DOID", "HPO"]),
-    (("tissue", "organ", "anatomy", "anatomic"), ["UBERON"]),
-    (("gwas", "trait", "assay", "experiment"), ["EFO"]),
-    (("protein", "proteoform", "complex"), ["PR", "GO"]),
-    (("gene", "pathway", "biological process"), ["GO"]),
-    (("publication", "mesh", "pubmed", "literature"), ["MESH"]),
-]
+from ontomcp.core import registry
+from ontomcp.core.config import (
+    DEFAULT_SCOPE_WARN,
+    PROFILE_MAX,
+    PROFILE_WARN,
+    QUARANTINE,
+)
 
-# A couple of representative terms per ontology, purely illustrative. Every
-# registry code has an entry so suggestions always carry examples.
-_EXAMPLE_TERMS: dict[str, list[str]] = {
-    "GO": ["GO:0008219 (cell death)", "GO:0006915 (apoptotic process)"],
-    "MONDO": ["MONDO:0004992 (cancer)", "MONDO:0005148 (type 2 diabetes)"],
-    "HPO": ["HP:0001250 (seizure)", "HP:0000252 (microcephaly)"],
-    "CHEBI": ["CHEBI:15377 (water)", "CHEBI:27732 (caffeine)"],
-    "UBERON": ["UBERON:0002107 (liver)", "UBERON:0000955 (brain)"],
-    "CL": ["CL:0000236 (B cell)", "CL:0000084 (T cell)"],
-    "EFO": ["EFO:0000400 (diabetes mellitus)", "EFO:0004340 (body mass index)"],
-    "MESH": ["MESH:D003643 (death)", "MESH:D009369 (neoplasms)"],
-    "NCIT": ["NCIT:C9305 (malignant neoplasm)", "NCIT:C49236 (therapeutic procedure)"],
-    "DOID": ["DOID:162 (cancer)", "DOID:9352 (type 2 diabetes mellitus)"],
-    "PR": ["PR:000000001 (protein)", "PR:P04637 (cellular tumor antigen p53)"],
-}
+logger = logging.getLogger("ontomcp")
+
+POLICY_PATH = Path(__file__).parent.parent.parent / "data" / "policy.md"
 
 
-def _entry(code: str, rationale: str) -> dict:
-    slug = _ONTOLOGY_SLUGS.get(code, code.lower())
-    return {
-        "ontology": code,
-        "rationale": rationale,
-        "example_terms": _EXAMPLE_TERMS.get(code, []),
-        "ols_url": f"https://www.ebi.ac.uk/ols4/ontologies/{slug}",
-    }
-
-
-def suggest_ontology(context: str) -> tuple[list[dict], bool]:
-    """Suggest which ontologies fit a free-text research context.
-
-    Returns ``(results, cache_hit)``. ``cache_hit`` is always False (pure local
-    reasoning — no cache is involved). ``results`` is
-    ``[{ontology, rationale, example_terms, ols_url}, ...]``, falling back to
-    GO + MONDO when no keyword matches.
+def _policy_text() -> str:
+    """Return policy.md verbatim, or "" if unreadable. Never parsed — it is
+    LLM-facing prose. An empty string is a valid-looking value for the
+    ``policy`` field, so a missing file must not look identical to an
+    intentionally short policy — see ``policy_unavailable`` on the payload.
     """
-    text = (context or "").lower()
-    ordered: list[str] = []
-    for keywords, codes in _KEYWORD_RULES:
-        if any(kw in text for kw in keywords):
-            for code in codes:
-                if code not in ordered:
-                    ordered.append(code)
+    try:
+        return POLICY_PATH.read_text()
+    except OSError as exc:
+        logger.error("get_profile_setup_guidance: policy.md unreadable at %s: %s", POLICY_PATH, exc)
+        return ""
 
-    if not ordered:
-        rationale = "No domain keyword matched; defaulting to general gene and disease ontologies."
-        return [_entry("GO", rationale), _entry("MONDO", rationale)], False
 
-    domain_rationale = "Matched the research context to this ontology's domain: "
-    return [_entry(code, domain_rationale + ONTOLOGIES[code]["domain"]) for code in ordered], False
+def get_profile_setup_guidance() -> tuple[dict, bool]:
+    """Return everything needed to propose a research profile. Zero arguments.
+
+    ``cache_hit`` is always False — nothing is looked up, so nothing is cached.
+
+    The grounding list is ``prefix -> title`` for every searchable ontology in the
+    index. Titles are included deliberately: an existence check proves ``PO`` is a
+    real prefix, not that the user meant Plant Ontology rather than Population and
+    Community Ontology. The title is the disambiguator, and it is already in hand.
+
+    Ontologies flagged ``searchable: false`` are omitted — they are property-
+    dominant, so proposing them wastes a profile slot. Nothing else is omitted:
+    a ``terms < 100`` rule would silently make a shipped starter's own member
+    unproposable by the model meant to propose it.
+    """
+    try:
+        index = registry.load_index()
+    except registry.IndexError_ as exc:
+        logger.error("get_profile_setup_guidance: %s", exc)
+        return {"error": "index_unavailable", "detail": str(exc)}, False
+    entries = index.get("ontologies") or {}
+    grounding = {
+        key: entry["title"] for key, entry in sorted(entries.items()) if entry.get("searchable")
+    }
+    policy = _policy_text()
+
+    payload = {
+        "policy": policy,
+        "grounding_list": grounding,
+        "index_version": index.get("index_version"),
+        "rules": {
+            "max_ontologies": PROFILE_MAX,
+            "target_range": [5, PROFILE_WARN],
+            "default_scope_warn_above": DEFAULT_SCOPE_WARN,
+            "quarantined": dict(QUARANTINE),
+            "quarantine_note": (
+                "Quarantined ontologies can still be in a profile. They are held out "
+                "of unscoped search because their labels collide with ordinary words; "
+                "name them explicitly, or set force_default to search them by default."
+            ),
+        },
+        "next_step": (
+            "Propose 5-8 ontologies for the user's described work, using the grounding "
+            "list to check every prefix exists. Show each proposal's prefix AND title "
+            "and get an explicit yes from the human before calling save_profile."
+        ),
+    }
+    if not policy:
+        payload["policy_unavailable"] = True
+    return payload, False

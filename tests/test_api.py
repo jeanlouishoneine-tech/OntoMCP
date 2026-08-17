@@ -70,7 +70,8 @@ def api(tmp_db_path):
 
 
 def _assert_envelope(body):
-    assert set(body) == {"data", "cached", "ontomcp_version"}
+    # /search additionally carries meta; every other route's shape is unchanged.
+    assert set(body) - {"meta"} == {"data", "cached", "ontomcp_version"}
     assert body["cached"] in (True, False, None)
     assert body["ontomcp_version"] == __version__
 
@@ -88,6 +89,24 @@ async def test_health(api):
     assert len(body["data"]["ontologies"]) == len(config.ONTOLOGIES)
     # ontology_versions is cache-only and empty until a term is fetched.
     assert body["data"]["ontology_versions"] == {}
+
+
+async def test_health_reports_degraded_when_the_registry_is_unresolvable(api, monkeypatch):
+    from ontomcp.core import registry
+
+    def boom(*a, **kw):
+        raise registry.IndexError_("Ontology index not found. Run: python scripts/refresh_index.py")
+
+    monkeypatch.setattr(registry, "load_index", boom)
+
+    async with api(lambda r: httpx.Response(200)) as http:
+        resp = await http.get("/health")
+    assert resp.status_code == 200
+    body = resp.json()
+    _assert_envelope(body)
+    assert body["data"]["status"] == "degraded"
+    assert body["data"]["ontologies"] == []
+    assert "detail" in body["data"]
 
 
 # --- search ----------------------------------------------------------------
@@ -233,11 +252,45 @@ async def test_bulk_too_many_400(api):
     assert resp.json()["data"]["error"] == "too_many_terms"
 
 
-# --- suggest ---------------------------------------------------------------
+# --- profile setup guidance -------------------------------------------------
 
 
-async def test_suggest(api):
+async def test_profile_setup_guidance(api):
+    async with api(lambda r: httpx.Response(200)) as http:
+        resp = await http.get("/profile-setup-guidance")
+    assert resp.status_code == 200
+    data = resp.json()["data"]
+    assert data["grounding_list"]["CL"] == "Cell Ontology"
+    assert data["rules"]["max_ontologies"] == 12
+
+
+async def test_suggest_endpoint_is_gone(api):
+    # The keyword matcher is deleted, not relocated behind a shim.
     async with api(lambda r: httpx.Response(200)) as http:
         resp = await http.post("/suggest", json={"context": "single cell RNA data"})
-    assert resp.status_code == 200
-    assert resp.json()["data"][0]["ontology"] == "CL"
+    assert resp.status_code == 404
+
+
+# --- scope enforcement is shared with the core (Phase-B gate) ---------------
+
+
+async def test_scope_error_matches_core(api, tmp_db_path, monkeypatch):
+    """The REST surface must give the identical structured error the MCP path gives.
+
+    Enforcement lives in one place (normalize_ontologies), so this is a check that
+    the route did not grow its own membership test.
+    """
+    monkeypatch.setenv("ONTOMCP_ONTOLOGIES", "PO,TO")
+
+    from ontomcp.core.tools import search_terms as core_search
+
+    async with api(lambda r: _search_response([_term_doc()])) as http:
+        resp = await http.post("/search", json={"query": "x", "ontologies": ["GO"]})
+        core_result, _ = await core_search(
+            "x", ontologies=["GO"], db_path=tmp_db_path, client=_client(lambda r: None)
+        )
+
+    assert resp.status_code == 403  # scoped out, not malformed
+    body = resp.json()["data"]
+    assert body[0]["error"] == core_result[0]["error"] == "out_of_profile"
+    assert body[0]["ontology"] == core_result[0]["ontology"] == "GO"

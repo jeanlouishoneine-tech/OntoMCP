@@ -25,4 +25,9 @@ async def search(
     result, cached = await search_terms(
         body.query, body.ontologies, body.limit, db_path=db_path, client=client
     )
+    if isinstance(result, dict) and "results" in result:
+        # Fold meta into the existing envelope rather than nesting a second one:
+        # REST clients already unwrap `data`, and `{"data": {"results": [...]}}`
+        # would make them unwrap twice for the same payload.
+        return respond(result["results"], cached, meta=result["meta"])
     return respond(result, cached)

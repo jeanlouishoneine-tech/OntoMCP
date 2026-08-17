@@ -1,0 +1,84 @@
+{
+  "_derived": {
+    "aliases": {
+      "HP": "HPO"
+    },
+    "frozen_at": null,
+    "index_version": "2026.08+5453a1b2",
+    "members": {
+      "CL": {
+        "base_uri": null,
+        "curie_prefix": "CL",
+        "slug": "cl",
+        "terms": 19167,
+        "title": "Cell Ontology",
+        "verified": false,
+        "version": null
+      },
+      "EFO": {
+        "base_uri": "http://www.ebi.ac.uk/efo/EFO_",
+        "curie_prefix": "EFO",
+        "slug": "efo",
+        "terms": 94125,
+        "title": "Experimental Factor Ontology",
+        "verified": false,
+        "version": null
+      },
+      "GO": {
+        "base_uri": null,
+        "curie_prefix": "GO",
+        "slug": "go",
+        "terms": 85169,
+        "title": "Gene Ontology",
+        "verified": false,
+        "version": null
+      },
+      "HPO": {
+        "base_uri": null,
+        "curie_prefix": "HP",
+        "slug": "hp",
+        "terms": 32663,
+        "title": "Human Phenotype Ontology",
+        "verified": false,
+        "version": null
+      },
+      "MONDO": {
+        "base_uri": null,
+        "curie_prefix": "MONDO",
+        "slug": "mondo",
+        "terms": 63449,
+        "title": "Mondo Disease Ontology",
+        "verified": false,
+        "version": null
+      },
+      "UBERON": {
+        "base_uri": null,
+        "curie_prefix": "UBERON",
+        "slug": "uberon",
+        "terms": 26624,
+        "title": "Uber-anatomy ontology",
+        "verified": false,
+        "version": null
+      }
+    },
+    "quarantine": {},
+    "warnings": [
+      "Shipped starter: run 'ontomcp profile check' to record live versions."
+    ]
+  },
+  "created_at": "2026-08-15",
+  "description": "General omics annotation. The zero-curation-risk starter: today's built-in default minus the disease-thesaurus tail.",
+  "force_default": [],
+  "locked": false,
+  "name": "omics",
+  "notes": "",
+  "ontologies": [
+    "GO",
+    "CL",
+    "UBERON",
+    "EFO",
+    "MONDO",
+    "HPO"
+  ],
+  "schema": 1
+}

@@ -1,0 +1,96 @@
+{
+  "_derived": {
+    "aliases": {},
+    "frozen_at": null,
+    "index_version": "2026.08+5453a1b2",
+    "members": {
+      "CHEBI": {
+        "base_uri": null,
+        "curie_prefix": "CHEBI",
+        "slug": "chebi",
+        "terms": 237842,
+        "title": "Chemical Entities of Biological Interest",
+        "verified": false,
+        "version": null
+      },
+      "ENVO": {
+        "base_uri": null,
+        "curie_prefix": "ENVO",
+        "slug": "envo",
+        "terms": 6936,
+        "title": "The Environment Ontology",
+        "verified": false,
+        "version": null
+      },
+      "GO": {
+        "base_uri": null,
+        "curie_prefix": "GO",
+        "slug": "go",
+        "terms": 85169,
+        "title": "Gene Ontology",
+        "verified": false,
+        "version": null
+      },
+      "MONDO": {
+        "base_uri": null,
+        "curie_prefix": "MONDO",
+        "slug": "mondo",
+        "terms": 63449,
+        "title": "Mondo Disease Ontology",
+        "verified": false,
+        "version": null
+      },
+      "NCBITAXON": {
+        "base_uri": "http://purl.obolibrary.org/obo/NCBITaxon_",
+        "curie_prefix": "NCBITaxon",
+        "slug": "ncbitaxon",
+        "terms": 2854537,
+        "title": "NCBI organismal classification",
+        "verified": false,
+        "version": null
+      },
+      "OMP": {
+        "base_uri": null,
+        "curie_prefix": "OMP",
+        "slug": "omp",
+        "terms": 2309,
+        "title": "Ontology of Microbial Phenotypes",
+        "verified": false,
+        "version": null
+      },
+      "UBERON": {
+        "base_uri": null,
+        "curie_prefix": "UBERON",
+        "slug": "uberon",
+        "terms": 26624,
+        "title": "Uber-anatomy ontology",
+        "verified": false,
+        "version": null
+      }
+    },
+    "quarantine": {
+      "NCBITAXON": "2.5M taxa; genus/species tokens collide with ordinary query words"
+    },
+    "warnings": [
+      "Shipped starter: run 'ontomcp profile check' to record live versions."
+    ]
+  },
+  "created_at": "2026-08-15",
+  "description": "Microbiome and host-microbe interaction: taxa, metabolites, processes and environment.",
+  "force_default": [
+    "NCBITAXON"
+  ],
+  "locked": false,
+  "name": "microbiome",
+  "notes": "",
+  "ontologies": [
+    "NCBITAXON",
+    "CHEBI",
+    "GO",
+    "ENVO",
+    "OMP",
+    "UBERON",
+    "MONDO"
+  ],
+  "schema": 1
+}

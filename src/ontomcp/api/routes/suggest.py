@@ -1,19 +1,19 @@
-"""suggest route: POST /suggest → core suggest_ontology (sync, no OLS/cache)."""
+"""profile-setup guidance route: GET /profile-setup-guidance (sync, no OLS/cache).
+
+A GET with no body, because the tool takes no arguments. The old POST /suggest
+accepted a research description and keyword-matched it; that behaviour is deleted,
+not relocated (see core/tools/suggest.py).
+"""
 
 from fastapi import APIRouter
-from pydantic import BaseModel, Field
 
 from ontomcp.api.responses import respond
-from ontomcp.core.tools import suggest_ontology
+from ontomcp.core.tools import get_profile_setup_guidance
 
 router = APIRouter()
 
 
-class SuggestRequest(BaseModel):
-    context: str = Field(..., max_length=2000)
-
-
-@router.post("/suggest")
-async def suggest(body: SuggestRequest):
-    result, cached = suggest_ontology(body.context)
+@router.get("/profile-setup-guidance")
+async def profile_setup_guidance():
+    result, cached = get_profile_setup_guidance()
     return respond(result, cached)

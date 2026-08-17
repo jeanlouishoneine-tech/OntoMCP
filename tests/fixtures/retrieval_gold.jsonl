@@ -1,0 +1,30 @@
+{"profile": "pharma", "query": "caffeine", "gold": ["CHEBI:27732"], "note": "exact chemical label"}
+{"profile": "pharma", "query": "aspirin", "gold": ["CHEBI:15365", "NCIT:C287"], "note": "trivial name; NCIT:C287 is labelled Aspirin and CHEBI:15365 acetylsalicylic acid - either is a correct grounding under a pharma profile"}
+{"profile": "pharma", "query": "non-small cell lung carcinoma", "gold": ["NCIT:C2926", "MONDO:0005233"], "note": "oncology indication across two members"}
+{"profile": "pharma", "query": "seizure", "gold": ["HP:0001250"], "note": "adverse-event phenotype"}
+{"profile": "pharma", "query": "apoptotic process", "gold": ["GO:0006915"], "note": "mechanism of action"}
+{"profile": "biotech-molecular", "query": "T cell", "gold": ["CL:0000084"], "note": "cell type, short label"}
+{"profile": "biotech-molecular", "query": "HEK293", "gold": ["CLO:0001230"], "note": "cell line - acronym, CLO-specific"}
+{"profile": "biotech-molecular", "query": "promoter", "gold": ["SO:0000167"], "note": "sequence feature"}
+{"profile": "biotech-molecular", "query": "liver", "gold": ["UBERON:0002107"], "note": "anatomy"}
+{"profile": "biotech-molecular", "query": "ATP", "gold": ["CHEBI:15422"], "note": "acronym - the CHEBI-into-biotech-molecular case"}
+{"profile": "plant-breeding", "query": "leaf", "gold": ["PO:0025034"], "note": "plant anatomy - PO is outside the built-in ten"}
+{"profile": "plant-breeding", "query": "grain yield", "gold": ["TO:0000396"], "note": "agronomic trait"}
+{"profile": "plant-breeding", "query": "drought", "gold": ["PECO:0007404"], "note": "treatment/exposure"}
+{"profile": "plant-breeding", "query": "soil", "gold": ["ENVO:00001998"], "note": "environment"}
+{"profile": "plant-breeding", "query": "gram per litre", "gold": ["UO:0000175"], "note": "unit - tiny ontology, easily drowned"}
+{"profile": "fermentation", "query": "Saccharomyces cerevisiae", "gold": ["NCBITaxon:4932"], "note": "species - proves force_default"}
+{"profile": "fermentation", "query": "ethanol", "gold": ["CHEBI:16236"], "note": "product"}
+{"profile": "fermentation", "query": "glucose", "gold": ["CHEBI:17234"], "note": "substrate"}
+{"profile": "fermentation", "query": "bioreactor", "gold": ["ENVO:00002123"], "note": "bioprocess unit operation - the stated coverage gap: ENVO carries it, CHMO does not"}
+{"profile": "fermentation", "query": "anaerobic growth", "gold": ["OMP:0005191"], "note": "microbial phenotype - partial-phrase match"}
+{"profile": "clinical-rare-disease", "query": "cystic fibrosis", "gold": ["MONDO:0009061"], "note": "rare disease"}
+{"profile": "clinical-rare-disease", "query": "microcephaly", "gold": ["HP:0000252"], "note": "phenotype"}
+{"profile": "clinical-rare-disease", "query": "Marfan syndrome", "gold": ["ORDO:558", "MONDO:0007947"], "note": "Orphanet - proves the ORDO: prefix, not Orphanet:"}
+{"profile": "clinical-rare-disease", "query": "missense variant", "gold": ["SO:0001583"], "note": "variant class"}
+{"profile": "clinical-rare-disease", "query": "heterozygous", "gold": ["GENO:0000135"], "note": "zygosity - tiny ontology"}
+{"profile": "microbiome", "query": "Escherichia coli", "gold": ["NCBITaxon:562"], "note": "species - force_default again"}
+{"profile": "microbiome", "query": "digestive tract", "gold": ["UBERON:0001555"], "note": "host anatomy"}
+{"profile": "microbiome", "query": "short-chain fatty acid", "gold": ["CHEBI:26666"], "note": "metabolite class"}
+{"profile": "microbiome", "query": "biofilm formation", "gold": ["GO:0042710"], "note": "process"}
+{"profile": "microbiome", "query": "marine biome", "gold": ["ENVO:00000447"], "note": "environment"}

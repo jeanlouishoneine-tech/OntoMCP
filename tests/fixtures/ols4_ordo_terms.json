@@ -1,0 +1,402 @@
+{
+  "_embedded" : {
+    "terms" : [ {
+      "iri" : "https://creativecommons.org/licenses/by/4.0/",
+      "lang" : "en",
+      "description" : [ ],
+      "synonyms" : [ ],
+      "annotation" : {
+        "permits" : [ "http://web.resource.org/cc/DerivativeWorks", "http://web.resource.org/cc/Distribution", "http://web.resource.org/cc/Reproduction" ],
+        "requires" : [ "http://web.resource.org/cc/Attribution", "http://web.resource.org/cc/Notice" ]
+      },
+      "label" : "CC BY 4.0",
+      "ontology_name" : "ordo",
+      "ontology_prefix" : "ORDO",
+      "ontology_iri" : "https://www.orphadata.com/data/ontologies/ordo/last_version/ORDO_en_4.9.owl",
+      "is_obsolete" : false,
+      "term_replaced_by" : null,
+      "is_defining_ontology" : false,
+      "has_children" : false,
+      "is_root" : true,
+      "short_form" : "",
+      "obo_id" : "",
+      "in_subset" : null,
+      "obo_definition_citation" : null,
+      "obo_xref" : null,
+      "obo_synonym" : null,
+      "is_preferred_root" : false,
+      "_links" : {
+        "self" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/https%253A%252F%252Fcreativecommons.org%252Flicenses%252Fby%252F4.0%252F?lang=en"
+        },
+        "graph" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/https%253A%252F%252Fcreativecommons.org%252Flicenses%252Fby%252F4.0%252F/graph"
+        }
+      }
+    }, {
+      "iri" : "http://www.orpha.net/ORDO/Orphanet_10",
+      "lang" : "en",
+      "description" : [ "A rare sex chromosome number anomaly disorder characterized, genetically, by the presence of an extra X and Y chromosome in males and, clinically, by tall stature, dysfunctional testes associated with infertility and insufficient testosterone production, cognitive, affective and social functioning impairments, global developmental delay, and an increased risk of congenital malformations." ],
+      "synonyms" : [ ],
+      "annotation" : {
+        "database_cross_reference" : [ "ICD-10:Q98.8", "ICD-11:LD50.3Y", "MONDO:0015028", "MeSH:D007713", "MedDRA:10048230", "UMLS:C2936741" ],
+        "definition_citation" : [ "Orphanet" ],
+        "expert link" : [ "https://www.orpha.net/consor/cgi-bin/OC_Exp.php?Lng=en&Expert=10" ],
+        "has_age_of_onset" : [ "Adolescent", "Childhood", "Infancy", "Neonatal" ],
+        "has_inheritance" : [ "Not applicable", "Unknown" ],
+        "notation" : [ "ORPHA:10" ],
+        "present_in" : [ "Europe AND has_birth_prevalence_average_value : 1.9 AND has_birth_prevalence_range : 1-9 / 100 000", "Worldwide AND has_point_prevalence_range : Unknown" ],
+        "website link" : [ "https://www.orpha.net/en/disease/detail/10" ]
+      },
+      "label" : "48,XXYY syndrome",
+      "ontology_name" : "ordo",
+      "ontology_prefix" : "ORDO",
+      "ontology_iri" : "https://www.orphadata.com/data/ontologies/ordo/last_version/ORDO_en_4.9.owl",
+      "is_obsolete" : false,
+      "term_replaced_by" : null,
+      "is_defining_ontology" : true,
+      "has_children" : false,
+      "is_root" : false,
+      "short_form" : "ORDO_10",
+      "obo_id" : "ORDO:10",
+      "in_subset" : null,
+      "obo_definition_citation" : null,
+      "obo_xref" : [ {
+        "database" : "ICD-10",
+        "id" : "Q98.8",
+        "description" : null,
+        "url" : null
+      }, {
+        "database" : "ICD-11",
+        "id" : "LD50.3Y",
+        "description" : null,
+        "url" : null
+      }, {
+        "database" : "MONDO",
+        "id" : "0015028",
+        "description" : null,
+        "url" : "http://purl.obolibrary.org/obo/MONDO_0015028"
+      }, {
+        "database" : "MeSH",
+        "id" : "D007713",
+        "description" : null,
+        "url" : "http://id.nlm.nih.gov/mesh/D007713"
+      }, {
+        "database" : "MedDRA",
+        "id" : "10048230",
+        "description" : null,
+        "url" : "https://bioportal.bioontology.org/ontologies/MEDDRA?p=classes&conceptid=10048230"
+      }, {
+        "database" : "UMLS",
+        "id" : "C2936741",
+        "description" : null,
+        "url" : "https://uts.nlm.nih.gov/uts/umls/concept/C2936741"
+      } ],
+      "obo_synonym" : null,
+      "is_preferred_root" : false,
+      "_links" : {
+        "self" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_10?lang=en"
+        },
+        "parents" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_10/parents"
+        },
+        "ancestors" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_10/ancestors"
+        },
+        "hierarchicalParents" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_10/hierarchicalParents"
+        },
+        "hierarchicalAncestors" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_10/hierarchicalAncestors"
+        },
+        "jstree" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_10/jstree"
+        },
+        "graph" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_10/graph"
+        },
+        "part_of" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_10/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBFO_0000050"
+        }
+      }
+    }, {
+      "iri" : "http://www.orpha.net/ORDO/Orphanet_100",
+      "lang" : "en",
+      "description" : [ "A rare autosomal recessive cerebellar ataxia due to a DNA repair defect characterized by progressive neurological impairment with cerebellar syndrome, oculocutaneous telangiectasia, defects in B and T cell-mediated immunity, and increased susceptibility to malignancies (mainly lymphoid neoplasms). High sensitivity to ionizing radiation limits patient treatments." ],
+      "synonyms" : [ "Louis-Bar syndrome" ],
+      "annotation" : {
+        "database_cross_reference" : [ "ICD-10:G11.3", "ICD-11:4A01.31", "MONDO:0008840", "MeSH:D001260", "MedDRA:10003594", "OMIM:208900", "OMIM:208910", "UMLS:C0004135" ],
+        "definition_citation" : [ "Orphanet" ],
+        "expert link" : [ "https://www.orpha.net/consor/cgi-bin/OC_Exp.php?Lng=en&Expert=100" ],
+        "has_age_of_onset" : [ "Childhood", "Infancy" ],
+        "has_inheritance" : [ "Autosomal recessive" ],
+        "notation" : [ "ORPHA:100" ],
+        "present_in" : [ "Europe AND has_point_prevalence_average_value : 0.49 AND has_point_prevalence_range : 1-9 / 1 000 000", "France AND has_point_prevalence_average_value : 0.25 AND has_point_prevalence_range : 1-9 / 1 000 000", "Italy AND has_point_prevalence_average_value : 1.19 AND has_point_prevalence_range : 1-9 / 100 000", "Norway AND has_birth_prevalence_average_value : 10.0 AND has_birth_prevalence_range : 1-5 / 10 000", "Norway AND has_point_prevalence_average_value : 0.4 AND has_point_prevalence_range : 1-9 / 1 000 000", "Portugal AND has_point_prevalence_average_value : 0.15 AND has_point_prevalence_range : 1-9 / 1 000 000", "United Kingdom AND has_point_prevalence_average_value : 0.25 AND has_point_prevalence_range : 1-9 / 1 000 000", "United States AND has_birth_prevalence_average_value : 1.7 AND has_birth_prevalence_range : 1-9 / 100 000" ],
+        "website link" : [ "https://www.orpha.net/en/disease/detail/100" ]
+      },
+      "label" : "Ataxia-telangiectasia",
+      "ontology_name" : "ordo",
+      "ontology_prefix" : "ORDO",
+      "ontology_iri" : "https://www.orphadata.com/data/ontologies/ordo/last_version/ORDO_en_4.9.owl",
+      "is_obsolete" : false,
+      "term_replaced_by" : null,
+      "is_defining_ontology" : true,
+      "has_children" : false,
+      "is_root" : false,
+      "short_form" : "ORDO_100",
+      "obo_id" : "ORDO:100",
+      "in_subset" : null,
+      "obo_definition_citation" : null,
+      "obo_xref" : [ {
+        "database" : "ICD-10",
+        "id" : "G11.3",
+        "description" : null,
+        "url" : null
+      }, {
+        "database" : "ICD-11",
+        "id" : "4A01.31",
+        "description" : null,
+        "url" : null
+      }, {
+        "database" : "MONDO",
+        "id" : "0008840",
+        "description" : null,
+        "url" : "http://purl.obolibrary.org/obo/MONDO_0008840"
+      }, {
+        "database" : "MeSH",
+        "id" : "D001260",
+        "description" : null,
+        "url" : "http://id.nlm.nih.gov/mesh/D001260"
+      }, {
+        "database" : "MedDRA",
+        "id" : "10003594",
+        "description" : null,
+        "url" : "https://bioportal.bioontology.org/ontologies/MEDDRA?p=classes&conceptid=10003594"
+      }, {
+        "database" : "OMIM",
+        "id" : "208900",
+        "description" : null,
+        "url" : "https://omim.org/entry/208900"
+      }, {
+        "database" : "OMIM",
+        "id" : "208910",
+        "description" : null,
+        "url" : "https://omim.org/entry/208910"
+      }, {
+        "database" : "UMLS",
+        "id" : "C0004135",
+        "description" : null,
+        "url" : "https://uts.nlm.nih.gov/uts/umls/concept/C0004135"
+      } ],
+      "obo_synonym" : null,
+      "is_preferred_root" : false,
+      "_links" : {
+        "self" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100?lang=en"
+        },
+        "parents" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100/parents"
+        },
+        "ancestors" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100/ancestors"
+        },
+        "hierarchicalParents" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100/hierarchicalParents"
+        },
+        "hierarchicalAncestors" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100/hierarchicalAncestors"
+        },
+        "jstree" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100/jstree"
+        },
+        "graph" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100/graph"
+        },
+        "part_of" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBFO_0000050"
+        }
+      }
+    }, {
+      "iri" : "http://www.orpha.net/ORDO/Orphanet_1000",
+      "lang" : "en",
+      "description" : [ "Ocular albinism with late-onset sensorineural deafness is a rare, X-linked inherited subtype of ocular albinism characterized by severe visual impairment, translucent pale-blue irises, a reduction in the retinal pigment and moderately severe deafness with onset ranging from adolescence to fourth or fifth decade of life." ],
+      "synonyms" : [ "Ocular albinism with late-onset sensorineural hearing loss" ],
+      "annotation" : {
+        "database_cross_reference" : [ "ICD-10:E70.3", "ICD-11:LD2H.Y", "MONDO:0010390", "MeSH:C537043", "OMIM:300650", "UMLS:C1845069" ],
+        "definition_citation" : [ "Orphanet" ],
+        "expert link" : [ "https://www.orpha.net/consor/cgi-bin/OC_Exp.php?Lng=en&Expert=1000" ],
+        "has_age_of_onset" : [ "Adult" ],
+        "has_inheritance" : [ "X-linked recessive" ],
+        "notation" : [ "ORPHA:1000" ],
+        "present_in" : [ "Worldwide AND has_cases/families_value : 9.0 (Case(s))", "Worldwide AND has_point_prevalence_range : <1 / 1 000 000" ],
+        "website link" : [ "https://www.orpha.net/en/disease/detail/1000" ]
+      },
+      "label" : "Ocular albinism with late-onset sensorineural deafness",
+      "ontology_name" : "ordo",
+      "ontology_prefix" : "ORDO",
+      "ontology_iri" : "https://www.orphadata.com/data/ontologies/ordo/last_version/ORDO_en_4.9.owl",
+      "is_obsolete" : false,
+      "term_replaced_by" : null,
+      "is_defining_ontology" : true,
+      "has_children" : false,
+      "is_root" : false,
+      "short_form" : "ORDO_1000",
+      "obo_id" : "ORDO:1000",
+      "in_subset" : null,
+      "obo_definition_citation" : null,
+      "obo_xref" : [ {
+        "database" : "ICD-10",
+        "id" : "E70.3",
+        "description" : null,
+        "url" : null
+      }, {
+        "database" : "ICD-11",
+        "id" : "LD2H.Y",
+        "description" : null,
+        "url" : null
+      }, {
+        "database" : "MONDO",
+        "id" : "0010390",
+        "description" : null,
+        "url" : "http://purl.obolibrary.org/obo/MONDO_0010390"
+      }, {
+        "database" : "MeSH",
+        "id" : "C537043",
+        "description" : null,
+        "url" : "http://id.nlm.nih.gov/mesh/C537043"
+      }, {
+        "database" : "OMIM",
+        "id" : "300650",
+        "description" : null,
+        "url" : "https://omim.org/entry/300650"
+      }, {
+        "database" : "UMLS",
+        "id" : "C1845069",
+        "description" : null,
+        "url" : "https://uts.nlm.nih.gov/uts/umls/concept/C1845069"
+      } ],
+      "obo_synonym" : null,
+      "is_preferred_root" : false,
+      "_links" : {
+        "self" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_1000?lang=en"
+        },
+        "parents" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_1000/parents"
+        },
+        "ancestors" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_1000/ancestors"
+        },
+        "hierarchicalParents" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_1000/hierarchicalParents"
+        },
+        "hierarchicalAncestors" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_1000/hierarchicalAncestors"
+        },
+        "jstree" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_1000/jstree"
+        },
+        "graph" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_1000/graph"
+        },
+        "part_of" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_1000/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBFO_0000050"
+        }
+      }
+    }, {
+      "iri" : "http://www.orpha.net/ORDO/Orphanet_100000",
+      "lang" : "en",
+      "description" : [ ],
+      "synonyms" : [ ],
+      "annotation" : {
+        "database_cross_reference" : [ "ICD-10:D36.1", "ICD-11:2F3Y", "MONDO:0015029", "UMLS:C5681810" ],
+        "expert link" : [ "https://www.orpha.net/consor/cgi-bin/OC_Exp.php?Lng=en&Expert=100000" ],
+        "notation" : [ "Clinical subtype" ],
+        "website link" : [ "https://www.orpha.net/en/disease/detail/100000" ]
+      },
+      "label" : "Reticular perineurioma",
+      "ontology_name" : "ordo",
+      "ontology_prefix" : "ORDO",
+      "ontology_iri" : "https://www.orphadata.com/data/ontologies/ordo/last_version/ORDO_en_4.9.owl",
+      "is_obsolete" : false,
+      "term_replaced_by" : null,
+      "is_defining_ontology" : true,
+      "has_children" : false,
+      "is_root" : false,
+      "short_form" : "ORDO_100000",
+      "obo_id" : "ORDO:100000",
+      "in_subset" : null,
+      "obo_definition_citation" : null,
+      "obo_xref" : [ {
+        "database" : "ICD-10",
+        "id" : "D36.1",
+        "description" : null,
+        "url" : null
+      }, {
+        "database" : "ICD-11",
+        "id" : "2F3Y",
+        "description" : null,
+        "url" : null
+      }, {
+        "database" : "MONDO",
+        "id" : "0015029",
+        "description" : null,
+        "url" : "http://purl.obolibrary.org/obo/MONDO_0015029"
+      }, {
+        "database" : "UMLS",
+        "id" : "C5681810",
+        "description" : null,
+        "url" : "https://uts.nlm.nih.gov/uts/umls/concept/C5681810"
+      } ],
+      "obo_synonym" : null,
+      "is_preferred_root" : false,
+      "_links" : {
+        "self" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100000?lang=en"
+        },
+        "parents" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100000/parents"
+        },
+        "ancestors" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100000/ancestors"
+        },
+        "hierarchicalParents" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100000/hierarchicalParents"
+        },
+        "hierarchicalAncestors" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100000/hierarchicalAncestors"
+        },
+        "jstree" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100000/jstree"
+        },
+        "graph" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100000/graph"
+        },
+        "part_of" : {
+          "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms/http%253A%252F%252Fwww.orpha.net%252FORDO%252FOrphanet_100000/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBFO_0000050"
+        }
+      }
+    } ]
+  },
+  "_links" : {
+    "first" : {
+      "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms?page=0&size=5"
+    },
+    "self" : {
+      "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms?page=0&size=5"
+    },
+    "next" : {
+      "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms?page=1&size=5"
+    },
+    "last" : {
+      "href" : "http://www.ebi.ac.uk/ols4/api/ontologies/ordo/terms?page=3259&size=5"
+    }
+  },
+  "page" : {
+    "size" : 5,
+    "totalElements" : 16296,
+    "totalPages" : 3260,
+    "number" : 0
+  }
+}

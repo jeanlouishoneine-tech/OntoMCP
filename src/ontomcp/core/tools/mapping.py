@@ -18,9 +18,9 @@ from pathlib import Path
 
 from rapidfuzz import fuzz
 
-from ontomcp.core.config import DB_PATH, ONTOLOGIES
+from ontomcp.core.config import DB_PATH
 from ontomcp.core.ols_client import OLSClient, normalize_curie
-from ontomcp.core.tools._common import is_error, ols_client
+from ontomcp.core.tools._common import is_error, normalize_ontologies, ols_client
 from ontomcp.core.tools.search import search_terms
 from ontomcp.core.tools.term import get_term
 
@@ -114,9 +114,14 @@ async def map_across_ontologies(
     when every underlying lookup was a cache hit. Propagates error dicts from the
     underlying calls.
     """
-    target = target_ontology.upper()
-    if target not in ONTOLOGIES:
-        return [{"error": "unknown_ontology", "ontology": target_ontology}], False
+    # Mapping into an ontology is discovery, not resolution: the caller is asking
+    # "what does this look like over there", which requires searching it. So the
+    # target must be a profile member, and it goes through the one enforcement
+    # point rather than a second, independent membership test.
+    resolved, rejected = normalize_ontologies([target_ontology])
+    if rejected:
+        return [rejected[0]], False
+    target = resolved[0]
 
     async with ols_client(client) as cli:
         source, source_hit = await get_term(curie, db_path=db_path, client=cli)
@@ -141,19 +146,19 @@ async def map_across_ontologies(
         source_synonyms = {
             s.lower() for bucket in (source.get("synonyms") or {}).values() for s in bucket
         }
-        candidates, cand_hit = await search_terms(
+        payload, cand_hit = await search_terms(
             source_label, [target], limit=10, db_path=db_path, client=cli
         )
+        candidates = payload["results"] if isinstance(payload, dict) else payload
     cache_hit = source_hit and cand_hit
     if is_error(candidates):
         return candidates, cache_hit
 
     source_label_lower = source_label.lower()
     for cand in candidates:
-        # OLS searches include imported terms (e.g. EFO imports MONDO); keep only
-        # candidates actually minted by the target ontology.
-        if cand["curie"].split(":", 1)[0] != target:
-            continue
+        # No minting-prefix filter here: search_terms already applies it one layer
+        # down whenever a scope is supplied, and applying it twice is a no-op that
+        # reads as a second, independent rule.
         cand_label = cand.get("label") or ""
         ratio = fuzz.token_sort_ratio(source_label, cand_label) / 100.0
         if ratio < _LABEL_MATCH_THRESHOLD:

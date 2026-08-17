@@ -1,4 +1,4 @@
-"""FastMCP server exposing the 10 OntoMCP tools to any MCP client.
+"""FastMCP server exposing the 12 OntoMCP tools to any MCP client.
 
 Transport is client-agnostic: stdio (default — Claude Desktop / Claude Code) or
 SSE (GPT, Codex CLI, remote clients), selected at startup by ``ONTOMCP_TRANSPORT``.
@@ -53,12 +53,17 @@ async def _lifespan(server: FastMCP):
     DB_PATH = _resolve_db_path()
     cache.init_db(DB_PATH)
     logger.info("OntoMCP MCP server ready (db=%s)", DB_PATH)
-    _client = OLSClient()
+    # Only construct a client if none is already set — tests inject a mock-transport
+    # client into `_client` before the lifespan runs, and this must not clobber it.
+    owns_client = _client is None
+    if owns_client:
+        _client = OLSClient()
     try:
         yield
     finally:
-        await _client.aclose()
-        _client = None
+        if owns_client:
+            await _client.aclose()
+            _client = None
 
 
 mcp = FastMCP("OntoMCP", lifespan=_lifespan)
@@ -71,12 +76,22 @@ async def search_terms(query: str, ontologies: list[str] | None = None, limit: i
 
     Use when a scientist mentions a biological concept, disease, cell type,
     chemical, or anatomical structure and you need the canonical ontology ID
-    (CURIE) and definition. Searches GO, MONDO, HPO, ChEBI, UBERON, CL, EFO, and
-    MeSH by default.
+    (CURIE) and definition. By default this searches the user's active research
+    profile (or a broad built-in default set if no profile is configured) — you
+    do not need to name ontologies yourself unless the user wants to restrict
+    the search.
+
+    The result carries a ``meta`` block alongside ``results``: read it and
+    surface anything under ``meta.notice`` (e.g. profile scope suggestions),
+    ``meta.held_back`` (profile members that exist but are excluded by default),
+    or ``meta.filtered_out`` (ontologies that had matches but were dropped
+    because they were minted outside the searched scope) to the user rather than
+    silently dropping them.
 
     Args:
         query: Free-text search, e.g. "cell death", "lung cancer", "HEK293".
-        ontologies: Restrict the search, e.g. ["GO", "MONDO"]. None searches all 8.
+        ontologies: Restrict the search, e.g. ["GO", "MONDO"]. None searches the
+            active profile's default scope.
         limit: Max results to return (default 10).
     """
     result, _ = await tools.search_terms(query, ontologies, limit, db_path=DB_PATH, client=_client)
@@ -196,19 +211,21 @@ async def get_descendants(curie: str):
 
 
 @mcp.tool()
-def suggest_ontology(context: str):
+async def get_profile_setup_guidance():
     """
-    Recommend which ontologies fit a research context, with rationale.
+    Get the rules and the valid-ontology list needed to author a research profile.
 
-    Use at the start of an annotation task when the user describes their data or
-    domain but hasn't picked an ontology — e.g. "single-cell RNA-seq of immune
-    cells" or "adverse drug events". Returns ranked ontologies with example
-    terms. Pure local reasoning — no lookup is performed.
+    Call this ONLY when the user is setting up or editing their research profile
+    — not to pick ontologies for an ordinary search. It takes no arguments and
+    performs no matching: it returns the curation policy, every valid ontology
+    prefix with its title, and the profile rules. YOU propose 5-8 ontologies for
+    the user's work using that list, show each proposal's prefix and title, and
+    get an explicit yes before calling save_profile.
 
-    Args:
-        context: A short description of the research domain or dataset.
+    For ordinary searching, just call search_terms — the user's profile already
+    determines what is searched.
     """
-    result, _ = tools.suggest_ontology(context)
+    result, _ = tools.get_profile_setup_guidance()
     return result
 
 
@@ -219,11 +236,14 @@ async def map_across_ontologies(curie: str, target_ontology: str):
 
     Use to translate a term from one ontology into another — e.g. mapping a MeSH
     disease to MONDO, or an EFO trait to its GO/HPO counterpart. Prefers exact
-    cross-references; falls back to fuzzy label matching.
+    cross-references; falls back to fuzzy label matching. ``target_ontology``
+    must be a member of the user's active research profile — if it is not, this
+    returns an ``out_of_profile`` error naming how to add it.
 
     Args:
         curie: Source ontology ID with uppercase prefix, e.g. "MESH:D008175".
-        target_ontology: Target ontology code, e.g. "MONDO", "HPO", "CHEBI".
+        target_ontology: Target ontology code, e.g. "MONDO", "HPO", "CHEBI". Must
+            be in the active profile.
     """
     result, _ = await tools.map_across_ontologies(
         curie, target_ontology, db_path=DB_PATH, client=_client
@@ -242,7 +262,8 @@ async def bulk_annotate(terms: list[str], ontology_hint: str | None = None, thre
 
     Args:
         terms: The strings to annotate, e.g. ["T cell", "B cell", "macrophage"].
-        ontology_hint: Restrict matching to one ontology code, e.g. "CL". None searches all.
+        ontology_hint: Restrict matching to one ontology code, e.g. "CL". None
+            searches every member of the active profile.
         threshold: Minimum fuzzy-match score (0–1) for a confident best match (default 0.8).
     """
     result, _ = await tools.bulk_annotate(
@@ -259,7 +280,9 @@ async def get_term_graph(curie: str, include_siblings: bool = True):
     Use when the user asks to *see*, *visualize*, or understand the
     *relationships* around a term — its ancestors, descendants, and siblings.
     Returns nodes (with roles) and edges suitable for rendering. Capped at 40
-    nodes; descendants are trimmed first when over the limit.
+    nodes; descendants are trimmed first when over the limit. If a ``degraded``
+    field is present, the parent or child lookup failed and the graph is
+    partial — tell the user rather than presenting it as complete.
 
     Args:
         curie: Focus term's ontology ID with uppercase prefix, e.g. "GO:0008219".
@@ -272,6 +295,55 @@ async def get_term_graph(curie: str, include_siblings: bool = True):
         client=_client,
     )
     return result
+
+
+@mcp.tool()
+async def save_profile(
+    name: str,
+    ontologies: list[str],
+    force_default: list[str] | None = None,
+    description: str = "",
+):
+    """
+    Create or update the user's research profile, then freeze it.
+
+    Call this ONLY after get_profile_setup_guidance, and ONLY once the human has
+    explicitly approved the ontology list — show them each prefix WITH its title
+    first. Validates every prefix, records each ontology's version and minting
+    prefix, and takes effect immediately with no restart.
+
+    Args:
+        name: Profile name, lowercase and hyphenated, e.g. "plant-breeding".
+        ontologies: 5-8 ontology prefixes (hard cap 12), e.g. ["PO", "TO", "GO"].
+        force_default: Rare. Prefixes to search by default even though they are
+            normally held back for noise, e.g. ["NCBITAXON"] for a taxonomy-heavy
+            domain.
+        description: One line on what this profile is for.
+    """
+    result, _ = await tools.save_profile(
+        name,
+        ontologies,
+        force_default=force_default,
+        description=description,
+        client=_client,
+    )
+    return result
+
+
+@mcp.prompt("setup-research-profile")
+def setup_research_profile() -> str:
+    """Set up a research profile so ontology searches match this user's domain."""
+    return (
+        "Help me set up my OntoMCP research profile.\n\n"
+        "1. Ask me what I work on, in one or two sentences.\n"
+        "2. Call get_profile_setup_guidance to get the rules and the list of valid "
+        "ontologies.\n"
+        "3. Propose 5-8 ontologies. For EACH one, show me the prefix AND its full "
+        "title, and say in a few words why it fits my work.\n"
+        "4. Wait for my explicit yes. Do not call save_profile before I approve the "
+        "list — an ontology that exists is not necessarily the one I meant.\n"
+        "5. Call save_profile with the approved list."
+    )
 
 
 def run() -> None:

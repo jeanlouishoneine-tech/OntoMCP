@@ -11,7 +11,7 @@ ipywidgets is an optional dependency (the ``jupyter`` extra), imported lazily.
 import html
 import json
 
-from ontomcp.core.config import ONTOLOGIES
+from ontomcp.core import registry
 from ontomcp.jupyter_ext.client import OntoMCPClient
 
 
@@ -114,7 +114,10 @@ def search_panel(client=None):
 
     query = widgets.Text(placeholder="e.g. cell death", description="Search:")
     checks = {
-        ont: widgets.Checkbox(value=False, description=ont, indent=False) for ont in ONTOLOGIES
+        # Resolved scope (<=12), never the ~286-entry index, which would
+        # render 286 ungrouped checkboxes.
+        ont: widgets.Checkbox(value=False, description=ont, indent=False)
+        for ont in registry.current().all_members
     }
     search_btn = widgets.Button(description="Search", button_style="primary")
     results = widgets.Output()
