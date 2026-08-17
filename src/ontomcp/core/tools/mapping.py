@@ -149,7 +149,7 @@ async def map_across_ontologies(
         payload, cand_hit = await search_terms(
             source_label, [target], limit=10, db_path=db_path, client=cli
         )
-        candidates = payload["results"] if isinstance(payload, dict) else payload
+        candidates = payload.get("results", payload) if isinstance(payload, dict) else payload
     cache_hit = source_hit and cand_hit
     if is_error(candidates):
         return candidates, cache_hit

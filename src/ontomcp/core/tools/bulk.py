@@ -126,7 +126,7 @@ async def bulk_annotate(
                 # search_terms returns {results, meta}; bulk wants the rows. The
                 # meta block is deliberately not propagated: 500 copies of the
                 # same scope statement is exactly the context tax it exists to avoid.
-                rows = payload["results"] if isinstance(payload, dict) else payload
+                rows = payload.get("results", payload) if isinstance(payload, dict) else payload
                 return rows, hit
 
         search_results = await asyncio.gather(*(_search(t) for t in distinct))
