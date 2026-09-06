@@ -301,32 +301,37 @@ def init_db(db_path: Path) -> None:
     """
     db_path = Path(db_path)
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = _connect(db_path)
-    try:
-        for attempt in range(_INIT_DB_MAX_ATTEMPTS):
-            try:
-                conn.execute("BEGIN IMMEDIATE")
-                for stmt in _SCHEMA_STATEMENTS:
-                    conn.execute(stmt)
-                # Column migration first: the FTS declaration references
-                # synonyms_text, so the column must exist before the virtual
-                # table is created.
-                _migrate_terms_columns(conn)
-                _migrate_search_queries_columns(conn)
-                if _migrate_fts(conn):
-                    logger.info(
-                        "Rebuilt terms_fts with stemming and synonym indexing (%s)", db_path
-                    )
-                conn.commit()
-                return
-            except sqlite3.OperationalError as exc:
+    for attempt in range(_INIT_DB_MAX_ATTEMPTS):
+        conn = None
+        try:
+            # Connecting itself can race: switching a brand-new file to WAL mode
+            # needs a stronger lock, so with several processes opening the same
+            # not-yet-created file at once, _connect() can raise
+            # `database is locked` before BEGIN IMMEDIATE is ever reached. That
+            # must be retried too, not just the migration below.
+            conn = _connect(db_path)
+            conn.execute("BEGIN IMMEDIATE")
+            for stmt in _SCHEMA_STATEMENTS:
+                conn.execute(stmt)
+            # Column migration first: the FTS declaration references
+            # synonyms_text, so the column must exist before the virtual
+            # table is created.
+            _migrate_terms_columns(conn)
+            _migrate_search_queries_columns(conn)
+            if _migrate_fts(conn):
+                logger.info("Rebuilt terms_fts with stemming and synonym indexing (%s)", db_path)
+            conn.commit()
+            return
+        except sqlite3.OperationalError as exc:
+            if conn is not None:
                 conn.rollback()
-                if attempt == _INIT_DB_MAX_ATTEMPTS - 1:
-                    raise
-                logger.warning("init_db migration lock contention (%s), retrying: %s", db_path, exc)
-                time.sleep(_INIT_DB_RETRY_DELAY_S)
-    finally:
-        conn.close()
+            if attempt == _INIT_DB_MAX_ATTEMPTS - 1:
+                raise
+            logger.warning("init_db migration lock contention (%s), retrying: %s", db_path, exc)
+            time.sleep(_INIT_DB_RETRY_DELAY_S)
+        finally:
+            if conn is not None:
+                conn.close()
 
 
 def _group_synonyms(conn: sqlite3.Connection, curie: str) -> dict[str, list[str]]:
