@@ -47,5 +47,7 @@ async def health(db_path=Depends(get_db_path)) -> dict:
         "ontology_versions": cache.get_all_ontology_versions(db_path),
     }
     if not ok:
-        payload["detail"] = "ontology registry unreadable or unresolvable; run scripts/refresh_index.py"
+        payload["detail"] = (
+            "ontology registry unreadable or unresolvable; run scripts/refresh_index.py"
+        )
     return envelope(payload)

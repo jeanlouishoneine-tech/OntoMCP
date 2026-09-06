@@ -67,7 +67,9 @@ async def get_term_graph(
         else:
             parents = parents_raw
         if is_error(children_raw):
-            logger.warning("get_term_graph: children failed for %s: %s", focus_curie, children_raw[0])
+            logger.warning(
+                "get_term_graph: children failed for %s: %s", focus_curie, children_raw[0]
+            )
             degraded.append({"edge": "children", **children_raw[0]})
             children: list[dict] = []
         else:

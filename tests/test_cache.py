@@ -300,7 +300,11 @@ def test_fts_search_replays_a_recorded_ols_order_over_local_bm25(db: Path):
     cache.put_term(db, _term("GO:3", "cell death regulation", "regulation of cell death"))
 
     cache.record_query(
-        db, "cell death", "scope1", limit=10, row_count=3,
+        db,
+        "cell death",
+        "scope1",
+        limit=10,
+        row_count=3,
         ranked_curies=["GO:3", "GO:1", "GO:2"],
     )
 

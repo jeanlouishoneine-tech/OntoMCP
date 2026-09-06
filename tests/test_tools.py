@@ -758,7 +758,9 @@ async def test_bulk_annotate_hint_fails_open_when_registry_is_unreadable(db, mon
         return _search_response([_term_doc(obo_id="GO:0008150", label="biological_process")])
 
     async with _client(handler) as cli:
-        out, _ = await bulk_annotate(["biological_process"], ontology_hint="GO", db_path=db, client=cli)
+        out, _ = await bulk_annotate(
+            ["biological_process"], ontology_hint="GO", db_path=db, client=cli
+        )
 
     assert "error" not in out
     assert out["results"][0]["best_match"]["curie"] == "GO:0008150"
@@ -829,7 +831,12 @@ async def test_get_term_graph_reports_a_degraded_parent_fetch_instead_of_hiding_
     assert roles["GO:0070997"] == "descendant"
     assert not any(n["role"] == "ancestor" for n in graph["nodes"])
     assert graph["degraded"] == [
-        {"edge": "parents", "error": "fetch_failed", "detail": graph["degraded"][0]["detail"], "curie": "GO:0008219"}
+        {
+            "edge": "parents",
+            "error": "fetch_failed",
+            "detail": graph["degraded"][0]["detail"],
+            "curie": "GO:0008219",
+        }
     ]
 
 

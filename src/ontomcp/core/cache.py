@@ -275,9 +275,7 @@ def _migrate_terms_columns(conn: sqlite3.Connection) -> None:
 
 def _migrate_search_queries_columns(conn: sqlite3.Connection) -> None:
     """Add ``ranked_curies`` to ``search_queries`` if a pre-existing db lacks it."""
-    existing = {
-        row["name"] for row in conn.execute("PRAGMA table_info(search_queries)").fetchall()
-    }
+    existing = {row["name"] for row in conn.execute("PRAGMA table_info(search_queries)").fetchall()}
     if "ranked_curies" not in existing:
         conn.execute("ALTER TABLE search_queries ADD COLUMN ranked_curies TEXT")
 
@@ -386,6 +384,7 @@ def get_term(db_path: Path, curie: str) -> dict | None:
     ``{exact, related, narrow, broad}`` lists; ``raw_json`` is parsed back to a
     dict when present.
     """
+
     def _do(conn):
         row = conn.execute("SELECT * FROM terms WHERE curie = ?", (curie,)).fetchone()
         if row is None:
@@ -408,6 +407,7 @@ def get_term_if_fresh(db_path: Path, curie: str, ttl_days: int = CACHE_TTL_DAYS)
     ``get_term`` from one would return a term with no synonyms, no xrefs and no
     obsolescence status while reporting ``cache_hit=True``.
     """
+
     def _do(conn):
         row = conn.execute(
             "SELECT *, fetched_at >= datetime('now', ?) AS fresh FROM terms "
@@ -614,6 +614,7 @@ def put_relationships(db_path: Path, pairs: list[tuple[str, str, str]]) -> None:
 
 def get_ontology_version(db_path: Path, ontology: str) -> str | None:
     """Return the cached source version for an ontology, or None if unknown."""
+
     def _do(conn):
         row = conn.execute(
             "SELECT version FROM ontology_versions WHERE ontology = ?", (ontology,)
@@ -632,6 +633,7 @@ def get_ontology_version_if_fresh(db_path: Path, ontology: str, ttl_days: int) -
     more slowly than terms (hence VERSION_TTL_DAYS, not CACHE_TTL_DAYS) but they do
     age.
     """
+
     def _do(conn):
         row = conn.execute(
             "SELECT version FROM ontology_versions "
@@ -645,6 +647,7 @@ def get_ontology_version_if_fresh(db_path: Path, ontology: str, ttl_days: int) -
 
 def get_all_ontology_versions(db_path: Path) -> dict[str, str | None]:
     """Return every cached ``{ontology: version}`` captured so far (may be empty)."""
+
     def _do(conn):
         rows = conn.execute("SELECT ontology, version FROM ontology_versions").fetchall()
         return {row["ontology"]: row["version"] for row in rows}
@@ -721,6 +724,7 @@ def query_is_covered(
     least the requested one **and** FTS still returns at least as many rows as were
     served then.
     """
+
     def _do(conn):
         row = conn.execute(
             """
@@ -893,6 +897,7 @@ def get_ancestors_cached(db_path: Path, curie: str) -> list[dict]:
     ``label`` is None if the parent term itself is not cached yet. Multi-level
     depth assembly lives in the hierarchy tool, not here.
     """
+
     def _do(conn):
         rows = conn.execute(
             """
@@ -913,6 +918,7 @@ def get_descendants_cached(db_path: Path, curie: str) -> list[dict]:
 
     ``label`` is None if the child term itself is not cached yet.
     """
+
     def _do(conn):
         rows = conn.execute(
             """
@@ -934,6 +940,7 @@ def is_stale(db_path: Path, curie: str, ttl_days: int = CACHE_TTL_DAYS) -> bool:
     Comparison runs in SQL against ``datetime('now', ...)`` so it matches the
     UTC ``CURRENT_TIMESTAMP`` written by put_term.
     """
+
     def _do(conn):
         row = conn.execute(
             "SELECT fetched_at < datetime('now', ?) AS stale FROM terms WHERE curie = ?",
