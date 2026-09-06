@@ -17,15 +17,15 @@ logger = logging.getLogger("ontomcp")
 _MAX_ALTERNATIVES = 3
 
 
-def _full_profile() -> tuple[str, ...] | None:
+def _full_profile() -> list[str] | None:
     """Default scope UNION named-only. See the scope rationale in bulk_annotate.
 
-    Returns None (not an empty tuple) when the registry can't be resolved, so
+    Returns None (not an empty list) when the registry can't be resolved, so
     callers passing this straight into normalize_ontologies's ``scope=`` fail
     open instead of rejecting every hint as out-of-profile.
     """
     try:
-        return registry.current().all_members
+        return list(registry.current().all_members)
     except Exception:
         return None
 

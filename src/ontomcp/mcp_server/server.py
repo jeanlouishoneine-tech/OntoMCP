@@ -61,7 +61,7 @@ async def _lifespan(server: FastMCP):
     try:
         yield
     finally:
-        if owns_client:
+        if owns_client and _client is not None:
             await _client.aclose()
             _client = None
 

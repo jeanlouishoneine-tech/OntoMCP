@@ -121,6 +121,7 @@ async def map_across_ontologies(
     resolved, rejected = normalize_ontologies([target_ontology])
     if rejected:
         return [rejected[0]], False
+    assert resolved is not None  # non-empty input list, so never the no-filter None
     target = resolved[0]
 
     async with ols_client(client) as cli:

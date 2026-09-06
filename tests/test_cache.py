@@ -127,6 +127,7 @@ def test_put_get_round_trip_new_provenance_columns(db: Path):
         ),
     )
     got = cache.get_term(db, "GO:0008219")
+    assert got is not None
     assert got["consider"] == ["GO:0006915"]
     assert got["subsets"] == ["gocheck_do_not_annotate"]
     assert got["definition_sources"] == ["GOC:mtg", "PMID:12345"]
@@ -138,6 +139,7 @@ def test_put_get_round_trip_optional_columns_default(db: Path):
     # A minimal term (no provenance fields) yields empty lists and None flags.
     cache.put_term(db, _term())
     got = cache.get_term(db, "GO:0008219")
+    assert got is not None
     assert got["consider"] == []
     assert got["subsets"] == []
     assert got["definition_sources"] == []
@@ -172,7 +174,7 @@ def test_init_db_migrates_legacy_terms_table(tmp_db_path: Path):
     assert {"consider", "subsets", "definition_sources", "has_children", "is_leaf"} <= cols
 
 
-def _init_db_worker(path: str) -> str | None:
+def _init_db_worker(path: Path) -> str | None:
     """Top-level so it is picklable for multiprocessing's spawn context."""
     from ontomcp.core import cache as _cache
 
@@ -190,7 +192,7 @@ def test_init_db_survives_a_concurrent_dual_server_startup_race(tmp_path: Path):
     # `sqlite3.OperationalError: duplicate column name` in the losing processes.
     import multiprocessing as mp
 
-    db_path = str(tmp_path / "concurrent.db")
+    db_path = tmp_path / "concurrent.db"
     ctx = mp.get_context("spawn")
     with ctx.Pool(8) as pool:
         results = pool.map(_init_db_worker, [db_path] * 8)
@@ -232,6 +234,7 @@ def test_put_upsert_no_duplicates_and_replaces_synonyms(db: Path):
     assert n_terms == 1
     assert n_syn == 1  # old two synonyms replaced by one
     got = cache.get_term(db, "GO:0008219")
+    assert got is not None
     assert got["label"] == "cell death (updated)"
     assert got["synonyms"]["exact"] == ["only one"]
 
@@ -240,6 +243,7 @@ def test_put_term_accepts_synonyms_as_pair_list(db: Path):
     """put_term must accept the (type, value) tuple-list form, not just a mapping."""
     cache.put_term(db, _term(synonyms=[("exact", "cell killing"), ("narrow", "apoptosis")]))
     got = cache.get_term(db, "GO:0008219")
+    assert got is not None
     assert got["synonyms"]["exact"] == ["cell killing"]
     assert got["synonyms"]["narrow"] == ["apoptosis"]
 

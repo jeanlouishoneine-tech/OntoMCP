@@ -117,6 +117,7 @@ async def search_terms(
         # The ontology param used to be set only when the list was truthy, so
         # "search my ontologies" actually hit all ~286 of OLS4.
         onts = list(resolved.default_scope)
+    assert onts is not None  # explicit_scope True, or just assigned above
 
     limit = max(1, min(limit, SEARCH_LIMIT_MAX))
     query_norm = " ".join(query.lower().split())
