@@ -1,0 +1,74 @@
+{
+  "_derived": {
+    "aliases": {
+      "HP": "HPO"
+    },
+    "frozen_at": null,
+    "index_version": "2026.08+5453a1b2",
+    "members": {
+      "CHEBI": {
+        "base_uri": null,
+        "curie_prefix": "CHEBI",
+        "slug": "chebi",
+        "terms": 237842,
+        "title": "Chemical Entities of Biological Interest",
+        "verified": false,
+        "version": null
+      },
+      "GO": {
+        "base_uri": null,
+        "curie_prefix": "GO",
+        "slug": "go",
+        "terms": 85169,
+        "title": "Gene Ontology",
+        "verified": false,
+        "version": null
+      },
+      "HPO": {
+        "base_uri": null,
+        "curie_prefix": "HP",
+        "slug": "hp",
+        "terms": 32663,
+        "title": "Human Phenotype Ontology",
+        "verified": false,
+        "version": null
+      },
+      "MONDO": {
+        "base_uri": null,
+        "curie_prefix": "MONDO",
+        "slug": "mondo",
+        "terms": 63449,
+        "title": "Mondo Disease Ontology",
+        "verified": false,
+        "version": null
+      },
+      "NCIT": {
+        "base_uri": null,
+        "curie_prefix": "NCIT",
+        "slug": "ncit",
+        "terms": 209910,
+        "title": "NCI Thesaurus OBO Edition",
+        "verified": false,
+        "version": null
+      }
+    },
+    "quarantine": {},
+    "warnings": [
+      "Shipped starter: run 'ontomcp profile check' to record live versions."
+    ]
+  },
+  "created_at": "2026-08-15",
+  "description": "Drug discovery and development: compounds, indications, phenotypes and mechanisms.",
+  "force_default": [],
+  "locked": false,
+  "name": "pharma",
+  "notes": "",
+  "ontologies": [
+    "CHEBI",
+    "NCIT",
+    "MONDO",
+    "HPO",
+    "GO"
+  ],
+  "schema": 1
+}

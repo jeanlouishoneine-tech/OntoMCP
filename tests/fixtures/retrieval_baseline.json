@@ -1,0 +1,533 @@
+{
+  "biotech-molecular::ATP": {
+    "found": [
+      "CHEBI:15422",
+      "GO:1903407",
+      "GO:1903408",
+      "GO:1901895",
+      "GO:1901896",
+      "GO:1905273",
+      "CHEBI:73214",
+      "CHEBI:149598",
+      "GO:1904240",
+      "GO:1904241"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.7,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "biotech-molecular::HEK293": {
+    "found": [
+      "CLO:0001230",
+      "CLO:0037374",
+      "CLO:0037238",
+      "CLO:0037373",
+      "CLO:0037346",
+      "CLO:0037351",
+      "CLO:0037352",
+      "CLO:0037369",
+      "CLO:0037370",
+      "CLO:0037372"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 1.0,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "biotech-molecular::T cell": {
+    "found": [
+      "CL:0000084",
+      "GO:1904703",
+      "GO:1904704",
+      "GO:1901347",
+      "GO:1901348",
+      "GO:1903339",
+      "GO:1903340",
+      "GO:1904746",
+      "GO:1904747",
+      "GO:0045168"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.9,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "biotech-molecular::liver": {
+    "found": [
+      "UBERON:0002107",
+      "CL:4047101",
+      "UBERON:0001117",
+      "CL:2000055",
+      "UBERON:0006727",
+      "CL:0000632",
+      "CLO:0000412",
+      "CLO:0000512",
+      "CLO:0000537",
+      "CLO:0000565"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.4,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "biotech-molecular::promoter": {
+    "found": [
+      "SO:0000167",
+      "CHEBI:77567",
+      "GO:0045944",
+      "GO:0000122",
+      "GO:0000981",
+      "GO:0001228",
+      "GO:0120191",
+      "GO:1904280",
+      "GO:1904281",
+      "GO:1904595"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.8,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "clinical-rare-disease::Marfan syndrome": {
+    "found": [
+      "MONDO:0007947",
+      "NCIT:C34807",
+      "ORDO:558",
+      "NCIT:C168205",
+      "MONDO:0008426",
+      "ORDO:284993",
+      "MONDO:0013574",
+      "ORDO:284979",
+      "MONDO:0017309",
+      "MONDO:0009566"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.5,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "clinical-rare-disease::cystic fibrosis": {
+    "found": [
+      "MONDO:0009061",
+      "NCIT:C2975",
+      "ORDO:586",
+      "MONDO:0009062",
+      "MONDO:0005413",
+      "NCIT:C84412",
+      "NCIT:C121562",
+      "NCIT:C92764",
+      "NCIT:C111927",
+      "MONDO:7770005"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.5,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "clinical-rare-disease::heterozygous": {
+    "found": [
+      "GENO:0000135",
+      "NCIT:C156899",
+      "NCIT:C185460",
+      "HPO:0034343",
+      "NCIT:C198518",
+      "NCIT:C45825",
+      "NCIT:C166408",
+      "NCIT:C185531",
+      "NCIT:C185532",
+      "NCIT:C219070"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.8,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "clinical-rare-disease::microcephaly": {
+    "found": [
+      "HPO:0000252",
+      "MONDO:0001149",
+      "NCIT:C85874",
+      "MONDO:0009624",
+      "MONDO:0014908",
+      "MONDO:0007918",
+      "MONDO:0012516",
+      "MONDO:0007988",
+      "MONDO:0014516",
+      "MONDO:0014592"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.8,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "clinical-rare-disease::missense variant": {
+    "found": [
+      "SO:0001583",
+      "SO:0001585",
+      "SO:0001586",
+      "NCIT:C18133",
+      "MONDO:0100062",
+      "MONDO:0014078",
+      "MONDO:0014830",
+      "MONDO:0100061",
+      "MONDO:1010098",
+      "ORDO:293825"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.5,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "fermentation::Saccharomyces cerevisiae": {
+    "found": [
+      "NCBITAXON:4932",
+      "NCBITAXON:11008",
+      "NCBITAXON:1382555",
+      "CHEBI:75772",
+      "NCBITAXON:1431717",
+      "NCBITAXON:42478",
+      "NCBITAXON:12450",
+      "NCBITAXON:1470621",
+      "NCBITAXON:332110",
+      "NCBITAXON:332111"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.9,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "fermentation::anaerobic growth": {
+    "found": [
+      "OMP:0005193",
+      "OMP:0005194",
+      "OMP:0005196",
+      "OMP:0005197",
+      "OMP:0005191",
+      "OMP:0005195",
+      "OMP:0007926",
+      "OMP:0007927",
+      "OMP:0005189",
+      "OMP:0005190"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 1.0,
+    "mrr@10": 0.2,
+    "out_of_domain@10": 0.0
+  },
+  "fermentation::bioreactor": {
+    "found": [
+      "ENVO:00002123",
+      "NCBITAXON:1906166",
+      "NCBITAXON:3396488",
+      "NCBITAXON:3396520",
+      "ENVO:00002124",
+      "ENVO:00002126",
+      "ENVO:03600010",
+      "ENVO:00002125",
+      "ENVO:00002210",
+      "NCBITAXON:1076179"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.6,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "fermentation::ethanol": {
+    "found": [
+      "CHEBI:16236",
+      "GO:1900066",
+      "GO:0019655",
+      "GO:1900516",
+      "GO:1900517",
+      "CHEBI:62865",
+      "CHEBI:136992",
+      "CHEBI:83166",
+      "GO:0004306",
+      "GO:0050459"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.6,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "fermentation::glucose": {
+    "found": [
+      "CHEBI:17234",
+      "CHEBI:176594",
+      "CHEBI:176595",
+      "CHEBI:67230",
+      "CHEBI:133612",
+      "CHEBI:133801",
+      "CHEBI:176555",
+      "CHEBI:176564",
+      "CHEBI:230471",
+      "CHEBI:173107"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 1.0,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "microbiome::Escherichia coli": {
+    "found": [
+      "NCBITAXON:562",
+      "MONDO:0020920",
+      "NCBITAXON:574521",
+      "NCBITAXON:595495",
+      "NCBITAXON:316401",
+      "NCBITAXON:316407",
+      "NCBITAXON:511145",
+      "NCBITAXON:941322",
+      "NCBITAXON:413997",
+      "NCBITAXON:481805"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.9,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "microbiome::biofilm formation": {
+    "found": [
+      "GO:0042710",
+      "GO:1900188",
+      "GO:1900189",
+      "GO:1900191",
+      "GO:1900192",
+      "GO:1900232",
+      "GO:1900233",
+      "GO:1900229",
+      "GO:1900230",
+      "GO:0044399"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 1.0,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "microbiome::digestive tract": {
+    "found": [
+      "UBERON:0001555",
+      "MONDO:0044991",
+      "UBERON:0018261",
+      "UBERON:0003929",
+      "UBERON:0006909",
+      "UBERON:0003408",
+      "UBERON:0006866",
+      "ENVO:01001187",
+      "MONDO:0010177",
+      "GO:0071907"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.6,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "microbiome::marine biome": {
+    "found": [
+      "ENVO:00000447",
+      "NCBITAXON:1664356",
+      "NCBITAXON:1664357",
+      "NCBITAXON:1664358",
+      "NCBITAXON:1664359",
+      "NCBITAXON:1664360",
+      "NCBITAXON:1664361",
+      "NCBITAXON:1664362",
+      "NCBITAXON:1664363",
+      "NCBITAXON:1664364"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.9,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "microbiome::short-chain fatty acid": {
+    "found": [
+      "CHEBI:26666",
+      "GO:0051790",
+      "CHEBI:194306",
+      "GO:0019626",
+      "GO:0031955",
+      "CHEBI:58951",
+      "GO:0015913",
+      "GO:0015636",
+      "GO:0046459",
+      "GO:0015912"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.7,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "pharma::apoptotic process": {
+    "found": [
+      "GO:0006915",
+      "GO:1905401",
+      "GO:1905404",
+      "GO:1905400",
+      "GO:1905403",
+      "GO:1904747",
+      "GO:1904746",
+      "GO:1904650",
+      "GO:1902251",
+      "GO:1902252"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 1.0,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "pharma::aspirin": {
+    "found": [
+      "NCIT:C287",
+      "HPO:0012042",
+      "CHEBI:747596",
+      "HPO:0032365",
+      "CHEBI:138614",
+      "CHEBI:747578",
+      "NCIT:C174538",
+      "CHEBI:140208",
+      "CHEBI:138615",
+      "CHEBI:138616"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.6,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "pharma::caffeine": {
+    "found": [
+      "CHEBI:27732",
+      "NCIT:C328",
+      "NCIT:C168776",
+      "NCIT:C1033",
+      "CHEBI:177330",
+      "CHEBI:178066",
+      "CHEBI:32140",
+      "GO:1901181",
+      "NCIT:C201990",
+      "NCIT:C75346"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.5,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "pharma::non-small cell lung carcinoma": {
+    "found": [
+      "MONDO:0005233",
+      "HPO:0030358",
+      "NCIT:C2926",
+      "NCIT:C5652",
+      "NCIT:C5653",
+      "NCIT:C5654",
+      "NCIT:C5655",
+      "NCIT:C9038",
+      "NCIT:C9104",
+      "NCIT:C153081"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.8,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "pharma::seizure": {
+    "found": [
+      "HPO:0001250",
+      "NCIT:C2962",
+      "HPO:0007334",
+      "HPO:0002384",
+      "HPO:0025190",
+      "HPO:0011173",
+      "HPO:0002349",
+      "HPO:0020220",
+      "HPO:0011169",
+      "MONDO:0043264"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.8,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "plant-breeding::drought": {
+    "found": [
+      "ENVO:1000745",
+      "GO:1902584",
+      "TO:0000188",
+      "TO:0000155",
+      "TO:0000276",
+      "GO:0009819",
+      "PECO:0007404",
+      "TO:0000394",
+      "TO:0000458",
+      "GO:0009414"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.5,
+    "mrr@10": 0.143,
+    "out_of_domain@10": 0.0
+  },
+  "plant-breeding::grain yield": {
+    "found": [
+      "TO:0000396",
+      "TO:0000449",
+      "TO:0000450",
+      "TO:0000666",
+      "TO:0020002",
+      "TO:0000222",
+      "TO:0000144",
+      "TO:0000589",
+      "TO:0000662"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 1.0,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "plant-breeding::gram per litre": {
+    "found": [
+      "UO:0000175",
+      "ENVO:00002011"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.5,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "plant-breeding::leaf": {
+    "found": [
+      "PO:0025034",
+      "PO:0025405",
+      "PO:0007094",
+      "NCBITAXON:134386",
+      "NCBITAXON:55951",
+      "PO:0000007",
+      "PO:0025519",
+      "NCBITAXON:304222",
+      "NCBITAXON:756759",
+      "PO:0006346"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.6,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  },
+  "plant-breeding::soil": {
+    "found": [
+      "ENVO:00001998",
+      "ENVO:01000910",
+      "ENVO:09000030",
+      "NCBITAXON:100887",
+      "NCBITAXON:652673",
+      "ENVO:01000706",
+      "ENVO:09000026",
+      "ENVO:09200010",
+      "NCBITAXON:1758139",
+      "NCBITAXON:1770234"
+    ],
+    "hit@10": 1.0,
+    "max_ontology_share@10": 0.6,
+    "mrr@10": 1.0,
+    "out_of_domain@10": 0.0
+  }
+}

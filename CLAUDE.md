@@ -27,7 +27,10 @@
 
 - Store and return CURIEs with uppercase prefix: `GO:0008219`, never `go:0008219`.
 - Strip `obo:` prefix if OLS returns it.
-- Use `IRI_TEMPLATES` in `config.py` for all IRI construction — no ad-hoc string building.
+- All IRI construction goes through `core/iri.resolve_iri()`. `IRI_TEMPLATES` remains
+  authoritative for its members and is rung 0 of that chain — no ad-hoc string building anywhere else.
+- Any IRI below rung 1 is a guess, so it must carry a disconfirmation signal: a 404 or an empty
+  node list escalates to a term fetch, never to "this term has no parents".
 
 ## Testing
 

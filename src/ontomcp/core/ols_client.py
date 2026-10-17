@@ -16,18 +16,20 @@ CURIE rules (see project CLAUDE.md):
 """
 
 import asyncio
+import logging
+import re
 from urllib.parse import quote
 
 import httpx
 
-from ontomcp.core import config
+from ontomcp.core import config, registry
+
+logger = logging.getLogger("ontomcp")
 
 # OLS CURIE prefix -> registry key. Only HP differs from its registry key.
-_PREFIX_ALIASES = {"HP": "HPO"}
-
-# registry key -> lowercase ontology id used in OLS URL paths / search filter.
-# Driven by the registry's ``slug`` field so the mapping has one source of truth.
-_ONTOLOGY_SLUGS = {key: meta["slug"] for key, meta in config.ONTOLOGIES.items()}
+# Sourced from core.registry so index keys, profile members and cache rows cannot
+# drift apart (see tournament/spike-results.md S-6).
+_PREFIX_ALIASES = registry.PREFIX_ALIASES
 
 # OLS obo_synonym scope -> our synonym bucket.
 _SYNONYM_SCOPES = {
@@ -79,9 +81,14 @@ def double_encode_iri(iri: str) -> str:
 
 
 def _ontology_slug(curie: str) -> str:
-    """Lowercase OLS ontology id for the CURIE's prefix."""
+    """OLS ontology id for the CURIE's prefix, from the committed index.
+
+    Raises ``KeyError`` for an ontology OLS4 does not serve. That is deliberate:
+    the previous ``.lower()`` fallback fabricated a slug, which OLS answered 200
+    with zero documents — a silent wrong answer rather than a loud wrong input.
+    """
     prefix = normalize_curie(curie).split(":", 1)[0]
-    return _ONTOLOGY_SLUGS.get(prefix, prefix.lower())
+    return registry.slug_for(prefix)
 
 
 # --- Response parsers ------------------------------------------------------
@@ -92,6 +99,29 @@ def _first(value):
     if isinstance(value, list):
         return value[0] if value else None
     return value
+
+
+# OLS's `description` field mixes the real definition with provenance/citation
+# comments, e.g. "GOC:mtg_apoptosis in PMID:12345 inferred from mutant phenotype".
+# Blindly taking index 0 (the old `_first` behavior) served the comment as often
+# as the definition.
+_PROVENANCE_RE = re.compile(r"^\S+\s+in\s+PMID:\d+", re.IGNORECASE)
+
+
+def _pick_definition(value):
+    """Return the best definition-shaped entry from a possibly multi-valued field.
+
+    Filters out entries that look like a citation/provenance comment, then keeps
+    the longest remaining candidate. Falls back to the longest raw candidate if
+    every entry looks like a comment, so a non-empty field never becomes None.
+    """
+    if not isinstance(value, list):
+        return value
+    candidates = [v for v in value if isinstance(v, str) and v]
+    if not candidates:
+        return None
+    filtered = [v for v in candidates if not _PROVENANCE_RE.match(v)]
+    return max(filtered or candidates, key=len)
 
 
 def _opt_bool(value) -> bool | None:
@@ -213,7 +243,7 @@ def _parse_term(obj: dict) -> dict:
         "curie": curie,
         "ontology": ontology,
         "label": obj.get("label"),
-        "definition": _first(obj.get("description")),
+        "definition": _pick_definition(obj.get("description")),
         "is_obsolete": int(bool(obj.get("is_obsolete", False))),
         "replaced_by": _iri_to_curie(replaced_by) if replaced_by else None,
         "consider": _parse_consider(obj),
@@ -221,6 +251,7 @@ def _parse_term(obj: dict) -> dict:
         "definition_sources": _parse_definition_sources(obj),
         "has_children": _opt_bool(obj.get("has_children")),
         "is_leaf": _opt_bool(_leaf_flag(obj)),
+        "iri": obj.get("iri"),
         "synonyms": _parse_synonyms(obj),
         "raw_json": obj,
     }
@@ -302,21 +333,49 @@ class OLSClient:
         query: str,
         ontologies: list[str] | None = None,
         limit: int = 10,
+        *,
+        rows: int | None = None,
     ) -> list[dict]:
-        """Free-text search. Returns ``[{curie, label, ontology, definition, score}]``."""
+        """Free-text search. Returns ``[{curie, label, ontology, definition, iri, score}]``."""
         params = {
             "q": query,
-            "rows": limit,
-            "fieldList": "iri,label,description,short_form,obo_id,is_obsolete",
+            # ``rows`` lets the caller over-fetch when a post-filter will drop
+            # rows, so the filter cannot silently shrink the result set below the
+            # requested limit. Defaults to limit when no filter is in play.
+            "rows": rows or limit,
+            # `synonym` is the full synonym bag across all scopes. It is requested
+            # for the CACHE, not for the caller: without it a search-warmed row is
+            # synonym-blind in FTS, so a synonym query could never be served from
+            # cache until someone happened to call get_term on that CURIE.
+            # `obo_synonym` and `synonyms` are NOT valid search fields — OLS drops
+            # them silently — and `related_synonyms` is a strict subset.
+            #
+            # Deliberately NOT requested: `ontology_prefix`. It reports which
+            # ontology INDEXED a row, which is not what any caller wants — the
+            # minting-prefix filter needs the ontology that MINTED it, and a
+            # CURIE's prefix is that by construction. Requesting it produced a
+            # `source_ontology` field nothing ever read.
+            "fieldList": "iri,label,description,short_form,obo_id,is_obsolete,synonym",
         }
         if ontologies:
-            slugs = [_ONTOLOGY_SLUGS.get(o.upper(), o.lower()) for o in ontologies]
-            params["ontology"] = ",".join(slugs)
+            slugs = []
+            for code in ontologies:
+                try:
+                    slugs.append(registry.slug_for(code))
+                except (KeyError, registry.IndexError_):
+                    # normalize_ontologies has already validated membership, so an
+                    # unknown code here means the index moved under a frozen
+                    # profile, or the index is unavailable. Drop it rather than
+                    # sending a fabricated slug.
+                    continue
+            if slugs:
+                params["ontology"] = ",".join(slugs)
         try:
             response = await self._get("/search", params=params)
             response.raise_for_status()
             docs = response.json().get("response", {}).get("docs", [])
         except (httpx.HTTPError, ValueError) as exc:
+            logger.warning("OLS search failed for %r: %s", query, exc)
             return [{"error": "search_failed", "detail": str(exc), "query": query}]
 
         results = []
@@ -330,23 +389,68 @@ class OLSClient:
                     "curie": curie,
                     "label": doc.get("label"),
                     "ontology": curie.split(":", 1)[0],
-                    "definition": _first(doc.get("description")),
+                    "definition": _pick_definition(doc.get("description")),
                     "is_obsolete": bool(doc.get("is_obsolete", False)),
+                    # Cache-only: search.py strips this before the response leaves,
+                    # because 20-odd synonyms per row is exactly the payload bloat
+                    # the project's cap rule exists to prevent.
+                    "synonyms": doc.get("synonym") or [],
+                    # The fieldList already asked for this; the parse loop used to
+                    # discard it, so every search threw away the one authoritative
+                    # IRI we get for free.
+                    "iri": doc.get("iri"),
                 }
             )
-        # OLS returns docs in relevance order; report a rank-normalized 0–1 score
-        # so it matches the cache (FTS) path's scale instead of the raw Solr score.
-        total = len(results)
-        for i, item in enumerate(results):
-            item["score"] = config.rank_score(i, total)
+        # OLS returns docs in relevance order. Rank is the ordinal position; there
+        # is no score, because a value that is a function of result-set size alone
+        # carries zero query information (see the note on rank in tools/search.py).
+        for i, item in enumerate(results, start=1):
+            item["rank"] = i
         return results
+
+    async def search_facets(self, query: str) -> dict[str, int]:
+        """Per-ontology hit counts for a query across all of OLS4, as exact counts.
+
+        OLS4 returns ``facet_counts.facet_fields`` on every ``/search`` **by
+        default**, with no facet parameters requested — so this costs one call and
+        the counts are exact over the whole result set, not an estimate from a
+        sampled page. Returns ``{PREFIX: count}``; empty on any failure, because
+        the escape hatch is a courtesy and must never turn a search into an error.
+        """
+        try:
+            response = await self._get("/search", params={"q": query, "rows": 0})
+            response.raise_for_status()
+            fields = response.json().get("facet_counts", {}).get("facet_fields", {})
+        except (httpx.HTTPError, ValueError):
+            return {}
+
+        flat = fields.get("ontologyPreferredPrefix") or []
+        # Solr renders facets as a flat [value, count, value, count, ...] list.
+        counts: dict[str, int] = {}
+        for i in range(0, len(flat) - 1, 2):
+            prefix, count = flat[i], flat[i + 1]
+            if not prefix:
+                continue
+            try:
+                counts[registry.canonical_key(str(prefix))] = int(count)
+            except (TypeError, ValueError):
+                continue
+        return counts
 
     async def fetch_term(self, curie: str) -> dict:
         """Fetch a single term. Returns the parsed term or an error/not-found dict."""
         normalized = normalize_curie(curie)
-        slug = _ontology_slug(normalized)
         try:
-            response = await self._get(f"/ontologies/{slug}/terms", params={"obo_id": normalized})
+            slug = _ontology_slug(normalized)
+            minted = registry.minting_curie(normalized)
+        except KeyError as exc:
+            return {"error": "unknown_ontology", "detail": str(exc), "curie": normalized}
+        except registry.IndexError_ as exc:
+            return {"error": "index_unavailable", "detail": str(exc), "curie": normalized}
+        # OLS matches obo_id against its OWN minting prefix. Sending our canonical
+        # key returns an empty list, so HPO and NCBITaxon terms were unfetchable.
+        try:
+            response = await self._get(f"/ontologies/{slug}/terms", params={"obo_id": minted})
             if response.status_code == 404:
                 return {"error": "not_found", "curie": normalized}
             response.raise_for_status()
@@ -364,7 +468,10 @@ class OLSClient:
         ``version`` (root) or ``config.version``. Never raises — returns None on any
         failure so version capture is strictly best-effort.
         """
-        slug = _ONTOLOGY_SLUGS.get(ontology.upper(), ontology.lower())
+        try:
+            slug = registry.slug_for(ontology)
+        except (KeyError, registry.IndexError_):
+            return None
         try:
             response = await self._get(f"/ontologies/{slug}")
             response.raise_for_status()
@@ -377,53 +484,79 @@ class OLSClient:
             version = config_block.get("version") if isinstance(config_block, dict) else None
         return version
 
-    async def _fetch_hierarchy(self, curie: str, endpoint: str, rel_type: str) -> list[dict]:
+    async def _fetch_hierarchy(
+        self, curie: str, endpoint: str, rel_type: str, iri: str | None = None
+    ) -> list[dict]:
+        """Fetch hierarchy nodes, optionally against a pre-resolved IRI.
+
+        ``iri`` lets ``core.iri.fetch_with_disconfirmation`` supply an address for
+        any of the ~286 ontologies, keeping this module SQLite-free — the
+        resolver needs the cache and the registry, so it lives one layer up and
+        passes the answer down.
+
+        A 404 returns the ``iri_miss`` marker rather than ``[]``. ``[]`` means "this
+        term genuinely has no parents", and conflating the two is how an
+        unreachable IRI became a confident "no results" (tournament/spike-results.md
+        S-4). Callers escalate on the marker; nothing else reads it.
+        """
         normalized = normalize_curie(curie)
-        slug = _ontology_slug(normalized)
         try:
-            encoded_iri = double_encode_iri(curie_to_iri(normalized))
-        except ValueError as exc:
-            return [{"error": "bad_curie", "detail": str(exc), "curie": normalized}]
+            slug = _ontology_slug(normalized)
+        except KeyError as exc:
+            return [{"error": "unknown_ontology", "detail": str(exc), "curie": normalized}]
+        except registry.IndexError_ as exc:
+            return [{"error": "index_unavailable", "detail": str(exc), "curie": normalized}]
+        if iri is None:
+            try:
+                iri = curie_to_iri(normalized)
+            except ValueError as exc:
+                return [{"error": "bad_curie", "detail": str(exc), "curie": normalized}]
+        encoded_iri = double_encode_iri(iri)
         try:
             response = await self._get(f"/ontologies/{slug}/terms/{encoded_iri}/{endpoint}")
             if response.status_code == 404:
-                return []
+                return [{"error": "iri_miss", "curie": normalized, "iri": iri}]
             response.raise_for_status()
             terms = response.json().get("_embedded", {}).get("terms", [])
         except (httpx.HTTPError, ValueError) as exc:
             return [{"error": "fetch_failed", "detail": str(exc), "curie": normalized}]
+        if not terms:
+            # An empty node list is the other shape a wrong IRI takes: OLS answers
+            # 200 for a well-formed IRI it does not know. Indistinguishable from a
+            # true leaf here, so it is marked and the caller decides.
+            return [{"error": "iri_miss", "curie": normalized, "iri": iri, "empty": True}]
         return [_parse_hierarchy_node(t, rel_type) for t in terms]
 
-    async def fetch_parents(self, curie: str) -> list[dict]:
+    async def fetch_parents(self, curie: str, iri: str | None = None) -> list[dict]:
         """Fetch DIRECT parent nodes (one hop). Returns ``[{curie, label, rel_type}, ...]``.
 
         OLS ``/parents`` returns only direct ``subClassOf`` parents, so these are
         true ``is_a`` edges suitable for the relationships table and graph building.
         """
-        return await self._fetch_hierarchy(curie, "parents", "is_a")
+        return await self._fetch_hierarchy(curie, "parents", "is_a", iri)
 
-    async def fetch_children(self, curie: str) -> list[dict]:
+    async def fetch_children(self, curie: str, iri: str | None = None) -> list[dict]:
         """Fetch DIRECT child nodes (one hop). Returns ``[{curie, label, rel_type}, ...]``.
 
         OLS ``/children`` returns only direct ``subClassOf`` children — true
         ``is_a`` edges.
         """
-        return await self._fetch_hierarchy(curie, "children", "is_a")
+        return await self._fetch_hierarchy(curie, "children", "is_a", iri)
 
-    async def fetch_ancestors(self, curie: str) -> list[dict]:
+    async def fetch_ancestors(self, curie: str, iri: str | None = None) -> list[dict]:
         """Fetch the TRANSITIVE set of ancestor nodes (full closure, flattened).
 
         OLS ``/ancestors`` returns every ancestor regardless of distance and mixes
         edge predicates, so nodes are tagged ``rel_type="ancestor"`` — not ``is_a``,
         which would falsely assert a direct subsumption edge.
         """
-        return await self._fetch_hierarchy(curie, "ancestors", "ancestor")
+        return await self._fetch_hierarchy(curie, "ancestors", "ancestor", iri)
 
-    async def fetch_descendants(self, curie: str) -> list[dict]:
+    async def fetch_descendants(self, curie: str, iri: str | None = None) -> list[dict]:
         """Fetch the TRANSITIVE set of descendant nodes (full closure, flattened).
 
         OLS ``/hierarchicalDescendants`` returns every descendant regardless of
         distance and mixes edge predicates, so nodes are tagged
         ``rel_type="descendant"`` rather than the false ``is_a``.
         """
-        return await self._fetch_hierarchy(curie, "hierarchicalDescendants", "descendant")
+        return await self._fetch_hierarchy(curie, "hierarchicalDescendants", "descendant", iri)

@@ -9,8 +9,9 @@ from ontomcp.core.tools.hierarchy import (
     get_parents,
 )
 from ontomcp.core.tools.mapping import map_across_ontologies
+from ontomcp.core.tools.profile_tool import save_profile
 from ontomcp.core.tools.search import search_terms
-from ontomcp.core.tools.suggest import suggest_ontology
+from ontomcp.core.tools.suggest import get_profile_setup_guidance
 from ontomcp.core.tools.term import find_synonyms, get_term, validate_term
 
 __all__ = [
@@ -22,8 +23,9 @@ __all__ = [
     "get_children",
     "get_ancestors",
     "get_descendants",
-    "suggest_ontology",
+    "get_profile_setup_guidance",
     "map_across_ontologies",
     "bulk_annotate",
     "get_term_graph",
+    "save_profile",
 ]

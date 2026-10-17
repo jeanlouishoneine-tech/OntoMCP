@@ -16,12 +16,34 @@ Two distinct kinds of query, kept honest about what they return:
 import logging
 from pathlib import Path
 
-from ontomcp.core import cache
+from ontomcp.core import cache, iri, registry
 from ontomcp.core.config import DB_PATH, DESCENDANTS_CAP
 from ontomcp.core.ols_client import OLSClient
 from ontomcp.core.tools._common import is_error, ols_client, safe_normalize_curie
 
 logger = logging.getLogger("ontomcp")
+
+
+async def _fetch(method_name: str, curie: str, db_path: Path, cli: OLSClient) -> list[dict]:
+    """Fetch hierarchy nodes for a CURIE through the IRI resolution chain.
+
+    The chain matters for any ontology outside the ten built-ins: their IRIs are
+    not in ``IRI_TEMPLATES``, so before this the four hierarchy tools returned
+    ``bad_curie`` for every one of the other ~276. It also matters *inside* the
+    built-ins, because a guessed IRI that 404s used to be reported as "this term
+    has no parents" (tournament/spike-results.md S-4).
+    """
+    try:
+        resolved = registry.current()
+    except Exception:  # index missing or unreadable — resolve without rung 2
+        resolved = None
+
+    async def call(target_curie: str, target_iri: str) -> list[dict]:
+        return await getattr(cli, method_name)(target_curie, target_iri)
+
+    return await iri.fetch_with_disconfirmation(
+        curie, call, db_path=db_path, registry=resolved, client=cli
+    )
 
 
 def _shape(nodes: list[dict], depth) -> list[dict]:
@@ -55,7 +77,7 @@ async def get_parents(
 
     logger.info("get_parents fetching OLS: %s", norm)
     async with ols_client(client) as cli:
-        nodes = await cli.fetch_parents(norm)
+        nodes = await _fetch("fetch_parents", norm, db_path, cli)
     if is_error(nodes):
         return nodes, False
 
@@ -81,7 +103,7 @@ async def get_children(
 
     logger.info("get_children fetching OLS: %s", norm)
     async with ols_client(client) as cli:
-        nodes = await cli.fetch_children(norm)
+        nodes = await _fetch("fetch_children", norm, db_path, cli)
     if is_error(nodes):
         return nodes, False
 
@@ -112,7 +134,7 @@ async def get_ancestors(
 
     logger.info("get_ancestors fetching OLS (transitive): %s", norm)
     async with ols_client(client) as cli:
-        nodes = await cli.fetch_ancestors(norm)
+        nodes = await _fetch("fetch_ancestors", norm, db_path, cli)
     if is_error(nodes):
         return nodes, False
 
@@ -140,7 +162,7 @@ async def get_descendants(
 
     logger.info("get_descendants fetching OLS (transitive): %s", norm)
     async with ols_client(client) as cli:
-        nodes = await cli.fetch_descendants(norm)
+        nodes = await _fetch("fetch_descendants", norm, db_path, cli)
     if is_error(nodes):
         return nodes, False
 

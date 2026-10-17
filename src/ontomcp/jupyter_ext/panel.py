@@ -11,7 +11,7 @@ ipywidgets is an optional dependency (the ``jupyter`` extra), imported lazily.
 import html
 import json
 
-from ontomcp.core.config import ONTOLOGIES
+from ontomcp.core import registry
 from ontomcp.jupyter_ext.client import OntoMCPClient
 
 
@@ -112,12 +112,25 @@ def search_panel(client=None):
     if client is None:
         client = OntoMCPClient()
 
+    resolved = registry.current()
     query = widgets.Text(placeholder="e.g. cell death", description="Search:")
     checks = {
-        ont: widgets.Checkbox(value=False, description=ont, indent=False) for ont in ONTOLOGIES
+        # Resolved scope (<=12), never the ~286-entry index, which would
+        # render 286 ungrouped checkboxes.
+        ont: widgets.Checkbox(value=False, description=ont, indent=False)
+        for ont in resolved.all_members
     }
     search_btn = widgets.Button(description="Search", button_style="primary")
     results = widgets.Output()
+
+    warning = None
+    if not resolved.all_members and resolved.warnings:
+        # Same condition /health reports as "degraded" — an unreadable index,
+        # not a legitimately empty profile. Without this the panel renders
+        # with zero checkboxes and no explanation.
+        warning = widgets.HTML(
+            f'<div style="color: #a94442;">{html.escape("; ".join(resolved.warnings))}</div>'
+        )
 
     def on_search(_):
         results.clear_output()
@@ -147,4 +160,6 @@ def search_panel(client=None):
     search_btn.on_click(on_search)
 
     checkbox_row = widgets.HBox(list(checks.values()), layout=widgets.Layout(flex_flow="row wrap"))
-    return widgets.VBox([query, checkbox_row, search_btn, results])
+    rows = [warning] if warning is not None else []
+    rows += [query, checkbox_row, search_btn, results]
+    return widgets.VBox(rows)

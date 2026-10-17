@@ -1,0 +1,94 @@
+{
+  "_derived": {
+    "aliases": {},
+    "frozen_at": null,
+    "index_version": "2026.08+5453a1b2",
+    "members": {
+      "ENVO": {
+        "base_uri": null,
+        "curie_prefix": "ENVO",
+        "slug": "envo",
+        "terms": 6936,
+        "title": "The Environment Ontology",
+        "verified": false,
+        "version": null
+      },
+      "GO": {
+        "base_uri": null,
+        "curie_prefix": "GO",
+        "slug": "go",
+        "terms": 85169,
+        "title": "Gene Ontology",
+        "verified": false,
+        "version": null
+      },
+      "NCBITAXON": {
+        "base_uri": "http://purl.obolibrary.org/obo/NCBITaxon_",
+        "curie_prefix": "NCBITaxon",
+        "slug": "ncbitaxon",
+        "terms": 2854537,
+        "title": "NCBI organismal classification",
+        "verified": false,
+        "version": null
+      },
+      "PECO": {
+        "base_uri": null,
+        "curie_prefix": "PECO",
+        "slug": "peco",
+        "terms": 3657,
+        "title": "Plant Experimental Conditions Ontology",
+        "verified": false,
+        "version": null
+      },
+      "PO": {
+        "base_uri": null,
+        "curie_prefix": "PO",
+        "slug": "po",
+        "terms": 2029,
+        "title": "Plant Ontology",
+        "verified": false,
+        "version": null
+      },
+      "TO": {
+        "base_uri": null,
+        "curie_prefix": "TO",
+        "slug": "to",
+        "terms": 6194,
+        "title": "Plant Trait Ontology",
+        "verified": false,
+        "version": null
+      },
+      "UO": {
+        "base_uri": null,
+        "curie_prefix": "UO",
+        "slug": "uo",
+        "terms": 574,
+        "title": "Units of measurement ontology",
+        "verified": false,
+        "version": null
+      }
+    },
+    "quarantine": {
+      "NCBITAXON": "2.5M taxa; genus/species tokens collide with ordinary query words"
+    },
+    "warnings": [
+      "Shipped starter: run 'ontomcp profile check' to record live versions."
+    ]
+  },
+  "created_at": "2026-08-15",
+  "description": "Plant breeding and agronomy: anatomy, traits, treatments and growing environment.",
+  "force_default": [],
+  "locked": false,
+  "name": "plant-breeding",
+  "notes": "",
+  "ontologies": [
+    "PO",
+    "TO",
+    "PECO",
+    "GO",
+    "ENVO",
+    "NCBITAXON",
+    "UO"
+  ],
+  "schema": 1
+}

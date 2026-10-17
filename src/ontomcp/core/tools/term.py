@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from ontomcp.core import cache
-from ontomcp.core.config import DB_PATH
+from ontomcp.core.config import DB_PATH, VERSION_TTL_DAYS
 from ontomcp.core.ols_client import OLSClient
 from ontomcp.core.tools._common import is_error, ols_client, safe_normalize_curie
 
@@ -20,11 +20,13 @@ _DO_NOT_ANNOTATE_MARKERS = ("do_not_annotate",)
 async def _ontology_version(ontology: str, db_path: Path, cli: OLSClient) -> str | None:
     """Return an ontology's source version, cache-first (fetched once, then reused).
 
-    Version strings change only on ontology releases, so a cached value is reused
-    indefinitely rather than aged out with the 7-day term TTL. Best-effort: a fetch
-    failure simply yields None and is not cached.
+    Versions change only on ontology releases, so they age far more slowly than
+    terms — VERSION_TTL_DAYS (30) rather than CACHE_TTL_DAYS (7). But they do age:
+    reading the cached value with no freshness check at all meant a version
+    captured once was reported as current forever. Best-effort: a fetch failure
+    yields None and is not cached.
     """
-    cached = cache.get_ontology_version(db_path, ontology)
+    cached = cache.get_ontology_version_if_fresh(db_path, ontology, VERSION_TTL_DAYS)
     if cached is not None:
         return cached
     version = await cli.fetch_ontology_version(ontology)
@@ -84,8 +86,13 @@ async def get_term(
         logger.debug("get_term cache hit: %s", norm)
         cached["warnings"] = _term_warnings(cached)
         # A cache hit stays offline: report the ontology version only if already
-        # cached (it is captured on the miss path below), never a fresh OLS call.
-        cached["ontology_version"] = cache.get_ontology_version(db_path, ontology)
+        # cached AND still fresh (it is captured on the miss path below), never a
+        # fresh OLS call. This is the second read site — routing only
+        # _ontology_version through the guard would leave the commoner path
+        # unguarded (tournament/spike-results.md S-5).
+        cached["ontology_version"] = cache.get_ontology_version_if_fresh(
+            db_path, ontology, VERSION_TTL_DAYS
+        )
         return cached, True
 
     logger.info("get_term cache miss, fetching OLS: %s", norm)

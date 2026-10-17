@@ -1,0 +1,94 @@
+{
+  "_derived": {
+    "aliases": {
+      "HP": "HPO"
+    },
+    "frozen_at": null,
+    "index_version": "2026.08+5453a1b2",
+    "members": {
+      "GENO": {
+        "base_uri": null,
+        "curie_prefix": "GENO",
+        "slug": "geno",
+        "terms": 589,
+        "title": "GENO ontology",
+        "verified": false,
+        "version": null
+      },
+      "HPO": {
+        "base_uri": null,
+        "curie_prefix": "HP",
+        "slug": "hp",
+        "terms": 32663,
+        "title": "Human Phenotype Ontology",
+        "verified": false,
+        "version": null
+      },
+      "MONDO": {
+        "base_uri": null,
+        "curie_prefix": "MONDO",
+        "slug": "mondo",
+        "terms": 63449,
+        "title": "Mondo Disease Ontology",
+        "verified": false,
+        "version": null
+      },
+      "NCIT": {
+        "base_uri": null,
+        "curie_prefix": "NCIT",
+        "slug": "ncit",
+        "terms": 209910,
+        "title": "NCI Thesaurus OBO Edition",
+        "verified": false,
+        "version": null
+      },
+      "ORDO": {
+        "base_uri": "http://www.orpha.net/ORDO/Orphanet_",
+        "curie_prefix": "ORDO",
+        "slug": "ordo",
+        "terms": 16296,
+        "title": "Orphanet Rare Disease Ontology",
+        "verified": false,
+        "version": null
+      },
+      "SO": {
+        "base_uri": null,
+        "curie_prefix": "SO",
+        "slug": "so",
+        "terms": 2752,
+        "title": "Sequence types and features ontology",
+        "verified": false,
+        "version": null
+      },
+      "UO": {
+        "base_uri": null,
+        "curie_prefix": "UO",
+        "slug": "uo",
+        "terms": 574,
+        "title": "Units of measurement ontology",
+        "verified": false,
+        "version": null
+      }
+    },
+    "quarantine": {},
+    "warnings": [
+      "Shipped starter: run 'ontomcp profile check' to record live versions."
+    ]
+  },
+  "created_at": "2026-08-15",
+  "description": "Rare disease and clinical genetics. NOTE: OntoMCP pins which ontologies are searched, not what they said. For a regulated submission or audit trail, record the CURIEs and ontology release versions yourself at the time of annotation.",
+  "force_default": [],
+  "locked": false,
+  "name": "clinical-rare-disease",
+  "notes": "",
+  "ontologies": [
+    "MONDO",
+    "HPO",
+    "ORDO",
+    "SO",
+    "GENO",
+    "NCIT",
+    "UO"
+  ],
+  "schema": 1
+}

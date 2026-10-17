@@ -197,6 +197,41 @@ def test_parse_term_optional_flags_absent():
     assert term["definition_sources"] == []
 
 
+def test_parse_term_definition_skips_a_provenance_comment():
+    # OLS's `description` field mixes the real definition with citation/provenance
+    # comments. Index 0 being the comment must not win.
+    obj = {
+        "obo_id": "GO:1904746",
+        "label": "negative regulation of apoptotic process involved in development",
+        "description": [
+            "U4PR86 in PMID:22801495 inferred from mutant phenotype",
+            "Any process that stops, prevents or reduces the frequency, rate or "
+            "extent of apoptotic process involved in development.",
+        ],
+    }
+    term = _parse_term(obj)
+    assert term["definition"] == (
+        "Any process that stops, prevents or reduces the frequency, rate or "
+        "extent of apoptotic process involved in development."
+    )
+
+
+def test_parse_term_definition_single_string_passes_through():
+    term = _parse_term({"obo_id": "GO:1", "label": "x", "description": "just one string"})
+    assert term["definition"] == "just one string"
+
+
+def test_parse_term_definition_falls_back_when_every_entry_looks_like_provenance():
+    obj = {
+        "obo_id": "GO:1",
+        "label": "x",
+        "description": ["A in PMID:1", "B in PMID:2 inferred from something"],
+    }
+    term = _parse_term(obj)
+    # Never None when OLS gave us something — falls back to the longest raw entry.
+    assert term["definition"] == "B in PMID:2 inferred from something"
+
+
 # --- Network methods (mocked) ----------------------------------------------
 
 
@@ -228,14 +263,37 @@ async def test_search_parses_docs_and_filters_ontology():
     async with _client(handler) as c:
         results = await c.search("cell death", ontologies=["GO", "HPO"], limit=5)
 
-    # Score is rank-normalized (0–1, best first), not the raw Solr score.
+    # rank is the ordinal position in OLS's relevance order; no score is reported.
     assert [r["curie"] for r in results] == ["GO:0008219", "GO:0070265"]
-    assert results[0]["score"] == 1.0
-    assert results[1]["score"] == 0.5
+    assert [r["rank"] for r in results] == [1, 2]
+    assert all("score" not in r for r in results)
     assert results[0]["label"] == "cell death"
     assert results[0]["definition"] == "ends life"
     assert "ontology=go%2Chp" in seen["url"] or "ontology=go,hp" in seen["url"]
     assert "rows=5" in seen["url"]
+
+
+async def test_search_definition_skips_a_provenance_comment():
+    def handler(request):
+        body = {
+            "response": {
+                "docs": [
+                    {
+                        "obo_id": "GO:1904746",
+                        "label": "negative regulation of apoptotic process",
+                        "description": [
+                            "U4PR86 in PMID:22801495 inferred from mutant phenotype",
+                            "Any process that negatively regulates apoptosis.",
+                        ],
+                    }
+                ]
+            }
+        }
+        return httpx.Response(200, json=body)
+
+    async with _client(handler) as c:
+        results = await c.search("apoptosis", limit=1)
+    assert results[0]["definition"] == "Any process that negatively regulates apoptosis."
 
 
 async def test_fetch_term_parses_embedded():

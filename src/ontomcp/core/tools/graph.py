@@ -7,6 +7,7 @@ descendants) so the rendered topology is true: every edge is a real one-hop
 relationship, never a fabricated direct link to a distant ancestor.
 """
 
+import logging
 from pathlib import Path
 
 from ontomcp.core.config import DB_PATH, GRAPH_NODE_CAP
@@ -14,6 +15,8 @@ from ontomcp.core.ols_client import OLSClient
 from ontomcp.core.tools._common import is_error, ols_client
 from ontomcp.core.tools.hierarchy import get_children, get_parents
 from ontomcp.core.tools.term import get_term
+
+logger = logging.getLogger("ontomcp")
 
 
 def _node(curie: str, label, ontology, role: str) -> dict:
@@ -48,10 +51,29 @@ async def get_term_graph(
             return focus, focus_hit
         focus_curie = focus["curie"]
 
-        parents, anc_hit = await get_parents(focus_curie, db_path=db_path, client=cli)
-        children, desc_hit = await get_children(focus_curie, db_path=db_path, client=cli)
-        parents = [] if is_error(parents) else parents
-        children = [] if is_error(children) else children
+        parents_raw, anc_hit = await get_parents(focus_curie, db_path=db_path, client=cli)
+        children_raw, desc_hit = await get_children(focus_curie, db_path=db_path, client=cli)
+
+        # A hierarchy fetch failure and "this term truly has no parents/children"
+        # must render the same graph (a partial one still beats an error), but
+        # they must NOT look the same to the caller — dropping the distinction
+        # silently is the exact disconfirmation-signal bug iri.py exists to
+        # prevent, reintroduced one layer above it. Keep the evidence.
+        degraded: list[dict] = []
+        if is_error(parents_raw):
+            logger.warning("get_term_graph: parents failed for %s: %s", focus_curie, parents_raw[0])
+            degraded.append({"edge": "parents", **parents_raw[0]})
+            parents: list[dict] = []
+        else:
+            parents = parents_raw
+        if is_error(children_raw):
+            logger.warning(
+                "get_term_graph: children failed for %s: %s", focus_curie, children_raw[0]
+            )
+            degraded.append({"edge": "children", **children_raw[0]})
+            children: list[dict] = []
+        else:
+            children = children_raw
 
         sib_hit = True
         siblings: list[dict] = []
@@ -106,4 +128,7 @@ async def get_term_graph(
         for s in siblings:
             add_edge(s["curie"], parent)  # sibling is_a parent
 
-    return {"nodes": list(nodes.values()), "edges": edges, "focus_curie": focus_curie}, cache_hit
+    result = {"nodes": list(nodes.values()), "edges": edges, "focus_curie": focus_curie}
+    if degraded:
+        result["degraded"] = degraded
+    return result, cache_hit

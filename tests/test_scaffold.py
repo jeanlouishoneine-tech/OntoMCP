@@ -12,9 +12,20 @@ def test_version():
 
 
 def test_registry_includes_core_and_pharma_ontologies():
-    # The original free set plus the pharma/oncology additions (NCIT, DOID, PR).
-    expected = {"GO", "MONDO", "HPO", "CHEBI", "UBERON", "CL", "EFO", "MESH", "NCIT", "DOID", "PR"}
-    assert expected <= set(config.ONTOLOGIES)
+    # The original free set plus the pharma/oncology additions (NCIT, DOID).
+    # PR was removed 2026-08-15: OLS4 no longer serves it, so every PR lookup
+    # failed silently (tournament/spike-results.md S-1).
+    expected = {"GO", "MONDO", "HPO", "CHEBI", "UBERON", "CL", "EFO", "MESH", "NCIT", "DOID"}
+    assert expected == set(config.ONTOLOGIES)
+
+
+def test_registry_carries_no_ontology_ols4_stopped_serving():
+    # A registry entry OLS4 does not serve returns zero hits with no error, which
+    # is indistinguishable from "no such term". Guard the class of bug, not just PR.
+    from ontomcp.core import registry
+
+    index = registry.load_index()["ontologies"]
+    assert set(config.ONTOLOGIES) <= set(index)
 
 
 def test_iri_templates_cover_every_ontology():

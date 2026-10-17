@@ -37,11 +37,19 @@ EXPECTED_TOOLS = {
     "get_children",
     "get_ancestors",
     "get_descendants",
-    "suggest_ontology",
+    "get_profile_setup_guidance",
     "map_across_ontologies",
     "bulk_annotate",
     "get_term_graph",
+    "save_profile",
 }
+
+
+def test_tool_surface_is_thirteen():
+    """The budget, asserted. 12 before Phase B; save_profile is the one addition,
+    paid for by deleting the keyword matcher rather than by adding a thirteenth
+    concept. A new tool must be a deliberate change to this number."""
+    assert len(EXPECTED_TOOLS) == 13
 
 
 def _ols_client(handler) -> OLSClient:
@@ -68,8 +76,10 @@ def mcp_client(tmp_db_path, monkeypatch):
     """Return ``make_client(handler)`` bound to the server on an isolated temp DB.
 
     The lifespan would create a real OLSClient, so we point DB_PATH at the temp
-    DB and override the server's shared ``_client`` with a mocked one *inside*
-    the client context (after the lifespan has run).
+    DB and override the server's shared ``_client`` with a mocked one *before*
+    the client context is entered. The lifespan only constructs a client when
+    none is already set, so this pre-set mock survives lifespan startup instead
+    of being clobbered by it.
     """
     cache.init_db(tmp_db_path)
     monkeypatch.setattr(server, "DB_PATH", tmp_db_path)
@@ -102,7 +112,9 @@ async def test_search_terms_returns_mocked_hit(mcp_client):
     async with mcp_client(handler) as client:
         result = await client.call_tool("search_terms", {"query": "cell death"})
     data = _tool_payload(result)
-    assert any(hit["curie"] == "GO:0008219" for hit in data)
+    assert any(hit["curie"] == "GO:0008219" for hit in data["results"])
+    # The meta block rides on search_terms only, and always carries these three.
+    assert set(data["meta"]) >= {"source", "profile", "scope"}
 
 
 async def test_validate_term_hits_live(mcp_client):
@@ -116,14 +128,72 @@ async def test_validate_term_hits_live(mcp_client):
     assert data["is_obsolete"] is False
 
 
-async def test_suggest_ontology_is_offline(mcp_client):
+async def test_profile_setup_guidance_is_offline_and_takes_no_arguments(mcp_client):
     # Pure logic — no OLS call. Handler raises if hit, proving no network.
     def handler(request):
-        raise AssertionError("suggest_ontology must not call OLS")
+        raise AssertionError("get_profile_setup_guidance must not call OLS")
 
     async with mcp_client(handler) as client:
-        result = await client.call_tool(
-            "suggest_ontology", {"context": "single-cell RNA-seq of immune cells"}
-        )
-    codes = {entry["ontology"] for entry in _tool_payload(result)}
-    assert "CL" in codes
+        result = await client.call_tool("get_profile_setup_guidance", {})
+    payload = _tool_payload(result)
+    assert payload["grounding_list"]["CL"] == "Cell Ontology"
+
+
+async def test_no_tool_accepts_a_research_description(mcp_client):
+    # The objective's one prohibited behaviour: inferring ontologies from prose.
+    async with mcp_client(lambda r: None) as client:
+        tools = await client.list_tools()
+    for tool in tools:
+        params = set((tool.inputSchema or {}).get("properties") or {})
+        assert "context" not in params, f"{tool.name} still accepts a research description"
+
+
+# --- S-7: the setup prompt, over the wire ----------------------------------
+
+
+async def test_setup_prompt_is_listed_over_the_protocol(mcp_client):
+    """S-7, closed as far as our side of the wire reaches.
+
+    Whether Claude Desktop *renders* a prompt is the client's business and cannot
+    be asserted here. What can be asserted is the server contract it reads —
+    `prompts/list` — because that is where any bug of ours would actually live.
+    """
+    async with mcp_client(lambda r: None) as client:
+        prompts = await client.list_prompts()
+
+    by_name = {p.name: p for p in prompts}
+    assert "setup-research-profile" in by_name
+    assert by_name["setup-research-profile"].description, "a prompt with no description is unusable"
+
+
+async def test_setup_prompt_renders_the_anti_hallucination_gate(mcp_client):
+    """`prompts/get` must return content that actually instructs the flow.
+
+    A prompt that lists but renders empty is worse than no prompt: the user picks
+    it and nothing happens. The human-approval step is the one instruction that
+    must survive, because an index existence check proves PO is a real prefix, not
+    that the user meant Plant Ontology.
+    """
+    async with mcp_client(lambda r: None) as client:
+        result = await client.get_prompt("setup-research-profile")
+
+    assert result.messages, "prompts/get returned no messages"
+    text = " ".join(
+        m.content.text for m in result.messages if getattr(m.content, "text", None)
+    ).lower()
+    assert text.strip()
+    assert "get_profile_setup_guidance" in text
+    assert "save_profile" in text
+    assert "title" in text, "the model must be told to show titles, not just prefixes"
+    assert "approve" in text or "yes" in text, "the human-approval gate must survive"
+
+
+async def test_the_prompt_costs_no_tool_schema_budget(mcp_client):
+    """The prompt is why the setup flow is discoverable without a 14th tool."""
+    async with mcp_client(lambda r: None) as client:
+        tools = await client.list_tools()
+        prompts = await client.list_prompts()
+
+    assert len(tools) == 13
+    assert len(prompts) >= 1
+    assert not any(t.name == "setup-research-profile" for t in tools)
