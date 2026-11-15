@@ -59,13 +59,16 @@ async def save_profile(
     except profile_mod.ProfileError as exc:
         return {"error": "profile_invalid", "detail": str(exc)}, False
 
-    # The registry keys on (path, mtime, size), so the next resolve() re-reads the
-    # file we just wrote. No restart, and no in-process singleton to invalidate.
+    # Point the active-profile pointer at what was just saved, then report what
+    # current() actually resolves: ONTOMCP_PROFILE outranks the pointer, and a
+    # response must never claim a profile is in use when it is not.
+    profile_mod.set_active(name)
     resolved = registry.resolve(profile)
     derived = profile["_derived"]
 
     return {
         "profile": name,
+        **active_report(name),
         "saved_to": str(profile_mod.profile_path(name)),
         "index_version": derived["index_version"],
         "frozen_at": derived["frozen_at"],
@@ -82,8 +85,22 @@ async def save_profile(
         "default_scope": list(resolved.default_scope),
         "held_back": {k: resolved.reasons[k] for k in resolved.named_only},
         "warnings": derived.get("warnings") or [],
-        "next_step": (
-            "This profile is active now — no restart needed. Searches are scoped to "
-            "it; get_term and the hierarchy tools still work for any CURIE."
-        ),
     }, False
+
+
+def active_report(saved: str) -> dict:
+    """What is in use after a write, in fields plus one sentence the model can relay."""
+    active = registry.current()
+    if active.profile == saved:
+        note = (
+            f"'{saved}' is active now — no restart needed. Searches are scoped to it; "
+            f"get_term and the hierarchy tools still work for any CURIE."
+        )
+    elif active.source == "env":
+        note = (
+            f"Saved, but your client config pins '{active.profile}' via ONTOMCP_PROFILE, "
+            f"so '{active.profile}' is still in use. Remove that setting to use '{saved}'."
+        )
+    else:
+        note = f"Saved, but '{active.profile}' is still in use ({active.source})."
+    return {"active_profile": active.profile, "active_source": active.source, "next_step": note}

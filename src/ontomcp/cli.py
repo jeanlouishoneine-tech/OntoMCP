@@ -197,6 +197,22 @@ def _refresh(args) -> int:
     return _print_profile(args.name)
 
 
+def _use(name: str) -> int:
+    """Make ``name`` the active profile, the same pointer save_profile sets."""
+    try:
+        profile_mod.load(name)  # refuse to point at something that will not load
+        profile_mod.set_active(name)
+    except profile_mod.ProfileError as exc:
+        print(exc, file=sys.stderr)
+        return 1
+    active = registry.current()
+    if active.profile != name:
+        print(f"'{name}' is set, but '{active.profile}' is in use ({active.source}).")
+    else:
+        print(f"Now using '{name}'.")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="ontomcp", description="OntoMCP research profiles")
     sub = parser.add_subparsers(dest="group", required=True)
@@ -206,7 +222,7 @@ def main(argv: list[str] | None = None) -> int:
     actions.add_parser("list", help="List available profiles")
     actions.add_parser("suggest", help="Print the policy and the valid-ontology list")
 
-    for verb in ("show", "delete", "check"):
+    for verb in ("show", "delete", "check", "use"):
         p = actions.add_parser(verb)
         p.add_argument("name")
 
@@ -250,6 +266,8 @@ def main(argv: list[str] | None = None) -> int:
         return _check(args)
     if args.action == "refresh":
         return _refresh(args)
+    if args.action == "use":
+        return _use(args.name)
     if args.action == "delete":
         try:
             profile_mod.delete(args.name)

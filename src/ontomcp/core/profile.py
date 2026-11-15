@@ -70,6 +70,49 @@ def available() -> list[str]:
     return sorted(p.stem for p in directory.glob("*.json"))
 
 
+def _atomic_write(path: Path, text: str) -> None:
+    """Write via a temp file in the same directory, then rename.
+
+    An interrupted write must never leave a half-written file that fails to load
+    at startup.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name(path.name + ".tmp")
+    temp.write_text(text)
+    temp.replace(path)
+
+
+# --- active-profile pointer -------------------------------------------------
+# A one-line file naming the profile the user last saved or chose. Without it a
+# profile saved under any name but "default" was written and then never used.
+
+
+def _active_path() -> Path:
+    return profiles_dir() / ".active"
+
+
+def read_active() -> str | None:
+    """The name the pointer holds, or None when there is no pointer.
+
+    Not validated here: ``load()`` validates it, so a bad name surfaces as a
+    warning on the response rather than vanishing silently.
+    """
+    try:
+        name = _active_path().read_text().strip()
+    except FileNotFoundError:
+        return None
+    return name or None
+
+
+def set_active(name: str) -> None:
+    profile_path(name)  # validates the name before it is persisted
+    _atomic_write(_active_path(), name + "\n")
+
+
+def clear_active() -> None:
+    _active_path().unlink(missing_ok=True)
+
+
 class ProfileError(Exception):
     """A profile could not be read, validated or written. Carries user-facing prose."""
 
@@ -387,12 +430,7 @@ async def save(
     profile = await freeze(profile, client=client, require_verified=require_verified)
 
     path = profile_path(name)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    # Write via a temp file in the same directory, then rename: an interrupted
-    # write must not leave a half-parsed profile that fails to load at startup.
-    temp = path.with_suffix(".json.tmp")
-    temp.write_text(json.dumps(profile, indent=2, sort_keys=True) + "\n")
-    temp.replace(path)
+    _atomic_write(path, json.dumps(profile, indent=2, sort_keys=True) + "\n")
     logger.info("Wrote profile %s (%d members)", name, len(profile["_derived"]["members"]))
     return profile
 
