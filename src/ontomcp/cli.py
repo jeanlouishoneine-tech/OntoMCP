@@ -222,7 +222,7 @@ def main(argv: list[str] | None = None) -> int:
     actions.add_parser("list", help="List available profiles")
     actions.add_parser("suggest", help="Print the policy and the valid-ontology list")
 
-    for verb in ("show", "delete", "check", "use"):
+    for verb in ("show", "delete", "check", "use", "undo"):
         p = actions.add_parser(verb)
         p.add_argument("name")
 
@@ -266,6 +266,14 @@ def main(argv: list[str] | None = None) -> int:
         return _check(args)
     if args.action == "refresh":
         return _refresh(args)
+    if args.action == "undo":
+        try:
+            profile_mod.restore_previous(args.name)
+        except profile_mod.ProfileError as exc:
+            print(exc, file=sys.stderr)
+            return 1
+        print(f"Restored the previous version of '{args.name}'.")
+        return _print_profile(args.name)
     if args.action == "use":
         return _use(args.name)
     if args.action == "delete":

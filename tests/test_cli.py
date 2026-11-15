@@ -155,3 +155,16 @@ def test_create_reports_a_missing_index_cleanly(monkeypatch, capsys):
 
     assert code == 1
     assert "refresh_index" in capsys.readouterr().err
+
+
+def test_undo_restores_the_previous_version(tmp_path, capsys):
+    path = _write_profile(tmp_path)
+    (path.parent / "t.json.prev").write_text(json.dumps({"name": "t", "ontologies": ["CHEBI"]}))
+    assert cli.main(["profile", "undo", "t"]) == 0
+    assert json.loads(path.read_text())["ontologies"] == ["CHEBI"]
+
+
+def test_undo_without_a_previous_version_fails_clean(tmp_path, capsys):
+    _write_profile(tmp_path)
+    assert cli.main(["profile", "undo", "t"]) == 1
+    assert "no earlier version" in capsys.readouterr().err

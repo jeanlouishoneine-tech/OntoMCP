@@ -430,6 +430,7 @@ async def save(
     profile = await freeze(profile, client=client, require_verified=require_verified)
 
     path = profile_path(name)
+    _backup(path)
     _atomic_write(path, json.dumps(profile, indent=2, sort_keys=True) + "\n")
     logger.info("Wrote profile %s (%d members)", name, len(profile["_derived"]["members"]))
     return profile
@@ -441,4 +442,43 @@ def delete(name: str) -> None:
         raise ProfileError(_not_found(name))
     if load(name).get("locked"):
         raise ProfileError(f"Profile '{name}' is locked and cannot be deleted here.")
+    _backup(path)
     path.unlink()
+
+
+# --- undo (one level) ------------------------------------------------------
+# One level answers "I changed my mind". History would be a feature nobody asked for.
+
+
+def _previous_path(path: Path) -> Path:
+    return path.with_name(path.name + ".prev")
+
+
+def _backup(path: Path) -> None:
+    """Keep the file about to be overwritten or deleted as ``<name>.json.prev``."""
+    if path.exists():
+        _atomic_write(_previous_path(path), path.read_text())
+
+
+def has_previous(name: str) -> bool:
+    return _previous_path(profile_path(name)).exists()
+
+
+def restore_previous(name: str) -> dict:
+    """Swap a profile with its ``.prev`` copy, so undoing an undo works too."""
+    path = profile_path(name)
+    previous = _previous_path(path)
+    if not previous.exists():
+        raise ProfileError(f"There is no earlier version of '{name}' to go back to.")
+    if path.exists() and load(name).get("locked"):
+        raise ProfileError(f"Profile '{name}' is locked and cannot be changed here.")
+    restored = previous.read_text()
+    current = path.read_text() if path.exists() else None
+    # Restored version first: a crash between the two writes can then only lose
+    # the redo copy, never the version the user asked to get back.
+    _atomic_write(path, restored)
+    if current is None:
+        previous.unlink()
+    else:
+        _atomic_write(previous, current)
+    return load(name)
