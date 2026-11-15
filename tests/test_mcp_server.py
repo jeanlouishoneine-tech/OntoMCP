@@ -42,14 +42,19 @@ EXPECTED_TOOLS = {
     "bulk_annotate",
     "get_term_graph",
     "save_profile",
+    "get_profile",
+    "update_profile",
 }
+WRITE_TOOLS = {"save_profile", "update_profile"}
 
 
-def test_tool_surface_is_thirteen():
-    """The budget, asserted. 12 before Phase B; save_profile is the one addition,
-    paid for by deleting the keyword matcher rather than by adding a thirteenth
-    concept. A new tool must be a deliberate change to this number."""
-    assert len(EXPECTED_TOOLS) == 13
+def test_tool_surface_is_fifteen():
+    """The budget, asserted. 12 before Phase B; save_profile was the 13th.
+    get_profile and update_profile are the deliberate 14th and 15th, so the user
+    can see and change their profile from the conversation. reset and undo are
+    folded into update_profile rather than costing a 16th tool. A new tool must
+    be a deliberate change to this number."""
+    assert len(EXPECTED_TOOLS) == 15
 
 
 def _ols_client(handler) -> OLSClient:
@@ -194,6 +199,80 @@ async def test_the_prompt_costs_no_tool_schema_budget(mcp_client):
         tools = await client.list_tools()
         prompts = await client.list_prompts()
 
-    assert len(tools) == 13
+    assert len(tools) == 15
     assert len(prompts) >= 1
     assert not any(t.name == "setup-research-profile" for t in tools)
+
+
+async def test_write_tools_are_destructive_and_everything_else_is_read_only(mcp_client):
+    async with mcp_client(lambda r: None) as client:
+        tools = await client.list_tools()
+    for tool in tools:
+        hints = tool.annotations
+        assert hints is not None, f"{tool.name} has no annotations"
+        if tool.name in WRITE_TOOLS:
+            assert hints.readOnlyHint is False and hints.destructiveHint is True, tool.name
+        else:
+            assert hints.readOnlyHint is True, tool.name
+    assert {t.name for t in tools if not t.annotations.readOnlyHint} == WRITE_TOOLS
+
+
+# --- in-client confirmation (elicitation) ----------------------------------
+
+
+def _probe_ok(request):
+    if "/terms" in str(request.url):
+        return httpx.Response(200, json={"_embedded": {"terms": []}})
+    return httpx.Response(200, json={"version": "2026-07-26"})
+
+
+@pytest.fixture
+def isolated_profiles(tmp_path, monkeypatch):
+    monkeypatch.setenv("ONTOMCP_PROFILE_DIR", str(tmp_path / "profiles"))
+    monkeypatch.delenv("ONTOMCP_PROFILE", raising=False)
+    monkeypatch.delenv("ONTOMCP_ONTOLOGIES", raising=False)
+    monkeypatch.setattr(config, "REQUIRE_CONFIRMATION", False)
+
+
+def _elicitation_client(answer, seen):
+    """A client that declares elicitation and answers every request with ``answer``."""
+
+    async def handler(message, response_type, params, context):
+        seen.append(message)
+        from fastmcp.client.elicitation import ElicitResult
+
+        return ElicitResult(action=answer)
+
+    return Client(server.mcp, elicitation_handler=handler)
+
+
+@pytest.mark.parametrize(
+    ("answer", "status", "written"),
+    [("accept", "saved", True), ("decline", "declined", False), ("cancel", "declined", False)],
+)
+async def test_save_profile_asks_in_client_and_obeys_the_answer(
+    mcp_client, isolated_profiles, answer, status, written
+):
+    from ontomcp.core import profile as profile_mod
+
+    mcp_client(_probe_ok)  # installs the mocked OLS client
+    seen: list[str] = []
+    async with _elicitation_client(answer, seen) as client:
+        result = await client.call_tool(
+            "save_profile", {"name": "plant", "ontologies": ["PO", "GO"]}
+        )
+    payload = _tool_payload(result)
+    assert payload["status"] == status
+    assert payload["confirmation"] == "elicitation"
+    assert "PO: Plant Ontology" in seen[0]
+    assert profile_mod.profile_path("plant").exists() is written
+
+
+async def test_without_elicitation_the_client_permission_prompt_counts(
+    mcp_client, isolated_profiles
+):
+    async with mcp_client(_probe_ok) as client:
+        result = await client.call_tool("save_profile", {"name": "plant", "ontologies": ["PO"]})
+    payload = _tool_payload(result)
+    assert payload["status"] == "saved"
+    assert payload["confirmation"] == "client_tool_permission"

@@ -104,6 +104,7 @@ def _create(args, *, require_new: bool) -> int:
                 require_verified=args.require_verified,
             )
         )
+        profile_mod.set_active(args.name)  # a saved profile is the one in use
     except profile_mod.ProfileError as exc:
         print(exc, file=sys.stderr)
         return 1
@@ -197,6 +198,22 @@ def _refresh(args) -> int:
     return _print_profile(args.name)
 
 
+def _use(name: str) -> int:
+    """Make ``name`` the active profile, the same pointer save_profile sets."""
+    try:
+        profile_mod.load(name)  # refuse to point at something that will not load
+        profile_mod.set_active(name)
+    except profile_mod.ProfileError as exc:
+        print(exc, file=sys.stderr)
+        return 1
+    active = registry.current()
+    if active.profile != name:
+        print(f"'{name}' is set, but '{active.profile}' is in use ({active.source}).")
+    else:
+        print(f"Now using '{name}'.")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="ontomcp", description="OntoMCP research profiles")
     sub = parser.add_subparsers(dest="group", required=True)
@@ -204,9 +221,10 @@ def main(argv: list[str] | None = None) -> int:
     actions = profile_parser.add_subparsers(dest="action", required=True)
 
     actions.add_parser("list", help="List available profiles")
+    actions.add_parser("reset", help="Stop using a saved profile; go back to the defaults")
     actions.add_parser("suggest", help="Print the policy and the valid-ontology list")
 
-    for verb in ("show", "delete", "check"):
+    for verb in ("show", "delete", "check", "use", "undo"):
         p = actions.add_parser(verb)
         p.add_argument("name")
 
@@ -250,6 +268,21 @@ def main(argv: list[str] | None = None) -> int:
         return _check(args)
     if args.action == "refresh":
         return _refresh(args)
+    if args.action == "reset":
+        profile_mod.clear_active()
+        active = registry.current()
+        print(f"Now using '{active.profile}' ({active.source}).")
+        return 0
+    if args.action == "undo":
+        try:
+            profile_mod.restore_previous(args.name)
+        except profile_mod.ProfileError as exc:
+            print(exc, file=sys.stderr)
+            return 1
+        print(f"Restored the previous version of '{args.name}'.")
+        return _print_profile(args.name)
+    if args.action == "use":
+        return _use(args.name)
     if args.action == "delete":
         try:
             profile_mod.delete(args.name)

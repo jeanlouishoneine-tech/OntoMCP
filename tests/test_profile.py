@@ -514,3 +514,40 @@ async def test_core_and_panel_agree_on_scope(db, monkeypatch):
     assert core_result[0]["ontology"] == "GO"
     # The panel renders the resolved registry, so its checkboxes are the same scope.
     assert set(registry.current().all_members) == {"PO", "TO"}
+
+
+# --- one level of undo -----------------------------------------------------
+
+
+async def test_save_keeps_the_overwritten_version_and_undo_restores_it():
+    await _make("t", ["GO"])
+    assert not profile_mod.has_previous("t")
+    await _make("t", ["GO", "CHEBI"])
+    assert profile_mod.has_previous("t")
+    restored = profile_mod.restore_previous("t")
+    assert restored["ontologies"] == ["GO"]
+
+
+async def test_undoing_an_undo_brings_the_change_back():
+    await _make("t", ["GO"])
+    await _make("t", ["GO", "CHEBI"])
+    profile_mod.restore_previous("t")
+    assert profile_mod.restore_previous("t")["ontologies"] == ["GO", "CHEBI"]
+
+
+async def test_delete_can_be_undone():
+    await _make("t", ["GO"])
+    profile_mod.delete("t")
+    assert profile_mod.restore_previous("t")["ontologies"] == ["GO"]
+    assert not profile_mod.has_previous("t")
+
+
+def test_undo_without_a_previous_version_is_prose():
+    with pytest.raises(profile_mod.ProfileError, match="no earlier version"):
+        profile_mod.restore_previous("t")
+
+
+async def test_previous_versions_are_not_listed_as_profiles():
+    await _make("t", ["GO"])
+    await _make("t", ["CHEBI"])
+    assert profile_mod.available() == ["t"]

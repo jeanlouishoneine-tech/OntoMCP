@@ -25,7 +25,7 @@ import hashlib
 import json
 import logging
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 from ontomcp.core.config import (
@@ -73,6 +73,9 @@ class ResolvedRegistry:
     frozen_at: str | None = None
     locked: bool = False
     warnings: tuple[str, ...] = ()
+    # Which precedence row chose this scope: admin_lock, env, pointer,
+    # default_file or builtin. Lets a write report truthfully what is in use.
+    source: str = "builtin"
 
     @property
     def all_members(self) -> tuple[str, ...]:
@@ -550,21 +553,32 @@ def current(index_path: Path = INDEX_PATH, db_path: Path | None = None) -> Resol
     codes = _env_codes()
     if codes is not None:
         # Row 1 — admin hard-lock. Verbatim: no quarantine split, no force_default.
-        return resolve(_synthesize("env-lock", codes, index, quarantined=False))
+        resolved = resolve(_synthesize("env-lock", codes, index, quarantined=False))
+        return replace(resolved, source="admin_lock")
 
-    # Rows 2-4: a named profile, then default.json.
+    # Rows 2-4: ONTOMCP_PROFILE, else the active-profile pointer, else default.json.
+    # An env name that fails to load goes straight to the built-in (unchanged); a
+    # broken pointer falls through to default.json first.
     from ontomcp.core import profile as profile_mod
 
-    name = _profile_name()
     warnings: list[str] = []
-    if name is None and profile_mod.profile_path("default").exists():
-        name = "default"
+    env_name = _profile_name()
+    candidates: list[tuple[str, str]] = []
+    if env_name is not None:
+        candidates.append((env_name, "env"))
+    else:
+        pointer = profile_mod.read_active()
+        if pointer is not None:
+            candidates.append((pointer, "pointer"))
+        if pointer != "default" and profile_mod.profile_path("default").exists():
+            candidates.append(("default", "default_file"))
 
-    if name is not None:
+    for name, source in candidates:
         try:
             profile = profile_mod.load(name)
         except profile_mod.ProfileError as exc:
             warnings.append(str(exc))
+            continue
         else:
             if not (profile.get("_derived") or {}).get("members"):
                 # Hand-written, never frozen: resolve computed-at-load, with a
@@ -580,7 +594,7 @@ def current(index_path: Path = INDEX_PATH, db_path: Path | None = None) -> Resol
             notes = _drift_notes(profile, index, db_path)
             derived = profile.setdefault("_derived", {})
             derived["warnings"] = list(derived.get("warnings") or []) + warnings + notes
-            return resolve(profile)
+            return replace(resolve(profile), source=source)
 
     # Row 5 — zero-config. No QUARANTINE member is among the built-ins, so the
     # split is provably a no-op here; it is applied anyway so there is one path.

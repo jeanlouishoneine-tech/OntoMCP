@@ -70,6 +70,49 @@ def available() -> list[str]:
     return sorted(p.stem for p in directory.glob("*.json"))
 
 
+def _atomic_write(path: Path, text: str) -> None:
+    """Write via a temp file in the same directory, then rename.
+
+    An interrupted write must never leave a half-written file that fails to load
+    at startup.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name(path.name + ".tmp")
+    temp.write_text(text)
+    temp.replace(path)
+
+
+# --- active-profile pointer -------------------------------------------------
+# A one-line file naming the profile the user last saved or chose. Without it a
+# profile saved under any name but "default" was written and then never used.
+
+
+def _active_path() -> Path:
+    return profiles_dir() / ".active"
+
+
+def read_active() -> str | None:
+    """The name the pointer holds, or None when there is no pointer.
+
+    Not validated here: ``load()`` validates it, so a bad name surfaces as a
+    warning on the response rather than vanishing silently.
+    """
+    try:
+        name = _active_path().read_text().strip()
+    except FileNotFoundError:
+        return None
+    return name or None
+
+
+def set_active(name: str) -> None:
+    profile_path(name)  # validates the name before it is persisted
+    _atomic_write(_active_path(), name + "\n")
+
+
+def clear_active() -> None:
+    _active_path().unlink(missing_ok=True)
+
+
 class ProfileError(Exception):
     """A profile could not be read, validated or written. Carries user-facing prose."""
 
@@ -387,12 +430,8 @@ async def save(
     profile = await freeze(profile, client=client, require_verified=require_verified)
 
     path = profile_path(name)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    # Write via a temp file in the same directory, then rename: an interrupted
-    # write must not leave a half-parsed profile that fails to load at startup.
-    temp = path.with_suffix(".json.tmp")
-    temp.write_text(json.dumps(profile, indent=2, sort_keys=True) + "\n")
-    temp.replace(path)
+    _backup(path)
+    _atomic_write(path, json.dumps(profile, indent=2, sort_keys=True) + "\n")
     logger.info("Wrote profile %s (%d members)", name, len(profile["_derived"]["members"]))
     return profile
 
@@ -403,4 +442,61 @@ def delete(name: str) -> None:
         raise ProfileError(_not_found(name))
     if load(name).get("locked"):
         raise ProfileError(f"Profile '{name}' is locked and cannot be deleted here.")
+    _backup(path)
     path.unlink()
+
+
+# --- undo (one level) ------------------------------------------------------
+# One level answers "I changed my mind". History would be a feature nobody asked for.
+
+
+def _previous_path(path: Path) -> Path:
+    return path.with_name(path.name + ".prev")
+
+
+def _backup(path: Path) -> None:
+    """Keep the file about to be overwritten or deleted as ``<name>.json.prev``."""
+    if path.exists():
+        _atomic_write(_previous_path(path), path.read_text())
+
+
+def has_previous(name: str) -> bool:
+    return _previous_path(profile_path(name)).exists()
+
+
+def _ontologies_in(path: Path) -> list[str]:
+    try:
+        data = json.loads(path.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+    return [registry.canonical_key(o) for o in data.get("ontologies") or []]
+
+
+def previous_ontologies(name: str) -> list[str]:
+    """The list in ``<name>.json.prev``, for showing what an undo would change."""
+    return _ontologies_in(_previous_path(profile_path(name)))
+
+
+def current_ontologies(name: str) -> list[str]:
+    """The list in the user's own file for ``name``; empty when there is none."""
+    return _ontologies_in(profile_path(name))
+
+
+def restore_previous(name: str) -> dict:
+    """Swap a profile with its ``.prev`` copy, so undoing an undo works too."""
+    path = profile_path(name)
+    previous = _previous_path(path)
+    if not previous.exists():
+        raise ProfileError(f"There is no earlier version of '{name}' to go back to.")
+    if path.exists() and load(name).get("locked"):
+        raise ProfileError(f"Profile '{name}' is locked and cannot be changed here.")
+    restored = previous.read_text()
+    current = path.read_text() if path.exists() else None
+    # Restored version first: a crash between the two writes can then only lose
+    # the redo copy, never the version the user asked to get back.
+    _atomic_write(path, restored)
+    if current is None:
+        previous.unlink()
+    else:
+        _atomic_write(previous, current)
+    return load(name)
