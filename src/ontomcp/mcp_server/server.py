@@ -1,4 +1,4 @@
-"""FastMCP server exposing the 13 OntoMCP tools to any MCP client.
+"""FastMCP server exposing the 15 OntoMCP tools to any MCP client.
 
 Transport is client-agnostic: stdio (default — Claude Desktop / Claude Code) or
 SSE (GPT, Codex CLI, remote clients), selected at startup by ``ONTOMCP_TRANSPORT``.
@@ -18,11 +18,14 @@ import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastmcp import FastMCP
+from fastmcp import Context, FastMCP
+from fastmcp.server.elicitation import AcceptedElicitation, DeclinedElicitation
+from mcp.types import ClientCapabilities, ElicitationCapability, ToolAnnotations
 
 from ontomcp.core import cache, config, tools
 from ontomcp.core.logging import configure_logging
 from ontomcp.core.ols_client import OLSClient
+from ontomcp.core.profile_gate import Confirm, Decision
 
 logger = logging.getLogger("ontomcp")
 
@@ -68,8 +71,41 @@ async def _lifespan(server: FastMCP):
 
 mcp = FastMCP("OntoMCP", lifespan=_lifespan)
 
+# Every tool is annotated so clients can tell reads from writes. Write tools are
+# marked destructive: Codex then always asks before running them, and Claude
+# Desktop users can set them to "Needs approval".
+_READ = ToolAnnotations(readOnlyHint=True)
+_WRITE = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False)
 
-@mcp.tool()
+
+def _confirm_from(ctx: Context) -> Confirm | None:
+    """An in-client confirmation callback when the client supports elicitation, else None.
+
+    Transport glue only: the decision of what to do with the answer lives in
+    ``core.profile_gate``.
+    """
+    try:
+        supported = ctx.session.check_client_capability(
+            ClientCapabilities(elicitation=ElicitationCapability())
+        )
+    except Exception as exc:  # no live session: treat as unsupported, never as consent
+        logger.warning("could not read client capabilities: %s", exc)
+        return None
+    if not supported:
+        return None
+
+    async def confirm(message: str) -> Decision:
+        answer = await ctx.elicit(message, response_type=None)
+        if isinstance(answer, AcceptedElicitation):
+            return "accepted"
+        if isinstance(answer, DeclinedElicitation):
+            return "declined"
+        return "cancelled"
+
+    return confirm
+
+
+@mcp.tool(annotations=_READ)
 async def search_terms(query: str, ontologies: list[str] | None = None, limit: int = 10):
     """
     Search for ontology terms by free text across biomedical ontologies.
@@ -98,7 +134,7 @@ async def search_terms(query: str, ontologies: list[str] | None = None, limit: i
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_READ)
 async def get_term(curie: str):
     """
     Fetch the full record for one ontology term by its CURIE.
@@ -113,7 +149,7 @@ async def get_term(curie: str):
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_READ)
 async def find_synonyms(curie: str):
     """
     List the synonyms of an ontology term, grouped by relation type.
@@ -128,7 +164,7 @@ async def find_synonyms(curie: str):
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_READ)
 async def validate_term(curie: str):
     """
     Check whether a CURIE is current, obsolete, or has been replaced.
@@ -144,7 +180,7 @@ async def validate_term(curie: str):
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_READ)
 async def get_parents(curie: str):
     """
     Get the DIRECT parent (one step broader) terms of an ontology term.
@@ -160,7 +196,7 @@ async def get_parents(curie: str):
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_READ)
 async def get_children(curie: str):
     """
     Get the DIRECT child (one step narrower) terms of an ontology term.
@@ -176,7 +212,7 @@ async def get_children(curie: str):
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_READ)
 async def get_ancestors(curie: str):
     """
     Get ALL ancestor (broader) terms of an ontology term, at any distance.
@@ -193,7 +229,7 @@ async def get_ancestors(curie: str):
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_READ)
 async def get_descendants(curie: str):
     """
     Get ALL descendant (narrower) terms of an ontology term, at any distance.
@@ -210,7 +246,7 @@ async def get_descendants(curie: str):
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_READ)
 async def get_profile_setup_guidance():
     """
     Get the rules and the valid-ontology list needed to author a research profile.
@@ -229,7 +265,7 @@ async def get_profile_setup_guidance():
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_READ)
 async def map_across_ontologies(curie: str, target_ontology: str):
     """
     Find the equivalent term for a CURIE in a different ontology.
@@ -251,7 +287,7 @@ async def map_across_ontologies(curie: str, target_ontology: str):
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_READ)
 async def bulk_annotate(terms: list[str], ontology_hint: str | None = None, threshold: float = 0.8):
     """
     Map a list of free-text strings to their best-matching ontology terms.
@@ -272,7 +308,7 @@ async def bulk_annotate(terms: list[str], ontology_hint: str | None = None, thre
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_READ)
 async def get_term_graph(curie: str, include_siblings: bool = True):
     """
     Build a small relationship graph around a term, for visualization.
@@ -297,20 +333,21 @@ async def get_term_graph(curie: str, include_siblings: bool = True):
     return result
 
 
-@mcp.tool()
+@mcp.tool(annotations=_WRITE)
 async def save_profile(
     name: str,
     ontologies: list[str],
+    ctx: Context,
     force_default: list[str] | None = None,
     description: str = "",
 ):
     """
-    Create or update the user's research profile, then freeze it.
+    Create or replace the user's research profile, freeze it, and make it active.
 
     Call this ONLY after get_profile_setup_guidance, and ONLY once the human has
-    explicitly approved the ontology list — show them each prefix WITH its title
-    first. Validates every prefix, records each ontology's version and minting
-    prefix, and takes effect immediately with no restart.
+    approved the ontology list — show them each prefix WITH its title first. The
+    client may also ask the human to confirm; if the result says declined or
+    no_response, nothing was saved. Relay ``next_step`` to the user.
 
     Args:
         name: Profile name, lowercase and hyphenated, e.g. "plant-breeding".
@@ -326,6 +363,48 @@ async def save_profile(
         force_default=force_default,
         description=description,
         client=_client,
+        confirm=_confirm_from(ctx),
+    )
+    return result
+
+
+@mcp.tool(annotations=_READ)
+async def get_profile():
+    """
+    Show the research profile currently in use.
+
+    Use when the user asks what is in their profile, before changing it, or to
+    explain why a search was scoped the way it was. Returns each ontology with its
+    title and term count, why this profile is the active one, and whether the last
+    change can be undone.
+    """
+    result, _ = tools.get_profile()
+    return result
+
+
+@mcp.tool(annotations=_WRITE)
+async def update_profile(
+    ctx: Context,
+    add: list[str] | None = None,
+    remove: list[str] | None = None,
+    reset: str | None = None,
+):
+    """
+    Change the active research profile: add or remove ontologies, or reset it.
+
+    Use when the user wants to adjust their profile without restating the whole
+    list, go back to the default ontologies, or undo their last change. Confirm the
+    change with the user first, showing each prefix with its title. The client may
+    also ask them to confirm; declined or no_response means nothing changed.
+
+    Args:
+        add: Prefixes to add, e.g. ["NCBITAXON"].
+        remove: Prefixes to remove, e.g. ["ENVO"].
+        reset: "defaults" to stop using the profile, or "previous" to undo the
+            last change. Not combined with add/remove.
+    """
+    result, _ = await tools.update_profile(
+        add, remove, reset, client=_client, confirm=_confirm_from(ctx)
     )
     return result
 
@@ -342,7 +421,9 @@ def setup_research_profile() -> str:
         "title, and say in a few words why it fits my work.\n"
         "4. Wait for my explicit yes. Do not call save_profile before I approve the "
         "list — an ontology that exists is not necessarily the one I meant.\n"
-        "5. Call save_profile with the approved list."
+        "5. Call save_profile with the approved list; my client may ask me to "
+        "confirm it.\n\n"
+        "To change the profile later, use get_profile and update_profile."
     )
 
 
