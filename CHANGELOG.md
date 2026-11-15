@@ -10,6 +10,22 @@ OntoMCP uses [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Research profiles (PR #1): a 5–8 ontology working set that scopes `search_terms`,
+  `bulk_annotate` and `map_across_ontologies`, built from a committed OLS4 index of ~286
+  ontologies; seven shipped starters; `get_profile_setup_guidance` and `save_profile` tools and
+  the `setup-research-profile` prompt; an escape hatch that reports matches outside the scope;
+  canonical IRI resolution with disconfirmation; the `ontomcp profile` CLI; the
+  `ONTOMCP_PROFILE`, `ONTOMCP_ONTOLOGIES` (admin lock) and `ONTOMCP_PROFILE_DIR` settings
+- `get_profile` and `update_profile` tools (15 tools in total): see the profile in use, add or
+  remove ontologies, reset to the defaults, or undo the last change from the conversation
+- In-client confirmation for every profile write: an elicitation listing each ontology with its
+  full title (and Adding/Removing for changes) on clients that support it; on clients that do
+  not, the client's own tool-permission prompt. Decline, cancel, timeout or error writes nothing
+- Strict mode (`ONTOMCP_REQUIRE_CONFIRMATION=1`) refuses profile writes on clients that cannot
+  confirm in-client; `ONTOMCP_ELICIT_TIMEOUT_SECONDS` (default 300)
+- One level of undo for profile saves and deletes (`<name>.json.prev`)
+- Tool annotations on every MCP tool: reads are read-only, the two write tools destructive
+- `ontomcp profile use`, `undo` and `reset` CLI commands
 - `get_parents` / `get_children` tools and `/term/{curie}/parents` `…/children` routes:
   true one-hop `is_a` edges, the new source of truth for the relationships table and
   `get_term_graph`
@@ -45,6 +61,10 @@ OntoMCP uses [Semantic Versioning](https://semver.org/).
   place (additive migration)
 
 ### Fixed
+- A saved profile is now the profile in use. Before, `save_profile` replied "active now" but
+  searches kept using the built-in set unless the profile was named `default` or pinned with
+  `ONTOMCP_PROFILE`. An active-profile pointer (`~/.ontomcp/profiles/.active`) now sits between
+  `ONTOMCP_PROFILE` and `default.json`, and every write reports the profile actually in use
 - Graph topology corruption: edges no longer fabricate a direct link between a term and a
   distant transitive ancestor
 - `make types` / CI mypy ran against a non-existent `ontomcp/` path (exited 0

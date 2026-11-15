@@ -16,7 +16,7 @@ and others.
 
 ## What it does
 
-- **13 tools** — search, fetch, validate, map, annotate, and graph ontology terms
+- **15 tools** — search, fetch, validate, map, annotate, and graph ontology terms
   (including direct `get_parents` / `get_children` alongside transitive `get_ancestors` / `get_descendants`)
 - **Research profiles** — define your working set of ontologies once, load it by name forever.
   Seven starters ship ready to use; see [Research Profiles](#research-profiles)
@@ -24,7 +24,7 @@ and others.
   (pharma/oncology) — with all ~286 OLS4 ontologies reachable by CURIE
 - **SQLite cache** — fast offline lookups, 7-day TTL, FTS5 full-text search over labels,
   definitions **and synonyms**, with Porter stemming
-- **Client-agnostic MCP** — all 13 tools work in Claude (stdio) and GPT / Codex CLI / Cursor (SSE)
+- **Client-agnostic MCP** — all 15 tools work in Claude (stdio) and GPT / Codex CLI / Cursor (SSE)
 - **Jupyter extension** — search panel, interactive term graph, `%%ontomcp` cell magic
 
 ---
@@ -92,7 +92,7 @@ uv sync --extra jupyter
    }
    ```
 
-3. Restart Claude Desktop. All 13 tools appear automatically.
+3. Restart Claude Desktop. All 15 tools appear automatically.
 
 **Try it:** Ask Claude — *"What is the ontology term for cell death?"* — and it will
 return `GO:0008219` with definition, synonyms, and an ancestor graph.
@@ -102,7 +102,7 @@ return `GO:0008219` with definition, synonyms, and an ancestor graph.
 ### GPT / Codex CLI / other MCP clients (SSE)
 
 Claude speaks MCP over stdio; GPT, Codex CLI, and remote clients speak it over
-HTTP/SSE. Start OntoMCP in SSE mode — same entrypoint, same 13 tools, switched by
+HTTP/SSE. Start OntoMCP in SSE mode — same entrypoint, same 15 tools, switched by
 an environment variable:
 
 ```bash
@@ -238,24 +238,74 @@ The conversational path needs no terminal. Ask:
 
 Claude calls `get_profile_setup_guidance` (the rules plus every valid prefix with its title),
 proposes 5–8 ontologies **showing each one's full name**, waits for your explicit yes, then calls
-`save_profile`. It takes effect immediately — no restart. Claude Desktop users can also pick the
-**setup-research-profile** prompt directly.
-
-Then load it the same way as a starter: `"ONTOMCP_PROFILE": "car-t-manufacturing"`.
+`save_profile`. Your client then asks you to confirm (see *Approving profile changes* below). Once
+saved, the profile is the one in use — no restart and no config edit. Claude Desktop users can
+also pick the **setup-research-profile** prompt directly.
 
 ### Update or customise it
 
-Just ask — *"add FOODON to my profile"* — and Claude re-saves it. Or use the terminal:
+Just ask — Claude uses `get_profile` to see what you have and `update_profile` to change it:
+
+> *"What's in my profile?"* · *"Remove ENVO and add NCBITaxon."* · *"Undo that."* ·
+> *"Go back to the default ontologies."*
+
+Every change is shown to you as **Adding** / **Removing** / final list, each ontology with its full
+name, before anything is written. One level of undo is kept (`<name>.json.prev`), so *"undo that"*
+works after any change, and undoing an undo brings the change back. Going back to the defaults
+keeps your profile file, so you can switch back later.
+
+Or use the terminal:
 
 ```bash
 ontomcp profile list                  # yours, plus the shipped starters
 ontomcp profile show plant-breeding   # members, versions, what's held back and why
 ontomcp profile create my-work --ontologies PO,TO,GO,ENVO,UO
 ontomcp profile edit   my-work --ontologies PO,TO,GO,ENVO,UO,PECO
+ontomcp profile use    my-work        # switch the active profile
+ontomcp profile undo   my-work        # restore the previous version
+ontomcp profile reset                 # stop using a saved profile; back to the defaults
 ontomcp profile check  my-work        # re-check member versions against OLS4
 ontomcp profile refresh my-work       # re-freeze against a newer index (asks first)
 ontomcp profile delete my-work
 ```
+
+### Which profile is active
+
+The first match wins:
+
+1. `ONTOMCP_ONTOLOGIES` — administrator lock (below)
+2. `ONTOMCP_PROFILE` in your client config
+3. the profile you last saved, chose with `profile use`, or edited — remembered in
+   `~/.ontomcp/profiles/.active`
+4. `~/.ontomcp/profiles/default.json`
+5. the ten built-in ontologies
+
+`get_profile` reports which of these chose the profile in use. If `ONTOMCP_PROFILE` pins a
+profile, a save still succeeds, and the response says the pinned one is still in use and how to
+change that.
+
+### Approving profile changes
+
+`save_profile` and `update_profile` write to your disk, so they only run once you have approved
+the change in your client. OntoMCP uses the best mechanism the client offers:
+
+| Client | How you confirm |
+|---|---|
+| **Codex**, **Claude Code** | An in-client confirmation listing every ontology with its full name. Decline, cancel or no answer within 5 minutes means nothing is written. |
+| **Claude Desktop** | Its own tool-permission prompt, which shows the tool's arguments (the ontology list, or what is added and removed). Claude Desktop does not yet support in-client confirmation; OntoMCP will use it automatically once it does. |
+
+**Claude Desktop:** set `save_profile` and `update_profile` to **Needs approval**, never
+**Always allow**. With "Always allow", the AI can change your profile without asking, and no MCP
+server can prevent that.
+
+**Strict mode** (`ONTOMCP_REQUIRE_CONFIRMATION=1`) refuses profile writes on any client that
+cannot confirm in-client, and gives the equivalent terminal command instead. Use it where a
+regulated team needs every change confirmed. The write tools are marked destructive, and Codex
+asks before running destructive tools, so you may see its own prompt as well as OntoMCP's
+confirmation.
+
+The limits are stated rather than papered over: an agent with unrestricted shell access can edit
+the profile files directly. Your client's sandbox and approval settings cover that, not OntoMCP.
 
 Profiles are plain JSON in `~/.ontomcp/profiles/`. Saving one under a starter's name shadows that
 starter. You author two lines — `ontologies` and, rarely, `force_default`; everything under
@@ -308,9 +358,11 @@ profile writing — for administrators distributing a fixed configuration:
 | `ONTOMCP_TRANSPORT`    | `stdio`              | MCP transport: `stdio` (Claude) or `sse` (GPT/remote) |
 | `ONTOMCP_MCP_HOST`     | `127.0.0.1`          | SSE bind address (use `0.0.0.0` to expose) |
 | `ONTOMCP_MCP_PORT`     | `8001`               | SSE port (only used when `TRANSPORT=sse`) |
-| `ONTOMCP_PROFILE`      | *(unset)*            | Research profile to load by name — a starter or one of your own. Unset = the 10 default ontologies |
+| `ONTOMCP_PROFILE`      | *(unset)*            | Pin a research profile by name — a starter or one of your own. Unset = the profile you last saved, else the 10 default ontologies |
 | `ONTOMCP_ONTOLOGIES`   | *(unset)*            | Administrator hard-lock, e.g. `PO,TO,GO`. Overrides `ONTOMCP_PROFILE` and disables profile writing |
 | `ONTOMCP_PROFILE_DIR`  | `~/.ontomcp/profiles`| Where your profiles are stored |
+| `ONTOMCP_REQUIRE_CONFIRMATION` | *(unset)*    | Set `1` to refuse profile writes on clients that cannot confirm in-client (strict mode) |
+| `ONTOMCP_ELICIT_TIMEOUT_SECONDS` | `300`      | How long to wait for an in-client confirmation before writing nothing |
 | `ONTOMCP_ESCAPE_HATCH` | `1`                  | Set `0` to suppress "no matches in scope, but they exist here" guidance |
 
 Three entrypoints are installed:
