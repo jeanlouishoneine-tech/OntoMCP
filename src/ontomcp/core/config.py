@@ -101,6 +101,17 @@ PROFILE_MAX = 12
 PROFILE_WARN = 8
 DEFAULT_SCOPE_WARN = 8
 
+# Profile-write confirmation. How long to wait for the human to answer an
+# in-client confirmation before writing nothing (a client may hang on an
+# unanswered request, so this must never be unbounded), and whether to refuse
+# writes outright on clients that cannot ask the human in-app (strict mode).
+ELICIT_TIMEOUT_SECONDS = float(os.environ.get("ONTOMCP_ELICIT_TIMEOUT_SECONDS", "300"))
+REQUIRE_CONFIRMATION = os.environ.get("ONTOMCP_REQUIRE_CONFIRMATION", "").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+}
+
 # Minimum ontologies a refresh must return before it is allowed to overwrite the
 # committed index. OLS4 served 286 on 2026-08-15; a response far under this is a
 # partial or degraded one and must not orphan every frozen profile.

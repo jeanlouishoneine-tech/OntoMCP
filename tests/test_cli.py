@@ -168,3 +168,26 @@ def test_undo_without_a_previous_version_fails_clean(tmp_path, capsys):
     _write_profile(tmp_path)
     assert cli.main(["profile", "undo", "t"]) == 1
     assert "no earlier version" in capsys.readouterr().err
+
+
+def test_create_makes_the_new_profile_active(monkeypatch):
+    from ontomcp.core import profile as profile_mod
+
+    async def fake_save(name, codes, **_kwargs):
+        profile_mod.profiles_dir().mkdir(parents=True, exist_ok=True)
+        profile_mod.profile_path(name).write_text(json.dumps({"name": name, "ontologies": codes}))
+        return {}
+
+    monkeypatch.setattr(profile_mod, "save", fake_save)
+    assert cli.main(["profile", "create", "fresh", "--ontologies", "GO"]) == 0
+    assert profile_mod.read_active() == "fresh"
+
+
+def test_reset_clears_the_active_profile(tmp_path, capsys):
+    from ontomcp.core import profile as profile_mod
+
+    _write_profile(tmp_path)
+    profile_mod.set_active("t")
+    assert cli.main(["profile", "reset"]) == 0
+    assert profile_mod.read_active() is None
+    assert (tmp_path / "profiles" / "t.json").exists()

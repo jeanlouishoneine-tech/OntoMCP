@@ -104,6 +104,7 @@ def _create(args, *, require_new: bool) -> int:
                 require_verified=args.require_verified,
             )
         )
+        profile_mod.set_active(args.name)  # a saved profile is the one in use
     except profile_mod.ProfileError as exc:
         print(exc, file=sys.stderr)
         return 1
@@ -220,6 +221,7 @@ def main(argv: list[str] | None = None) -> int:
     actions = profile_parser.add_subparsers(dest="action", required=True)
 
     actions.add_parser("list", help="List available profiles")
+    actions.add_parser("reset", help="Stop using a saved profile; go back to the defaults")
     actions.add_parser("suggest", help="Print the policy and the valid-ontology list")
 
     for verb in ("show", "delete", "check", "use", "undo"):
@@ -266,6 +268,11 @@ def main(argv: list[str] | None = None) -> int:
         return _check(args)
     if args.action == "refresh":
         return _refresh(args)
+    if args.action == "reset":
+        profile_mod.clear_active()
+        active = registry.current()
+        print(f"Now using '{active.profile}' ({active.source}).")
+        return 0
     if args.action == "undo":
         try:
             profile_mod.restore_previous(args.name)

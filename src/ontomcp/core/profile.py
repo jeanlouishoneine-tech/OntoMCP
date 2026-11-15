@@ -464,6 +464,24 @@ def has_previous(name: str) -> bool:
     return _previous_path(profile_path(name)).exists()
 
 
+def _ontologies_in(path: Path) -> list[str]:
+    try:
+        data = json.loads(path.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+    return [registry.canonical_key(o) for o in data.get("ontologies") or []]
+
+
+def previous_ontologies(name: str) -> list[str]:
+    """The list in ``<name>.json.prev``, for showing what an undo would change."""
+    return _ontologies_in(_previous_path(profile_path(name)))
+
+
+def current_ontologies(name: str) -> list[str]:
+    """The list in the user's own file for ``name``; empty when there is none."""
+    return _ontologies_in(profile_path(name))
+
+
 def restore_previous(name: str) -> dict:
     """Swap a profile with its ``.prev`` copy, so undoing an undo works too."""
     path = profile_path(name)
